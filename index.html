@@ -400,8 +400,8 @@ header .chip{order:2;flex:none}
 .cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
 .bar.prog{position:relative}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
-@container (max-height:92px){.cats .card .stars .lvl{display:none}}
-@container (max-height:66px){.cats .card .rankbadge{display:none}}
+@container (max-height:160px){.cats .card .stars .lvl{display:none}}
+@container (max-height:160px){.cats .card .rankbadge{display:none}}
 .cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
 .cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
 @container (max-height:80px){.cats .card .stars{display:none}.cats .card .practice-btn{height:17px;font-size:10px;padding:0 10px;margin-top:2px}}
@@ -516,7 +516,8 @@ header .chip{order:2;flex:none}
 
 .cats .card{display:flex;flex-direction:column;justify-content:center}
 .cats .card .topic-content{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
-.cats .card .topic-title{overflow-wrap:anywhere;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
+@media (max-width:600px){.home-top .hero-board{flex:none !important;width:100% !important}}
+.cats .card .topic-title{overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
 </style>
 </head>
 <body>
@@ -548,7 +549,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v54';
+const APP_VERSION = 'v55';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1267,7 +1268,7 @@ function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
   const card = document.querySelector('#view-home .cats .card');
-  const base = card ? Math.max(11, Math.min(44, Math.floor(card.clientHeight * 0.17))) : 22;
+  const base = card ? Math.max(11, Math.min(44, Math.floor(card.clientHeight * 0.17), Math.floor(card.clientWidth * 0.22))) : 22;
   const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
   ts.forEach(t => t.classList.add('wrap'));
   const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1) || conts.some(c => c.scrollHeight > c.clientHeight + 1);

@@ -645,7 +645,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v69';
+const APP_VERSION = 'v70';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1405,7 +1405,7 @@ function fitTitles() {
   const base = card ? Math.max(11, Math.min(64, Math.floor(card.clientHeight * (card.clientWidth / card.clientHeight > 1.6 ? 0.24 : 0.17)), Math.floor(card.clientWidth * 0.2))) : 22;
   const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
   ts.forEach(t => t.classList.add('wrap'));
-  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
+  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1 || (t.firstElementChild && t.firstElementChild.getBoundingClientRect().height > size * 2.5)) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
   let size = base;
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
   while (size > 10 && bad()) { size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; }); }

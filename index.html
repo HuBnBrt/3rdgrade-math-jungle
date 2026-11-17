@@ -548,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v50';
+const APP_VERSION = 'v51';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1373,7 +1373,16 @@ function startSession(kind, only) {
     return;
   }
   session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
-  if (!only) { session.topics = planTopics(session.total); save(); }
+  if (!only) {
+    let tp = planTopics(session.total);
+    if (kind === 'base') {
+      const weak = tp.filter(id => mast(id).score < 40).sort((a, b) => mast(a).score - mast(b).score).slice(0, 3);
+      tp = tp.concat(weak);
+      for (let t = 0; t < 30; t++) { tp = shuffle(tp); if (!tp.some((id, i) => i && id === tp[i - 1])) break; }
+      session.total = tp.length;
+    }
+    session.topics = tp; save();
+  }
   nextQ();
 }
 

@@ -653,6 +653,15 @@ header h1{font-size:calc(var(--s)*1.15)}
 /* plain header edge: no scallops, no extra bottom padding */
 header::after{display:none}
 header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px,calc(var(--s)*.45)) !important}
+@media (min-width:600px) and (max-aspect-ratio:4/3){
+  #view-settings:not(.hidden){gap:calc(var(--s)*.7)}
+  #view-settings .card{padding:calc(var(--s)*.7) !important;gap:calc(var(--s)*.45)}
+  #view-settings .s-nick .seg{flex-wrap:nowrap}
+  #view-settings .s-nick .seg .ghost-btn{flex:1 1 0;min-width:0;padding:.45em .3em;white-space:nowrap}
+  #view-settings .tsel .ghost-btn{padding:.35em .6em}
+  #view-settings .s-reset #resetBtn{padding:.4em}
+  #view-settings .s-signs .rank{font-size:calc(var(--s)*1.1);line-height:1.45;gap:.35em}
+}
 </style>
 </head>
 <body>
@@ -684,7 +693,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v75';
+const APP_VERSION = 'v76';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1491,8 +1500,7 @@ function renderSettings() {
     </div>
     <div class="card s-nick" style="margin-top:20px"><h2 style="margin-top:8px">👤 איך לפנות אליך?</h2>
       <input id="nickInput" type="text" maxlength="20" placeholder="כינוי (למשל: אדיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
-      <div class="seg">${[['m', 'תלמיד'], ['f', 'תלמידה'], ['', 'לא לציין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div>
-      <div class="rank" style="margin-top:8px">הכינוי והמין משפיעים על הפנייה אליך באפליקציה.</div></div>
+      <div class="seg">${[['m', 'תלמיד'], ['f', 'תלמידה'], ['', 'לא לציין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div></div>
     <div class="card s-signs" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מה אומרים הסימנים?</h2>
       <div class="rank" style="text-align:right;line-height:1.6"><span>⭐ <b>כוכבים</b> = רמת הקושי בנושא: מתחילים, מתקדמים, אלופים. עולים רמה אחרי 3 תשובות נכונות ברצף.</span><span>🥉🥈🥇 <b>ארד, כסף, זהב</b> = הציון בנושא: מתחת ל-40 ארד, 40 עד 69 כסף, 70 ומעלה זהב.</span><span>🏆 <b>גביע</b> = רמת אלופים וגם זהב באותו נושא.</span></div></div>
     ${installBlock()}

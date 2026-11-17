@@ -581,6 +581,20 @@ header h1{font-size:calc(var(--s)*1.15)}
 #qcard .question-board:has(.prompt.compact) .prompt{margin:0}
 #qcard .drawwrap .draw-help{line-height:1.25;margin-top:2px;font-size:calc(var(--q)*.92)}
 @media (orientation:landscape) and (max-height:480px){.ord-label{display:none}#qcard .ordwrap .ghost-btn{margin-top:2px !important}}
+/* camp: 5x2 everywhere, card contents proportional to the card */
+.shop{--cols:5;--rows:2;grid-template-rows:repeat(var(--rows),minmax(0,300px));gap:clamp(6px,1.2vh,14px) clamp(4px,1vw,14px)}
+.shop .card{--u:min(1cqh,1.9cqw);padding:clamp(3px,.8vh,10px) clamp(2px,.5vw,10px);gap:max(2px,calc(var(--u)*2));overflow:hidden}
+.shop .card .ic{font-size:max(22px,calc(var(--u)*28))}
+.shop .card .nm{font-size:max(11px,calc(var(--u)*11));line-height:1.1}
+.shop .card .chip{font-size:max(10px,calc(var(--u)*9));padding:0 .7em;white-space:nowrap}
+.shop .card button{font-size:max(10px,calc(var(--u)*9));padding:.35em 0;white-space:nowrap;border-radius:max(8px,calc(var(--u)*6))}
+.camp-collection .collection-shelf{gap:clamp(4px,1vw,12px);padding:clamp(4px,1vh,10px) 10px}
+.camp-collection .owned-animal{font-size:clamp(22px,min(4.5vh,7vw),44px)}
+/* settings: readable column, same scale */
+#view-settings>*{max-width:760px;margin-inline:auto}
+#view-settings .rank{font-size:calc(var(--s)*.95)}
+#view-settings h2{font-size:calc(var(--s)*1.25)}
+#view-settings .seg .ghost-btn,#view-settings #resetBtn{font-size:var(--s)}
 </style>
 </head>
 <body>
@@ -612,7 +626,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v63';
+const APP_VERSION = 'v64';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

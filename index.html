@@ -595,6 +595,12 @@ header h1{font-size:calc(var(--s)*1.15)}
 #view-settings .rank{font-size:calc(var(--s)*.95)}
 #view-settings h2{font-size:calc(var(--s)*1.25)}
 #view-settings .seg .ghost-btn,#view-settings #resetBtn{font-size:var(--s)}
+/* titles: always two lines in upright cards, so all cards line up */
+.cats .card .topic-title .tbr{font-style:normal}
+@container (max-aspect-ratio:8/5){
+  .cats .card .topic-title,.cats .card .topic-title.wrap{display:flex;align-items:flex-end;justify-content:center;min-height:2.2em}
+  .cats .card .topic-title .tbr::after{content:"\A";white-space:pre}
+}
 </style>
 </head>
 <body>
@@ -626,7 +632,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v64';
+const APP_VERSION = 'v65';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1351,7 +1357,7 @@ function renderHome() {
           <div class="card-leaf leaf-br">🌿</div>
           ${teacherFocus === c.id ? '<div class="rec-badge">המלצה לתרגול</div>' : ''}
           <div class="topic-content" style="position:relative;z-index:2">
-            <div class="big topic-title">${c.name}</div>
+            <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>
             <div class="stars" title="רמה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
             <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
             ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}

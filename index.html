@@ -252,10 +252,10 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 .home-top .hero-board{z-index:0;width:auto;flex:0 1 380px;padding:8px;border-radius:16px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.2),0 5px 0 #3b220d,0 8px 12px rgba(0,0,0,.3)}
 .home-top .big-green-btn{font-size:clamp(17px,3.4vh,24px);padding:8px 14px;box-shadow:0 4px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,.3)}
 .grid.cats{flex:1;min-height:0;padding-top:0;gap:8px 14px;align-content:center;--an:clamp(26px,5.6vh,50px);--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,210px))}
-@media (min-width:700px){.grid.cats{--cols:4;--rows:3}}
-@media (min-width:1000px){.grid.cats{--cols:6;--rows:2}}
-@media (orientation:landscape) and (max-height:560px){.grid.cats{--cols:6;--rows:2}}
-@media (max-width:699px){.grid.cats{--cols:3}}
+@media (min-width:700px){.grid.cats{--cols:4;--rows:4}}
+@media (min-width:1000px){.grid.cats{--cols:8;--rows:2}}
+@media (orientation:landscape) and (max-height:560px){.grid.cats{--cols:8;--rows:2}}
+@media (max-width:699px){.grid.cats{--cols:4;--rows:4}}
 .cats .slot{padding-top:calc(var(--an)*.63);min-height:0}
 .cats .peek-animal{font-size:var(--an);bottom:calc(100% - var(--an))}
 .cats .peek-animal.p1{margin-left:calc(var(--an)*-.5)}
@@ -388,6 +388,11 @@ header .chip{order:2;flex:none}
 .cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
 .cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
 @container (max-height:80px){.cats .card .stars{display:none}.cats .card .practice-btn{height:17px;font-size:10px;padding:0 10px;margin-top:2px}}
+.vert{border-collapse:collapse;margin:6px auto;font:900 clamp(26px,5vh,40px)/1.15 Rubik,sans-serif;color:#163b2a;background:#fff9;border-radius:12px;padding:4px 14px}
+.vert td{min-width:1.1em;text-align:center;padding:0 3px}
+.vert td.vs{min-width:1.1em;color:#d84a2b}
+.vert tr.vl td:not(.vs){border-top:4px solid #163b2a}
+.vert td.vq{color:#d84a2b;letter-spacing:.2em}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -425,7 +430,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v28';
+const APP_VERSION = 'v29';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -490,13 +495,22 @@ const ITEMS = [
 /* ---------- question generators ---------- */
 function genDigit(t) {
   const len = t === 1 ? 3 : 4;
-  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
-  const s = String(n);
+  let n, s;
+  do { n = len === 3 ? rnd(100, 999) : rnd(1000, 9999); s = String(n); } while (![...s].some(ch => s.split(ch).length === 2));
   let i, old, e;
   do { i = rnd(0, len - 1); old = Number(s[i]); e = rnd(0, 9); }
   while (e === old || (i === 0 && e === 0) || s.split(String(old)).length !== 2);
   const pv = 10 ** (len - 1 - i);
   const diff = (e - old) * pv;
+  if (Math.random() < .4) {
+    const nn = n + diff;
+    return {
+      body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> משנים את ספרת ${PLACE[pv]} ל-${e}.<br>מה המספר החדש?</div>`,
+      parts: [{ type: 'num', ans: nn }],
+      hint: `ספרת ${PLACE[pv]} היא הספרה ${old}. מחליפים אותה ב-${e} ושאר הספרות נשארות.`,
+      explain: `<span class="ltr">${fmt(n)}</span> הופך ל-<span class="ltr">${fmt(nn)}</span>.`
+    };
+  }
   const amount = Math.abs(diff), grows = diff > 0;
   return {
     body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שונתה הספרה ${old} ל-${e}.<br>האם המספר החדש גדל או קטן, ובכמה?</div>`,
@@ -639,19 +653,21 @@ function genSeqMember(t) {
 
 function genSameDigits(t) {
   const len = t === 1 ? 3 : 4;
+  const odd = Math.random() < .5, smaller = Math.random() < .6;
+  const pw = odd ? 'אי-זוגי' : 'זוגי', dw = smaller ? 'הקטן' : 'הגדול';
   let n, valid = [];
   for (;;) {
     n = len === 3 ? rnd(200, 999) : rnd(2000, 9999);
     const d = String(n).split('');
     if (new Set(d).size !== len) continue;
-    valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => v < n && v % 2 === 1))];
+    valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => (smaller ? v < n : v > n) && (v % 2 === 1) === odd))];
     if (valid.length) break;
   }
   const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
   return {
-    body: `<div class="prompt">יש לכתוב מספר אי-זוגי, הקטן מ-<span class="ltr">${fmt(n)}</span>, המורכב מאותן ספרות.</div>`,
+    body: `<div class="prompt">יש לכתוב מספר ${pw}, ${dw} מ-<span class="ltr">${fmt(n)}</span>, המורכב מאותן ספרות.</div>`,
     parts: [{ type: 'text', check, placeholder: 'המספר:' }],
-    hint: 'מספר אי-זוגי מסתיים בספרות 1, 3, 5, 7 או 9.',
+    hint: odd ? 'מספר אי-זוגי מסתיים בספרות 1, 3, 5, 7 או 9.' : 'מספר זוגי מסתיים בספרות 0, 2, 4, 6 או 8.',
     explain: q => {
       const mine = Number(String(q.parts[0].v ?? '').replace(/[,\s]/g, ''));
       const others = valid.filter(x => x !== mine);
@@ -662,17 +678,224 @@ function genSameDigits(t) {
   };
 }
 
-function genColumn(t) {
-  const [lo, hi] = t === 1 ? [10, 99] : t === 2 ? [100, 499] : [1000, 4999];
-  const op = pick(['+', '−']);
-  let a = rnd(lo, hi), b = rnd(lo, hi);
-  if (op === '−' && a < b) [a, b] = [b, a];
-  const ans = op === '+' ? a + b : a - b;
+/* ---------- numbers in words ---------- */
+const W_ONES = ['', 'אחת', 'שתיים', 'שלוש', 'ארבע', 'חמש', 'שש', 'שבע', 'שמונה', 'תשע'];
+const W_TEENS = ['עשר', 'אחת עשרה', 'שתים עשרה', 'שלוש עשרה', 'ארבע עשרה', 'חמש עשרה', 'שש עשרה', 'שבע עשרה', 'שמונה עשרה', 'תשע עשרה'];
+const W_TENS = ['', '', 'עשרים', 'שלושים', 'ארבעים', 'חמישים', 'שישים', 'שבעים', 'שמונים', 'תשעים'];
+const W_THOU = ['', 'אלף', 'אלפיים', 'שלושת אלפים', 'ארבעת אלפים', 'חמשת אלפים', 'ששת אלפים', 'שבעת אלפים', 'שמונת אלפים', 'תשעת אלפים'];
+function numWords(n) {
+  const parts = [];
+  const th = Math.floor(n / 1000), h = Math.floor(n % 1000 / 100), r = n % 100;
+  if (th) parts.push(W_THOU[th]);
+  if (h) parts.push(h === 1 ? 'מאה' : h === 2 ? 'מאתיים' : W_ONES[h] + ' מאות');
+  if (r) {
+    if (r < 10) parts.push(W_ONES[r]);
+    else if (r < 20) parts.push(W_TEENS[r - 10]);
+    else { parts.push(W_TENS[Math.floor(r / 10)]); if (r % 10) parts.push(W_ONES[r % 10]); }
+  }
+  if (parts.length > 1) parts[parts.length - 1] = 'ו' + parts[parts.length - 1];
+  return parts.join(' ');
+}
+function genWords(t) {
+  const n = t === 1 ? rnd(101, 999) : rnd(1001, 9999);
+  const s = String(n);
+  const decoys = new Set();
+  let guard = 0;
+  while (decoys.size < 3 && guard++ < 200) {
+    let d;
+    const k = rnd(0, 2);
+    if (k === 0) { const a = s.split(''); const i = rnd(0, a.length - 2); [a[i], a[i + 1]] = [a[i + 1], a[i]]; d = Number(a.join('')); }
+    else { const a = s.split(''); const i = rnd(0, a.length - 1); a[i] = String(rnd(0, 9)); d = Number(a.join('')); }
+    if (d !== n && d > 99 && String(d).length === s.length) decoys.add(d);
+  }
+  if (Math.random() < .5) {
+    return {
+      body: `<div class="prompt">איזה מספר כתוב כאן במילים?</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+      parts: [{ type: 'buttons', opts: shuffle([n, ...decoys]).map(fmt), ans: fmt(n) }],
+      hint: 'כדאי לכתוב את הספרות לפי המקום: אלפים, מאות, עשרות ויחידות.',
+      explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
+    };
+  }
   return {
-    body: `<div class="prompt" style="font-size:36px"><span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ?</span></div>`,
+    body: `<div class="prompt">יש לכתוב במספרים:</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+    parts: [{ type: 'num', ans: n }],
+    hint: 'כדאי לכתוב את הספרות לפי המקום: אלפים, מאות, עשרות ויחידות.',
+    explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
+  };
+}
+
+/* ---------- greater / smaller by N ---------- */
+function genMoreLess(t) {
+  const ds = t === 1 ? [10, 20, 50, 100, 200] : t === 2 ? [30, 59, 84, 100, 200, 400] : [59, 84, 100, 250, 400, 1000, 2000];
+  const d = pick(ds);
+  const R = t === 1 ? [200, 900] : [1000, 7000];
+  if (Math.random() < .7) {
+    const up = Math.random() < .5;
+    const n = rnd(R[0] + (up ? 0 : d), R[1]);
+    const ans = up ? n + d : n - d;
+    return {
+      body: `<div class="prompt">איזה מספר ${up ? 'גדול' : 'קטן'} ב-<span class="ltr">${fmt(d)}</span> מהמספר <span class="ltr">${fmt(n)}</span>?</div>`,
+      parts: [{ type: 'num', ans }],
+      hint: up ? 'גדול ב... פירושו להוסיף.' : 'קטן ב... פירושו לחסר.',
+      explain: `<span class="ltr">${fmt(n)} ${up ? '+' : '−'} ${fmt(d)} = ${fmt(ans)}</span>`
+    };
+  }
+  const b = rnd(R[0], R[1] - d), a = b + d;
+  return {
+    body: `<div class="prompt">בכמה המספר <span class="ltr">${fmt(a)}</span> גדול מהמספר <span class="ltr">${fmt(b)}</span>?</div>`,
+    parts: [{ type: 'num', ans: d }],
+    hint: 'כדי לדעת בכמה מספר אחד גדול מהשני, מחסרים את הקטן מהגדול.',
+    explain: `<span class="ltr">${fmt(a)} − ${fmt(b)} = ${fmt(d)}</span>`
+  };
+}
+
+/* ---------- compare place-value expressions ---------- */
+function genPlaceCmp(t) {
+  const mk = () => {
+    const kind = pick(['h', 'ht', 'tu', 'th']);
+    if (kind === 'h') { const h = rnd(1, 9); return { txt: `${h} מאות`, v: h * 100 }; }
+    if (kind === 'ht') { const h = rnd(1, 9), tn = rnd(1, 9); return { txt: `${h} מאות ו-${tn} עשרות`, v: h * 100 + tn * 10 }; }
+    if (kind === 'tu') { const tn = rnd(5, 60), u = rnd(1, 25); return { txt: `${tn} עשרות ו-${u} יחידות`, v: tn * 10 + u }; }
+    const th = rnd(1, 9); return { txt: `${th} אלפים`, v: th * 1000 };
+  };
+  let A = mk(), B = mk();
+  if (t === 1) { while (A.v >= 1000 || B.v >= 1000) { A = mk(); B = mk(); } }
+  if (Math.random() < .25 && A.v % 10 === 0) B = { txt: `${A.v / 10} עשרות`, v: A.v };
+  const sym = A.v < B.v ? '<' : A.v > B.v ? '>' : '=';
+  const box = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff8;border-radius:12px;padding:4px 8px;font-weight:800;flex:1 1 0;text-align:center;min-width:0">${x}</span>`;
+  return {
+    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${box(A.txt)}<b>?</b>${box(B.txt)}</div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint: 'כדאי להפוך כל צד למספר רגיל: מאה היא 100, עשר היא 10, אלף הוא 1,000.',
+    explain: `${A.txt} = ${fmt(A.v)} ו-${B.txt} = ${fmt(B.v)}. <span class="ltr">${fmt(A.v)} ${sym === '<' ? '&lt;' : sym === '>' ? '&gt;' : '='} ${fmt(B.v)}</span>`
+  };
+}
+
+/* ---------- missing number with helper exercise ---------- */
+function genEquation(t) {
+  const R = t === 1 ? [20, 99] : t === 2 ? [100, 600] : [300, 4000];
+  const kind = pick(['add', 'sub1', 'sub2']);
+  let a = rnd(R[0], R[1]), b = rnd(R[0], R[1]);
+  while (b === a) b = rnd(R[0], R[1]);
+  let eq, helper, wrong, ans;
+  if (kind === 'add') { const c = a + b; eq = `${fmt(a)} + ___ = ${fmt(c)}`; helper = `${fmt(c)} − ${fmt(a)}`; wrong = [`${fmt(c)} + ${fmt(a)}`, `${fmt(a)} − ${fmt(c)}`]; ans = b; }
+  else if (kind === 'sub1') { const A = a + b; eq = `${fmt(A)} − ___ = ${fmt(a)}`; helper = `${fmt(A)} − ${fmt(a)}`; wrong = [`${fmt(A)} + ${fmt(a)}`, `${fmt(a)} − ${fmt(A)}`]; ans = b; }
+  else { const A = a + b; eq = `___ − ${fmt(a)} = ${fmt(b)}`; helper = `${fmt(a)} + ${fmt(b)}`; wrong = [`${fmt(b)} − ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = A; }
+  const eqText = eq.replace('___', '___');
+  return {
+    body: `<div class="prompt">יש להשלים את המספר החסר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eqText}</span></div>`,
+    parts: [
+      { type: 'buttons', label: 'תרגיל עזר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper },
+      { type: 'num', label: 'המספר החסר', ans }
+    ],
+    hint: 'כדי למצוא מספר חסר בוחרים תרגיל עזר הפוך: חיסור בודק חיבור, וחיבור בודק חיסור.',
+    explain: `תרגיל העזר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כך מתקבל המספר החסר ${fmt(ans)}.`
+  };
+}
+
+/* ---------- multiplication ---------- */
+function genMult(t) {
+  const facts = t === 1 ? [2, 5, 10] : t === 2 ? [3, 4, 6] : [6, 7, 8, 9];
+  const a = pick(facts), b = rnd(2, 10);
+  const [x, y] = Math.random() < .5 ? [a, b] : [b, a];
+  const p = x * y;
+  if (Math.random() < .25) {
+    return {
+      body: `<div class="prompt"><span class="ltr" style="font-size:34px">___ × ${x} = ${p}</span></div>`,
+      parts: [{ type: 'num', ans: y }],
+      hint: `כמה פעמים צריך לקחת ${x} כדי לקבל ${p}?`,
+      explain: `<span class="ltr">${y} × ${x} = ${p}</span>`
+    };
+  }
+  return {
+    body: `<div class="prompt"><span class="ltr" style="font-size:34px">${x} × ${y} = ?</span></div>`,
+    parts: [{ type: 'num', ans: p }],
+    hint: `אפשר לחבר ${y} פעמים את המספר ${x}, או להיעזר בלוח הכפל.`,
+    explain: `<span class="ltr">${x} × ${y} = ${p}</span>`
+  };
+}
+
+/* ---------- word problems ---------- */
+function genWord(t) {
+  const R = t === 1 ? [20, 90] : t === 2 ? [120, 600] : [300, 3000];
+  const names = [['גל', 1], ['נועם', 0], ['אדיר', 0], ['שירה', 1], ['דניאל', 0], ['מאיה', 1]];
+  const [nm, fem] = pick(names);
+  const [nm2, fem2] = pick(names.filter(x => x[0] !== nm));
+  const a = rnd(R[0], R[1]), b = rnd(R[0] / 2 | 0, Math.min(R[1], a - 1));
+  const g = rnd(2, t === 1 ? 5 : 9), k = rnd(2, t === 1 ? 6 : 9);
+  const T = [
+    () => ({ q: `בספרייה יש ${fmt(a)} ספרים. השאילו ${fmt(b)} ספרים. כמה ספרים נשארו בספרייה?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'השאילו אומר שהספרים יצאו, ולכן מחסרים.' }),
+    () => ({ q: `בחנות היו ${fmt(a)} תפוחים. הגיעו עוד ${fmt(b)} תפוחים. כמה תפוחים יש עכשיו בחנות?`, ex: `${fmt(a)} + ${fmt(b)}`, ans: a + b, h: 'הגיעו עוד אומר שהכמות גדלה, ולכן מחברים.' }),
+    () => ({ q: `בכל שקית יש ${g} סוכריות. יש ${k} שקיות. כמה סוכריות יש בכל השקיות?`, ex: `${g} × ${k}`, ans: g * k, h: 'כמות זהה בכל קבוצה: מכפילים את מספר הקבוצות בגודל קבוצה.' }),
+    () => ({ q: `בכיתה א' יש ${fmt(a)} ילדים ובכיתה ב' יש ${fmt(b)} ילדים. בכמה ילדים יש יותר בכיתה א'?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'כשרוצים לדעת בכמה יש יותר, מחסרים את הקטן מהגדול.' }),
+    () => ({ q: `ל${nm} יש ${fmt(a)} מדבקות. ל${nm2} יש ${fmt(b)} מדבקות פחות מל${nm}. כמה מדבקות יש ל${nm2}?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'פחות מ... פירושו להחסיר.' }),
+    () => { const c = rnd(R[0] / 2 | 0, R[1]); return { q: `באוטובוס היו ${fmt(a)} נוסעים. ירדו ${fmt(b)} נוסעים ועלו ${fmt(c)} נוסעים. כמה נוסעים יש באוטובוס עכשיו?`, ex: `${fmt(a)} − ${fmt(b)} + ${fmt(c)}`, ans: a - b + c, h: 'קודם מחסרים את מי שירד, ואחר כך מוסיפים את מי שעלה.' }; }
+  ];
+  const w = pick(T.slice(0, t === 1 ? 5 : 6))();
+  return {
+    body: `<div class="prompt" style="font-size:22px">${w.q}</div>`,
+    parts: [{ type: 'num', ans: w.ans }],
+    hint: w.h,
+    explain: `התרגיל: <span class="ltr">${w.ex} = ${fmt(w.ans)}</span>`
+  };
+}
+
+/* ---------- number line with an arrow ---------- */
+function numLineWrite(t) {
+  const step = t === 1 ? 10 : pick([10, 100]);
+  const span = step * 10;
+  const start = step === 10 ? rnd(1, t === 1 ? 9 : 90) * 100 : rnd(1, 8) * 1000;
+  const idx = rnd(1, 9), val = start + idx * step;
+  const x0 = 30, x1 = 290, y = 80;
+  let ticks = '';
+  for (let i = 0; i <= 10; i++) {
+    const x = x0 + (x1 - x0) * i / 10;
+    ticks += `<line x1="${x}" y1="${y - (i % 5 ? 8 : 14)}" x2="${x}" y2="${y + (i % 5 ? 8 : 14)}" stroke="#163b2a" stroke-width="${i % 5 ? 2 : 3}"/>`;
+  }
+  const ax = x0 + (x1 - x0) * idx / 10;
+  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
+  return {
+    body: `<div class="prompt">איזה מספר מסומן בחץ?</div>${svg}`,
+    parts: [{ type: 'num', ans: val }],
+    hint: `בין שני המספרים הכתובים יש 10 קפיצות שוות. כל קפיצה היא ${fmt(step)}.`,
+    explain: `כל קפיצה היא ${fmt(step)}. החץ נמצא אחרי ${idx} קפיצות מ-${fmt(start)}, ולכן המספר הוא ${fmt(val)}.`
+  };
+}
+
+/* ---------- vertical arithmetic ---------- */
+function vertHTML(a, b, op) {
+  const sa = String(a), sb = String(b), n = Math.max(sa.length, sb.length);
+  const cells = s => [...s.padStart(n, ' ')].map(c => `<td>${c.trim()}</td>`).join('');
+  return `<table class="vert" dir="ltr"><tr><td class="vs"></td>${cells(sa)}</tr><tr><td class="vs">${op}</td>${cells(sb)}</tr><tr class="vl"><td class="vs"></td><td colspan="${n}"></td></tr><tr><td class="vs"></td><td colspan="${n}" class="vq">?</td></tr></table>`;
+}
+function hasCarry(a, b, op) {
+  let x = a, y = b, c = 0;
+  while (x > 0 || y > 0) {
+    const dx = x % 10, dy = y % 10;
+    if (op === '+') { if (dx + dy + c > 9) return true; c = 0; } else { if (dx - c < dy) return true; c = 0; }
+    x = Math.floor(x / 10); y = Math.floor(y / 10);
+  }
+  return false;
+}
+function genColumn(t) {
+  const [lo, hi] = t === 1 ? [10, 99] : t === 2 ? [100, 999] : [1000, 9999];
+  const op = pick(['+', '−']);
+  let a, b;
+  for (let i = 0; i < 40; i++) {
+    a = rnd(lo, hi); b = rnd(lo, hi);
+    if (op === '+') { if (a + b > 9999) continue; } else if (a < b) [a, b] = [b, a];
+    if (hasCarry(a, b, op) || i > 30) break;
+  }
+  const ans = op === '+' ? a + b : a - b;
+  const vertical = Math.random() < .7;
+  const body = vertical
+    ? `<div class="prompt">יש לפתור במאונך:</div>${vertHTML(a, b, op)}`
+    : `<div class="prompt" style="font-size:36px"><span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ?</span></div>`;
+  return {
+    body, sig: String(a) + op + b,
     parts: [{ type: 'num', ans }],
-    hint: 'ניתן לפתור במאונך: יחידות מתחת ליחידות, עשרות מתחת לעשרות.',
-    explain: `התשובה היא ${fmt(ans)}`
+    hint: op === '+' ? 'מתחילים מהיחידות. אם הסכום גדול מ-9, כותבים את היחידות ומעבירים את העשרת לטור הבא.' : 'מתחילים מהיחידות. אם אי אפשר לחסר, לוקחים עשרה מהטור השמאלי.',
+    explain: `<span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}</span>`
   };
 }
 
@@ -710,17 +933,21 @@ function genAngleDraw() {
 
 const CATS = [
   { id: 'digit', name: 'שינוי ספרה', animal: '🦁', gen: genDigit },
-  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animal: '🦉', gen: genCompare },
+  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animal: '🦉', gen: t => Math.random() < .35 ? genPlaceCmp(t) : genCompare(t) },
   { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐯', gen: genNoCalc },
   { id: 'decomp', name: 'פירוק מספר', animal: '🐨', gen: genDecomp },
   { id: 'order', name: 'סידור מספרים', animal: '🦓', gen: genOrder },
-  { id: 'numline', name: 'ישר מספרים', animal: '🦧', gen: genNumLine },
-  { id: 'seq', name: 'סדרות', animal: '🐸', gen: genSeq },
-  { id: 'seqmember', name: 'המשך הסדרה', animal: '🦜', gen: genSeqMember },
+  { id: 'numline', name: 'ישר מספרים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
+  { id: 'seq', name: 'סדרות', animal: '🐸', gen: t => Math.random() < .4 ? genSeqMember(t) : genSeq(t) },
   { id: 'samedigits', name: 'אותן ספרות', animal: '🦥', gen: genSameDigits },
   { id: 'column', name: 'חיבור וחיסור', animal: '🐒', gen: genColumn },
   { id: 'angleid', name: 'סוגי זוויות', animal: '🦅', gen: genAngleId },
-  { id: 'angledraw', name: 'שרטוט זווית', animal: '🐍', gen: genAngleDraw }
+  { id: 'angledraw', name: 'שרטוט זווית', animal: '🐍', gen: genAngleDraw },
+  { id: 'words', name: 'מספר במילים', animal: '🦒', gen: genWords },
+  { id: 'moreless', name: 'גדול וקטן ב...', animal: '🐘', gen: genMoreLess },
+  { id: 'equation', name: 'מספר חסר', animal: '🦔', gen: genEquation },
+  { id: 'mult', name: 'לוח הכפל', animal: '🦏', gen: genMult },
+  { id: 'word', name: 'בעיות מילוליות', animal: '🐊', gen: genWord }
 ];
 
 /* ---------- state ---------- */
@@ -1011,10 +1238,10 @@ function correctPart(p) {
 function partHTML(p, i) {
   const locked = Q.result !== undefined;
   if (p.type === 'buttons') {
-    return `<div class="opts"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
+    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
       let cls = p.v === o ? 'sel' : '';
       if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
-      return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${esc(o)}</button>`;
+      return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${p.ltr ? `<span class="ltr">${esc(o)}</span>` : esc(o)}</button>`;
     }).join('')}</div>`;
   }
   if (p.type === 'num' || p.type === 'text') {

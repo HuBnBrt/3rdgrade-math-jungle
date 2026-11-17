@@ -43,7 +43,7 @@ header h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px;text-shado
 .chip{background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.2);padding:4px 14px;border-radius:99px;font-weight:900;font-size:16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2)}
 .chip b{font-family:Rubik,sans-serif;font-size:18px;color:var(--amber)}
 
-main{max-width:800px;margin:0 auto;padding:18px 16px 0}
+main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
 .spacer{height:92px}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:64px 18px;padding-top:48px}
@@ -83,7 +83,14 @@ main{max-width:800px;margin:0 auto;padding:18px 16px 0}
 .peek-animal.p1{left:50%;margin-left:-27px}
 .peek-animal.p2{right:10%}
 .slot:hover .peek-animal{transform:translateY(-10px)}
+.slot,.slot .card{min-width:0}
 .topic-title{white-space:nowrap;font-size:22px;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
+.topic-title.wrap{white-space:normal;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.grid.cats{--cols:2;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}
+@media (min-width:520px){.grid.cats{--cols:3}}
+@media (min-width:760px){.grid.cats{--cols:4}}
+@media (min-width:1100px){.grid.cats{--cols:6}}
+.prompt,.question-board,.hero-bubble{text-wrap:balance}
 
 .wood-btn-small{
   background:linear-gradient(180deg,#b97a44,#8b5a2b);
@@ -281,7 +288,7 @@ function genDigit(t) {
   const diff = (e - old) * pv;
   const amount = Math.abs(diff), grows = diff > 0;
   return {
-    body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שונתה הספרה ${old} ל-${e}. האם המספר החדש גדל או קטן, ובכמה?</div>`,
+    body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שונתה הספרה ${old} ל-${e}.<br>האם המספר החדש גדל או קטן, ובכמה?</div>`,
     parts: [
       { type: 'buttons', opts: ['גדל', 'קטן'], ans: grows ? 'גדל' : 'קטן' },
       { type: 'num', label: 'ב-', ans: amount }
@@ -373,7 +380,7 @@ function genNumLine(t) {
   while (outs.size < 3) { const x = Math.random() < .5 ? a - rnd(5, 70) : b + rnd(5, 70); if (x > 0) outs.add(x); }
   const opts = shuffle([inside, ...outs]).map(fmt);
   return {
-    body: `<div class="prompt">המספרים <span class="ltr">${fmt(a)}</span> ו-<span class="ltr">${fmt(b)}</span> הם קצוות הקטע. איזה מספר נמצא בתוך הקטע?</div>`,
+    body: `<div class="prompt">המספרים <span class="ltr">${fmt(a)}</span> ו-<span class="ltr">${fmt(b)}</span> הם קצוות הקטע.<br>איזה מספר נמצא בתוך הקטע?</div>`,
     parts: [{ type: 'buttons', opts, ans: fmt(inside) }],
     hint: 'המספר צריך להיות גדול מהמספר הקטן וקטן מהמספר הגדול.',
     explain: `${fmt(inside)} נמצא בין ${fmt(a)} ל-${fmt(b)}.`
@@ -481,13 +488,13 @@ function genAngleDraw() {
 const CATS = [
   { id: 'digit', name: 'שינוי ספרה', animal: '🦁', gen: genDigit },
   { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animal: '🦉', gen: genCompare },
-  { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐢', gen: genNoCalc },
+  { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐯', gen: genNoCalc },
   { id: 'decomp', name: 'פירוק מספר', animal: '🐨', gen: genDecomp },
   { id: 'order', name: 'סידור מספרים', animal: '🦓', gen: genOrder },
-  { id: 'numline', name: 'ישר מספרים', animal: '🦒', gen: genNumLine },
+  { id: 'numline', name: 'ישר מספרים', animal: '🦧', gen: genNumLine },
   { id: 'seq', name: 'סדרות', animal: '🐸', gen: genSeq },
   { id: 'seqmember', name: 'המשך הסדרה', animal: '🦜', gen: genSeqMember },
-  { id: 'samedigits', name: 'אותן ספרות', animal: '🐘', gen: genSameDigits },
+  { id: 'samedigits', name: 'אותן ספרות', animal: '🦥', gen: genSameDigits },
   { id: 'column', name: 'חיבור וחיסור', animal: '🐒', gen: genColumn },
   { id: 'angleid', name: 'סוגי זוויות', animal: '🦅', gen: genAngleId },
   { id: 'angledraw', name: 'שרטוט זווית', animal: '🐍', gen: genAngleDraw }
@@ -615,17 +622,17 @@ function renderHome() {
       </div>
     </div>
     <h2>אזור האימונים</h2>
-    <div class="grid">${cards}</div>`;
+    <div class="grid cats">${cards}</div>`;
   fitTitles();
 }
 
 function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
-  ts.forEach(t => { t.style.fontSize = '22px'; });
+  ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = '22px'; });
   let size = 22;
   ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(22 * t.clientWidth / t.scrollWidth)); });
-  size = Math.max(size, 12);
+  if (size < 14) { size = 14; ts.forEach(t => t.classList.add('wrap')); }
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
 }
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });

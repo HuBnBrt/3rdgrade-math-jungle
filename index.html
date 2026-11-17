@@ -549,7 +549,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v55';
+const APP_VERSION = 'v56';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1118,7 +1118,7 @@ async function cloudSave() {
   catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); return; }
   try {
     const topics = {};
-    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: c.name, score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: c.name.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
     await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }

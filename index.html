@@ -503,7 +503,7 @@ header .chip{order:2;flex:none}
 .rec-badge{position:absolute;top:-13px;inset-inline-end:-7px;z-index:7;transform:rotate(-7deg);white-space:nowrap;background:rgba(255,255,255,.92);border:2px solid #c0392b;outline:1px solid #c0392b;outline-offset:1px;border-radius:6px;padding:0 4px;font:900 clamp(8px,1.2vh,13px)/1.2 Heebo,sans-serif;color:#c0392b;text-align:center;letter-spacing:.2px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .modal-back{position:fixed;inset:0;background:rgba(20,40,30,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
 .modal{background:#fff9ec;border:4px solid #8b5a2b;border-radius:22px;padding:20px 18px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.modal .m-ic{font-size:48px}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
+.modal .m-ic{font-size:48px}.modal .m-img{width:clamp(90px,22vh,150px);height:auto;display:block;margin:0 auto}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
 .modal .m-act{display:flex;flex-direction:column;gap:10px}
 .cats .card .topic-title{overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
 
@@ -681,7 +681,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v73';
+const APP_VERSION = 'v74';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -711,7 +711,7 @@ function maybePrompts() {
   if (modalOpen || currentView === 'play') return;
   if (pendingUpdate) {
     const v = pendingUpdate;
-    showModal({ icon: '🆕', title: 'יצאה גרסה חדשה!', text: 'יש שיפורים ותיקונים באפליקציה. ההתקדמות והמטבעות נשמרים.', ok: 'עדכון עכשיו', cancel: 'אחר כך', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
+    showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: 'יצאה גרסה חדשה!', text: 'יש שיפורים ותיקונים באפליקציה. ההתקדמות והמטבעות נשמרים.', ok: 'עדכון עכשיו', cancel: 'אחר כך', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
     return;
   }
   let dismissed = 0; try { dismissed = +localStorage.getItem('jungle-install-no') || 0; } catch (e) {}
@@ -733,6 +733,7 @@ async function applyUpdate(v) {
   location.replace(location.pathname + '?v=' + v + '&t=' + Date.now());
 }
 setTimeout(() => { checkUpdate(); maybePrompts(); }, 3500);
+try { new Image().src = 'monkey-update.png'; } catch (e) {}
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { installAsked = false; checkUpdate(); setTimeout(maybePrompts, 1200); } });
 setInterval(checkUpdate, 10 * 60 * 1000);
 async function doInstall() {

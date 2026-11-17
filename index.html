@@ -642,7 +642,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v66';
+const APP_VERSION = 'v67';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -683,14 +683,15 @@ function maybePrompts() {
 }
 async function checkUpdate() {
   try {
-    const r = await fetch('sw.js?' + Date.now(), { cache: 'no-store' });
-    const m = (await r.text()).match(/const C='jungle-v(\d+)'/);
+    // read the published page itself, bypassing every cache, so we only offer a version that is really there
+    const r = await fetch('./?fresh=' + Date.now(), { cache: 'no-store' });
+    const m = (await r.text()).match(/const APP_VERSION = 'v(\d+)'/);
     if (m && +m[1] > parseInt(APP_VERSION.slice(1), 10)) { pendingUpdate = m[1]; maybePrompts(); }
   } catch (e) {}
 }
 async function applyUpdate(v) {
   try { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } catch (e) {}
-  location.href = location.pathname + '?v=' + v;
+  location.replace(location.pathname + '?v=' + v + '&t=' + Date.now());
 }
 setTimeout(() => { checkUpdate(); maybePrompts(); }, 3500);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { installAsked = false; checkUpdate(); setTimeout(maybePrompts, 1200); } });

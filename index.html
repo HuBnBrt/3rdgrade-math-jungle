@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="manifest" href="manifest.webmanifest?v=4">
+<link rel="manifest" href="manifest.webmanifest?v=5">
 <meta name="theme-color" content="#2f6b45">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon.png?v=5">
 <link rel="shortcut icon" href="favicon.ico?v=5">
@@ -423,6 +423,95 @@ header .chip{order:2;flex:none}
 /* two blanks: input order matches the order in the series (left to right) */
 .parts.multi{direction:ltr}
 .gap{display:inline-block;direction:rtl;unicode-bidi:isolate;font-size:.55em;font-weight:900;background:#fff3d6;border:2px dashed #b47a46;border-radius:10px;padding:2px 10px;margin:0 2px;vertical-align:middle;color:#8b5a2b}
+
+/* ---- v40 fixes ---- */
+.opts.ord{flex-wrap:nowrap;gap:clamp(4px,1.2vw,10px)}
+#qcard .opts.ord .opt{flex:1 1 0;min-width:0;padding:clamp(5px,1vh,10px) 2px;font-size:clamp(14px,min(4.6vw,3.4vh),26px);text-align:center}
+#qcard .seq{flex-wrap:nowrap;gap:clamp(4px,1.2vw,8px);padding:clamp(5px,1vh,10px)}
+#qcard .seq span{flex:1 1 0;min-width:0;text-align:center;padding:clamp(5px,1vh,8px) 2px;font-size:clamp(14px,min(4.6vw,3.4vh),26px)}
+#qcard .seq span.rank{flex:1 1 100%}
+#qcard .fbslot{height:clamp(84px,15vh,132px)}
+#qcard .feedback{padding:6px 12px;gap:10px}
+@media (max-width:480px){#qcard .feedback .mascot{display:none}#qcard .fbslot{height:clamp(84px,13vh,120px)}#qcard .feedback{font-size:15px}}
+.draw-help{font-size:clamp(15px,2.5vh,21px);font-weight:700;line-height:1.35;color:#fffdf6;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.5);align-self:stretch;max-width:100%;margin-top:6px;white-space:normal}
+.draw-help b{color:#ffe082}
+#qcard.summary{gap:clamp(4px,1.2vh,12px)}
+.sum-gift{font-size:clamp(40px,9vh,76px);line-height:1;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.sum-title{text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,.5);font:900 clamp(22px,4vh,32px)/1.15 Rubik,sans-serif}
+.sum-box{background:rgba(255,255,255,.85);padding:clamp(6px,1.4vh,14px) 12px;border-radius:16px;border:3px dashed #8b5a2b;text-align:center}
+.sum-box p{margin:clamp(2px,.6vh,8px) 0;font-weight:800;font-size:clamp(16px,2.6vh,20px)}
+.sum-box .trophy-line{border:0;background:none;padding:0}
+.sum-item{font-size:clamp(24px,4vh,32px);vertical-align:middle}
+.sum-actions{display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px)}
+.sum-actions .big-green-btn{padding:clamp(8px,1.6vh,14px) 10px;font-size:clamp(17px,3vh,24px)}
+.sum-actions .ghost-btn{width:100%;background:#fff;padding:clamp(8px,1.6vh,14px)}
+/* home cards on phones */
+@media (max-width:699px){
+  .cats .card-leaf{display:none}
+  .cats .card .rankbadge{display:none}
+  .cats .card .stars{display:block;font-size:11px;margin:2px 0 0;text-align:center}
+  .cats .card .stars .lvl{display:none}
+  .cats .card .practice-btn{display:block;width:calc(100% - 2px);padding:0;height:19px;font-size:clamp(9px,11cqw,12px);margin-top:3px}
+  .cats .card{padding:4px 4px 5px}
+  .cats .card .topic-title{line-height:1.05}
+}
+/* phone held sideways */
+@media (orientation:landscape) and (max-height:560px){
+  header{padding:3px 12px 8px}
+  .home-top .hero-bubble{display:none}
+  .home-top{margin:0 0 4px}
+  .home-top .hero-board{flex:0 1 340px;padding:3px}
+  .home-top .big-green-btn{font-size:16px;padding:3px 10px}
+  .cats .card-leaf{display:none}
+  .cats .card .rankbadge,.cats .card .stars{display:none}
+  .cats .card .practice-btn{display:block;width:calc(100% - 2px);height:20px;font-size:12px;padding:0;margin-top:3px}
+  .cats .card .topic-title{line-height:1.05}
+  .grid.cats{gap:6px 8px;--cols:8;--rows:2}
+}
+
+/* one-line expressions */
+#qcard [style*="font-size:28px"]{font-size:clamp(18px,min(4.4vw,5.4vh),40px) !important}
+#qcard .question-board .ltr{white-space:nowrap;max-width:100%}
+
+.install-bar{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff8e1;border:3px solid #f0a430;border-radius:14px;padding:4px 10px;margin:0 0 6px;font-weight:900;font-size:15px}
+.install-bar .big-green-btn{width:auto;padding:4px 16px;font-size:16px;margin:0;box-shadow:0 3px 0 #1b5e20}
+
+.drawwrap{display:flex;flex-direction:column;align-items:center;width:100%;min-height:0}
+#qcard .parts:has(.drawwrap){display:block}
+#qcard [style*="font-size:28px"]{font-size:clamp(18px,min(5.6vw,5.4vh),42px) !important}
+
+.feedback .fb-text{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;text-align:center}
+.feedback .fb-head{display:block;font-weight:900;text-wrap:balance}
+.feedback .fb-body{display:block;text-wrap:balance;font-weight:700}
+
+/* phone held sideways: squeeze chrome, keep content */
+@media (orientation:landscape) and (max-height:480px){
+  header h1{display:none}
+  header{padding:2px 10px 6px;justify-content:flex-end;min-height:0}
+  .nav button{padding:1px 4px;font-size:12px}.nav button .e{font-size:14px}
+  .install-bar{display:none}
+  #qcard{padding:4px 12px;gap:3px}
+  #qcard .prompt{font-size:clamp(14px,5vh,20px);margin:0;line-height:1.25}
+  #qcard .question-board{padding:4px 10px;min-height:0}
+  #qcard .fbslot{height:54px}
+  #qcard .feedback{font-size:13px;padding:3px 10px;line-height:1.2}
+  #qcard .feedback .mascot{display:none}
+  #qcard .action-btn{font-size:15px;padding:5px 22px}#qcard .ghost-btn{font-size:13px;padding:4px 12px}
+  #qcard input.num,#qcard input.text{font-size:20px;padding:2px 8px;width:clamp(120px,30vw,220px)}
+  #qcard .opts .opt,#qcard .opts.ord .opt{font-size:17px;padding:3px 2px}
+  #qcard .seq{min-height:0;padding:3px}#qcard .seq span{font-size:17px;padding:3px 2px}
+  #qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:20px !important}
+  #qcard .parts svg[data-draw]{height:min(34vh,150px)}
+  .draw-help{font-size:12px;margin-top:2px}.draw-help b:first-child{display:none}
+  .sum-gift{display:none}.sum-title{font-size:20px}.sum-box{padding:3px 8px}.sum-box p{font-size:14px;margin:1px 0}
+  .sum-actions{flex-direction:row}.sum-actions>*{flex:1;font-size:14px !important;padding:5px 6px !important}
+}
+
+@media (orientation:landscape) and (max-height:480px){
+  #qcard .part-fix.no{display:none}
+  #qcard .row label{font-size:16px !important}
+  #qcard .question-board{overflow:visible;flex:none}
+}
 </style>
 </head>
 <body>
@@ -454,9 +543,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v39';
+const APP_VERSION = 'v45';
 let installEvt = null;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
@@ -468,7 +557,13 @@ function installBlock() {
     : isIOS() ? `<div class="rank" style="text-align:right">באייפון: לוחצים על כפתור השיתוף (▫️⬆️) ואז "הוסף למסך הבית".</div>`
     : `<div class="rank" style="text-align:right">בדפדפן: תפריט ⋮ ← "התקנת אפליקציה" / "הוספה למסך הבית". אם הכפתור לא מופיע כאן, ייתכן שכבר הותקנה.</div>`}</div>`;
 }
-async function doInstall() { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; renderSettings(); }
+const wantInstall = () => !isStandalone() && /[?&]install\b/.test(location.search);
+function installBar() {
+  if (!wantInstall()) return '';
+  return `<div class="install-bar"><span>📲 להתקנת האפליקציה במכשיר</span><button type="button" class="big-green-btn" id="installBtn">${installEvt ? 'התקנה' : isIOS() ? 'איך מתקינים?' : 'התקנה'}</button></div>`;
+}
+async function doInstall() {
+  if (!installEvt) { toast(isIOS() ? 'באייפון: כפתור השיתוף ואז "הוסף למסך הבית"' : 'בתפריט הדפדפן ⋮ בוחרים "התקנת אפליקציה" או "הוספה למסך הבית"'); return; } installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; if (currentView === 'home') renderHome(); else renderSettings(); }
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -606,6 +701,8 @@ function genDecomp(t) {
       const given = comps.filter((c, j) => j !== m).map(fmt);
       const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' ו-' + given[given.length - 1] : given[0];
       const place = 10 ** (len - 1 - m), digit = comps[m] / place;
+      const UN = { 1: 'יחידות', 10: 'עשרות', 100: 'מאות', 1000: 'אלפים' };
+      if (digit === 0) return `כבר יש ${givenTxt}, ולכן החסר הוא 0: אין ${UN[place]} במספר. הפירוק המלא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
       return `כבר יש ${givenTxt}, ולכן החסר הוא ${fmt(comps[m])}: הספרה ${digit} נמצאת במקום ${PLACE[place]} ושווה ${fmt(comps[m])}. הפירוק המלא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
     })()
   };
@@ -939,7 +1036,7 @@ function genAngleId() {
 
 function genAngleDraw() {
   const target = pick(['חדה', 'ישרה', 'קהה']);
-  const text = { 'חדה': 'יש לסרטט זווית חדה', 'ישרה': 'יש לסרטט זווית ישרה', 'קהה': 'יש לסרטט זווית קהה' }[target];
+  const text = { 'חדה': 'יש לשרטט זווית חדה', 'ישרה': 'יש לשרטט זווית ישרה', 'קהה': 'יש לשרטט זווית קהה' }[target];
   const check = v => {
     if (typeof v !== 'number') return false;
     if (target === 'חדה') return v > 5 && v < 85;
@@ -949,7 +1046,7 @@ function genAngleDraw() {
   return {
     body: `<div class="prompt compact">${text}</div>`,
     drawInit: target === 'ישרה' ? pick([30, 45, 135, 150]) : 90,
-    parts: [{ type: 'draw', check }],
+    parts: [{ type: 'draw', check, help: { 'חדה': 'מקרבים את הקו הירוק אל הקו השחור, עד שהזווית קטנה יותר מפינה של מרובע.', 'ישרה': 'מעמידים את הקו הירוק בניצב לקו השחור, כך שייווצרו פינה של מרובע.', 'קהה': 'מרחיקים את הקו הירוק מהקו השחור, עד שהזווית גדולה מפינה של מרובע אבל עדיין לא קו ישר.' }[target] }],
     hint: 'יש לגרור את הקצה הצהוב למיקום המתאים.',
     explain: `שורטטה זווית בערך של ${target}.`
   };
@@ -1120,13 +1217,14 @@ function renderHome() {
 
   $('#view-home').innerHTML = `
     ${loginBlock()}
+    ${installBar()}
     <div class="home-top">
       <div class="hero-bubble">
         🐵 ${user ? 'שלום ' + firstName() + '!' : 'ברוכים הבאים לג\'ונגל!'}
         <small>אימונים היום: ${doneToday} · אימון רגיל כ-5 דקות</small>
       </div>
       <div class="hero-board">
-        <button type="button" class="big-green-btn" id="startBtn">❯ התחלת אימון ❮</button>
+        <button type="button" class="big-green-btn" id="startBtn">התחלת אימון</button>
       </div>
     </div>
     <div class="grid cats">${cards}</div>`;
@@ -1285,14 +1383,29 @@ function partHTML(p, i) {
   if (p.type === 'order') {
     const left = p.items.map((x, j) => ({ x, j })).filter(o => !p.v.includes(o.x));
     const chosen = p.v.length ? p.v.map(x => `<span>${fmt(x)}</span>`).join('') : '<span class="rank" style="margin:auto">טרם נבחרו מספרים</span>';
-    return `<div class="seq">${chosen}</div><div class="opts">${left.map(o => `<button type="button" class="opt" data-p="${i}" data-o="${o.j}">${fmt(o.x)}</button>`).join('')}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button>`;
+    return `<div class="seq">${chosen}</div><div class="opts ord">${left.map(o => `<button type="button" class="opt" data-p="${i}" data-o="${o.j}">${fmt(o.x)}</button>`).join('')}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button>`;
   }
   if (p.type === 'draw') {
-    return `<svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="rank">יש לגרור את הקצה הצהוב.</div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"><b>איך משרטטים?</b> גוררים באצבע (או בעכבר) את <b>העיגול הכתום</b> שבקצה הקו הירוק. ${esc(p.help || '')}</div></div>`;
   }
   return '';
 }
 
+function fitBoard() {
+  const bd = document.querySelector('#qcard .question-board');
+  if (!bd) return;
+  bd.querySelectorAll('.ltr').forEach(el => {
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    const max = bd.clientWidth - 28;
+    while (el.getBoundingClientRect().width > max && size > 12) { size -= 1; el.style.fontSize = size + 'px'; }
+  });
+}
+function fitFeedback() {
+  const f = document.querySelector('#qcard .feedback');
+  if (!f) return;
+  let size = parseFloat(getComputedStyle(f).fontSize);
+  while (f.scrollHeight > f.clientHeight + 1 && size > 11) { size -= 1; f.style.fontSize = size + 'px'; }
+}
 function renderPlay() {
   const locked = Q.result !== undefined;
   const pct = Math.round((session.done / session.total) * 100);
@@ -1315,15 +1428,16 @@ function renderPlay() {
     <div class="fbslot">${locked ? `
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
-        <span>${fbText}${typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain}</span>
+        <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
       </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רמז 💡</button>`}
       ${locked
-        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה ❮'}</button>`
+        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה ←'}</button>`
         : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בדיקה ✔️</button>`}
     </div>`;
 
+  fitFeedback(); fitBoard();
   const sv = document.querySelector('#qcard svg[data-draw]');
   if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
   tick();
@@ -1431,16 +1545,16 @@ function endSession() {
   $('#qcard').classList.add('summary');
   const canBonus = session.kind === 'base';
   $('#qcard').innerHTML = `
-    <div style="font-size:80px;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3))">🎁</div>
-    <div class="big" style="text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,0.5);font-size:32px">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
-    <div style="text-align:center;background:rgba(255,255,255,0.8);padding:16px;border-radius:16px;margin:20px 0;border:3px dashed #8b5a2b">
-      <p style="margin:0 0 10px;font-weight:800;font-size:20px">${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
-      ${session.trophies && session.trophies.length ? `<p class="trophy-line" style="margin:0 0 10px">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
-      <p style="margin:0;font-weight:800;font-size:18px">נפתחה תיבה: <span style="font-size:30px;vertical-align:middle">${item.icon}</span> ${item.name} התווסף לאוסף!</p>
+    <div class="sum-gift">🎁</div>
+    <div class="sum-title">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
+    <div class="sum-box">
+      <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
+      ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
+      <p>נפתחה תיבה: <span class="sum-item">${item.icon}</span> ${item.name} התווסף לאוסף!</p>
     </div>
-    <div class="row" style="flex-direction:column;gap:16px">
-      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 6px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}
-      <button type="button" class="ghost-btn" id="homeBtn" style="width:100%;background:#fff;padding:18px">חזרה למסך הראשי</button>
+    <div class="sum-actions">
+      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}
+      <button type="button" class="ghost-btn" id="homeBtn">חזרה למסך הראשי</button>
     </div>`;
 }
 

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ארץ הג'ונגל במתמטיקה</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
 <style>
@@ -192,6 +193,13 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--canopy);color:#fff;padding:14px 24px;border-radius:16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:900;font-weight:900;white-space:nowrap;box-shadow:0 10px 20px rgba(0,0,0,0.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
 .hidden{display:none !important}
+.user-chip{position:relative}
+.user-btn{cursor:pointer;color:#fff;font:inherit;font-weight:900;display:flex;align-items:center;gap:6px}
+.user-btn img{width:24px;height:24px;border-radius:50%}
+.user-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;min-width:210px;background:var(--paper);color:var(--ink);border:3px solid #b47a46;border-radius:16px;padding:14px;box-shadow:0 10px 24px rgba(0,0,0,.3);z-index:200;display:flex;flex-direction:column;gap:8px;text-align:center}
+.um-name{font-weight:900}.um-mail{font-size:13px;color:var(--muted);direction:ltr}
+.gbtn{min-height:44px;display:flex;justify-content:center}
+.auth-error{width:100%;color:var(--bad);font-weight:800;font-size:15px}
 
 /* shop & collection */
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:20px;margin-top:14px}
@@ -204,6 +212,7 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 <header>
   <h1 class="display">🌴 ארץ הג'ונגל במתמטיקה</h1>
   <div class="wallet">
+    <span id="userChip" class="user-chip"></span>
     <span class="chip">🪙 <b id="coins">0</b></span>
     <span class="chip">🏅 <b id="medals">0</b></span>
   </div>
@@ -226,7 +235,7 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ---------- Firebase ---------- */
@@ -241,7 +250,7 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
-const provider = new GoogleAuthProvider();
+const GOOGLE_CLIENT_ID = '984154992852-n6het6uoa54l5fu7607if8cub9ct5amk.apps.googleusercontent.com';
 let user = null;
 let cloudReady = false;
 
@@ -550,23 +559,58 @@ function toast(msg) {
 }
 
 /* ---------- auth UI ---------- */
+const firstName = () => esc((user && user.displayName || '').split(' ')[0] || 'חבר');
+let authError = '';
 function loginBlock() {
   if (user) {
-    return `<div class="banner"><span>מחובר/ת כ-${esc(user.displayName || user.email || '')} · ההתקדמות נשמרת בענן</span>
-      <button type="button" class="ghost-btn" id="logoutBtn">התנתקות</button></div>`;
+    return `<div class="banner"><span>✅ מחוברים בתור ${esc(user.displayName || user.email || '')} · ההתקדמות נשמרת בענן ☁️</span>
+      <button type="button" class="ghost-btn" data-act="logout">התנתקות</button></div>`;
   }
   return `<div class="banner"><span>התחברו עם Google כדי לשמור את ההתקדמות ולהמשיך מכל מכשיר.</span>
-    <button type="button" class="action-btn" id="loginBtn">התחברות עם Google</button></div>`;
+    <div class="gbtn" aria-label="התחברות עם Google"></div>
+    ${authError ? `<div class="auth-error">${esc(authError)}</div>` : ''}</div>`;
 }
-async function login() {
-  try { await signInWithPopup(auth, provider); }
-  catch (e) {
-    if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
-      await signInWithRedirect(auth, provider);
-    } else if (e.code !== 'auth/popup-closed-by-user') {
-      console.warn(e); toast('ההתחברות לא הושלמה (' + (e.code || e.message) + ')');
-    }
+function renderUserChip() {
+  const el = $('#userChip');
+  if (!el) return;
+  if (!user) { el.innerHTML = ''; return; }
+  const pic = user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : '👤';
+  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span>${firstName()}</span> ▾</button>
+    <div class="user-menu hidden" id="userMenu">
+      <div class="um-name">${esc(user.displayName || '')}</div>
+      <div class="um-mail">${esc(user.email || '')}</div>
+      <button type="button" class="ghost-btn" data-act="logout">התנתקות</button>
+    </div>`;
+}
+function mountGoogleButtons() {
+  const holders = document.querySelectorAll('.gbtn');
+  if (!holders.length) return;
+  if (!(window.google && google.accounts && google.accounts.id)) {
+    mountGoogleButtons.tries = (mountGoogleButtons.tries || 0) + 1;
+    if (mountGoogleButtons.tries < 25) setTimeout(mountGoogleButtons, 600);
+    else holders.forEach(h => { h.textContent = 'לא ניתן לטעון את כפתור Google. בדקו חיבור לאינטרנט ורעננו את הדף.'; });
+    return;
   }
+  if (!mountGoogleButtons.inited) {
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, auto_select: false, cancel_on_tap_outside: true });
+    mountGoogleButtons.inited = true;
+  }
+  holders.forEach(h => { if (!h.firstChild) google.accounts.id.renderButton(h, { type: 'standard', theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', locale: 'he' }); });
+}
+async function onGoogleCredential(resp) {
+  try {
+    authError = '';
+    await signInWithCredential(auth, GoogleAuthProvider.credential(resp.credential));
+    toast('התחברת בהצלחה!');
+  } catch (e) {
+    console.warn(e);
+    authError = 'ההתחברות נכשלה (' + (e.code || e.message) + ')';
+    refreshCurrentView();
+  }
+}
+async function doLogout() {
+  try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); await signOut(auth); toast('התנתקת'); }
+  catch (e) { console.warn(e); }
 }
 
 /* ---------- views ---------- */
@@ -578,11 +622,14 @@ function showView(name) {
   if (name === 'home') renderHome();
   if (name === 'camp') renderCamp();
   if (name === 'settings') renderSettings();
+  mountGoogleButtons();
 }
 function refreshCurrentView() {
+  renderUserChip();
   if (currentView === 'home') renderHome();
   if (currentView === 'camp') renderCamp();
   if (currentView === 'settings') renderSettings();
+  mountGoogleButtons();
 }
 
 function renderHome() {
@@ -612,7 +659,7 @@ function renderHome() {
     <div class="hero-banner">
       <div class="hero-monkey">🐵</div>
       <div class="hero-bubble">
-        ${user ? 'שלום ' + esc((user.displayName || '').split(' ')[0] || 'חבר') + '!' : 'ברוכים הבאים לג\'ונגל!'}
+        ${user ? 'שלום ' + firstName() + '!' : 'ברוכים הבאים לג\'ונגל!'}
         <div style="font-size:14px;color:#5c3a21;font-weight:600;margin-top:4px">
           אימונים שהושלמו היום: ${doneToday}.<br>אימון רגיל: כ-5 דקות.
         </div>
@@ -926,8 +973,10 @@ document.addEventListener('click', e => {
   const nav = t.closest('.nav [data-go]');
   if (nav) { showView(nav.dataset.go); return; }
   if (t.closest('#startBtn')) { startSession('base'); return; }
-  if (t.closest('#loginBtn')) { login(); return; }
-  if (t.closest('#logoutBtn')) { signOut(auth).then(() => toast('התנתקת')); return; }
+  const act = t.closest('[data-act]');
+  if (act && act.dataset.act === 'logout') { doLogout(); return; }
+  if (act && act.dataset.act === 'usermenu') { $('#userMenu').classList.toggle('hidden'); return; }
+  if (!t.closest('#userChip')) { const m = $('#userMenu'); if (m) m.classList.add('hidden'); }
   const tm = t.closest('[data-timer]');
   if (tm) { S.settings.timer = tm.dataset.timer; save(); renderSettings(); return; }
   const buy = t.closest('[data-buy]');
@@ -945,7 +994,6 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- auth state ---------- */
-getRedirectResult(auth).catch(e => console.warn(e));
 onAuthStateChanged(auth, u => {
   user = u; cloudReady = false;
   updateWallet(); refreshCurrentView();
@@ -955,6 +1003,7 @@ onAuthStateChanged(auth, u => {
 /* ---------- start ---------- */
 updateWallet();
 showView('home');
+renderUserChip();
 </script>
 </body>
 </html>

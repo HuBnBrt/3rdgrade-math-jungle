@@ -195,6 +195,7 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 .hidden{display:none !important}
 .user-chip{position:relative}
 .user-btn{cursor:pointer;color:#fff;font:inherit;font-weight:900;display:flex;align-items:center;gap:6px}
+.user-btn{white-space:nowrap;max-width:none}.user-name{white-space:nowrap;overflow:visible}
 .user-btn img{width:24px;height:24px;border-radius:50%}
 .user-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;min-width:210px;background:var(--paper);color:var(--ink);border:3px solid #b47a46;border-radius:16px;padding:14px;box-shadow:0 10px 24px rgba(0,0,0,.3);z-index:200;display:flex;flex-direction:column;gap:8px;text-align:center}
 .um-name{font-weight:900}.um-mail{font-size:13px;color:var(--muted);direction:ltr}
@@ -562,10 +563,7 @@ function toast(msg) {
 const firstName = () => esc((user && user.displayName || '').split(' ')[0] || 'חבר');
 let authError = '';
 function loginBlock() {
-  if (user) {
-    return `<div class="banner"><span>✅ מחוברים בתור ${esc(user.displayName || user.email || '')} · ההתקדמות נשמרת בענן ☁️</span>
-      <button type="button" class="ghost-btn" data-act="logout">התנתקות</button></div>`;
-  }
+  if (user) return '';
   return `<div class="banner"><span>התחברו עם Google כדי לשמור את ההתקדמות ולהמשיך מכל מכשיר.</span>
     <div class="gbtn" aria-label="התחברות עם Google"></div>
     ${authError ? `<div class="auth-error">${esc(authError)}</div>` : ''}</div>`;
@@ -575,7 +573,7 @@ function renderUserChip() {
   if (!el) return;
   if (!user) { el.innerHTML = ''; return; }
   const pic = user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : '👤';
-  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span>${firstName()}</span> ▾</button>
+  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span class="user-name">${esc(user.displayName || user.email || 'חבר')}</span> ▾</button>
     <div class="user-menu hidden" id="userMenu">
       <div class="um-name">${esc(user.displayName || '')}</div>
       <div class="um-mail">${esc(user.email || '')}</div>

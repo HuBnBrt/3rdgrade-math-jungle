@@ -265,14 +265,29 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 @container (max-height:66px){.cats .wood-btn-small{display:none}}
 
 /* play: fit the screen height */
-#qcard{margin:auto;width:100%;max-height:100%;overflow:auto;padding:clamp(8px,1.8vh,16px) 22px}
-#qcard .question-board{padding:clamp(8px,1.8vh,14px) 18px;margin:clamp(4px,1vh,8px) 0 clamp(6px,1.4vh,12px)}
+#qcard{margin:0 auto;width:100%;height:min(100%,720px);overflow:hidden;display:flex;flex-direction:column;gap:clamp(4px,1vh,10px);padding:clamp(8px,1.8vh,16px) 22px}
+#qcard.summary{justify-content:center}
+#qcard>*{flex:none}
+#qcard .qhead{display:flex;align-items:center;justify-content:center;gap:12px;min-height:26px}
+#qcard .qhead .timer{margin:0;padding:2px 12px;font-size:15px}
+#qcard .question-board{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center;margin:0;overflow:hidden}
+#qcard .question-board svg.angle{max-height:26vh;width:auto;max-width:100%}
+#qcard .parts svg.angle{max-height:30vh;width:auto;max-width:100%;margin:4px auto}
+#qcard .fbslot{height:clamp(66px,12vh,104px);display:flex;align-items:stretch}
+#qcard .fbslot>*{flex:1}
+#qcard .feedback{margin:0;padding:6px 14px;font-size:clamp(14px,2.3vh,17px);line-height:1.35;overflow:hidden}
+#qcard .hintbox{color:#fffdf6;font-weight:800;font-size:clamp(14px,2.3vh,16px);text-align:center;align-self:center;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+#qcard .question-board{min-height:clamp(70px,14vh,140px)}
+#qcard .seq{min-height:clamp(40px,6vh,60px);padding:8px;margin-bottom:6px;gap:6px}
+#qcard .ghost-btn{padding:clamp(6px,1.2vh,12px) 18px;font-size:clamp(14px,2.3vh,18px);box-shadow:0 4px 0 #8b5a2b}
+#qcard .qactions{margin-top:0;padding-top:8px;border-top:2px dashed rgba(0,0,0,.1)}
+#qcard .question-board{padding:clamp(8px,1.8vh,14px) 18px}
 #qcard .prompt{font-size:clamp(16px,2.7vh,22px)}
 #qcard [style*="font-size:28px"]{font-size:clamp(20px,3.8vh,28px) !important}
 #qcard .opt{padding:clamp(6px,1.2vh,8px) 18px;font-size:clamp(17px,2.8vh,20px)}
 #qcard input.num,#qcard input.text{padding:clamp(6px,1.2vh,10px) 14px;font-size:clamp(18px,2.8vh,22px)}
 #qcard .action-btn{padding:clamp(8px,1.6vh,14px) 28px;font-size:clamp(16px,2.6vh,20px)}
-#qcard .bar{margin-top:6px}
+#qcard .bar{margin:0}
 /* camp: shop + collection on one screen */
 .camp-title{margin:0 0 6px;font-size:18px;text-align:center;flex:none}
 .shop{flex:1;min-height:0;display:grid;gap:8px 10px;align-content:center;--cols:3;--rows:4;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,190px))}
@@ -328,7 +343,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v16';
+const APP_VERSION = 'v17';
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -854,7 +869,7 @@ function nextQ() {
   if (session.done >= session.total) return endSession();
   const cat = pickCat();
   Q = cat.gen(mast(cat.id).tier);
-  Q.cat = cat.id; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
+  Q.cat = cat.id; Q.note = ''; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
   Q.parts.forEach(p => { if (p.type === 'order') p.v = []; if (p.type === 'draw') p.v = Q.drawInit; });
   lastCat = cat.id;
   showView('play');
@@ -917,28 +932,29 @@ function renderPlay() {
   const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
   const showTimer = !locked && S.settings.timer === 'gentle';
 
+  $('#qcard').classList.remove('summary');
+  const fbText = Q.result ? `תשובה נכונה! התקבלו ${Q.earned} 🪙. ` : (Q.timedOut ? 'נגמר הזמן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כמעט! חלק מהתשובות נכון 👏 ' : 'לא בדיוק. '));
   $('#qcard').innerHTML = `
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
-    <div class="row" style="margin-top:0">
+    <div class="qhead">
       <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? 'משחק בונוס 🪙' : 'אימון מתמטיקה'} · שאלה ${qNum} מתוך ${session.total}</div>
+      ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
     </div>
-    <div class="bar" style="margin-bottom:10px"><span style="width:${pct}%"></span></div>
-    ${showTimer ? '<div class="timer-wrap"><span id="timerBox" class="timer"></span></div>' : ''}
+    <div class="bar"><span style="width:${pct}%"></span></div>
     <div class="question-board">${Q.body}</div>
     <div class="parts${Q.parts.length > 1 && Q.parts.every(p => p.type === 'num') ? ' multi' : ''}">${parts}</div>
-    ${locked ? `
+    <div class="fbslot">${locked ? `
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
-        <span>${Q.result ? `תשובה נכונה! התקבלו ${Q.earned} 🪙. ` : (Q.timedOut ? 'נגמר הזמן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כמעט! חלק מהתשובות נכון 👏 ' : 'לא בדיוק. '))}${Q.explain}</span>
-      </div>` : ''}
-    <div class="row" style="margin-top:12px;padding-top:10px;border-top:2px dashed rgba(0,0,0,0.1)">
+        <span>${fbText}${Q.explain}</span>
+      </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
+    <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רמז 💡</button>`}
       ${locked
         ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה ❮'}</button>`
         : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בדיקה ✔️</button>`}
-    </div>
-    <div id="hintBox" class="rank" style="margin-top:6px;color:#fffdf6;font-weight:800;font-size:16px"></div>`;
+    </div>`;
 
   const sv = document.querySelector('#qcard svg[data-draw]');
   if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
@@ -1019,7 +1035,7 @@ function record(ok) {
 
 function check() {
   if (!Q || Q.result !== undefined) return;
-  if (!Q.parts.every(answered)) { $('#hintBox').textContent = 'יש למלא את כל התשובות לפני הבדיקה.'; return; }
+  if (!Q.parts.every(answered)) { Q.note = 'יש למלא את כל התשובות לפני הבדיקה.'; $('#hintBox').textContent = Q.note; return; }
   stopTimer();
   const ok = Q.parts.every(correctPart);
   Q.result = ok;
@@ -1038,6 +1054,7 @@ function endSession() {
   }
   save(); updateWallet();
   Q = null;
+  $('#qcard').classList.add('summary');
   const canBonus = session.kind === 'base';
   $('#qcard').innerHTML = `
     <div style="font-size:80px;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3))">🎁</div>
@@ -1060,7 +1077,7 @@ function handlePlayClick(t) {
   if (!Q) return;
   if (b.id === 'checkBtn') { check(); return; }
   if (b.id === 'nextBtn') { nextQ(); return; }
-  if (b.id === 'hintBtn') { $('#hintBox').textContent = Q.hint; return; }
+  if (b.id === 'hintBtn') { Q.note = Q.hint; $('#hintBox').textContent = Q.note; return; }
   if (b.dataset.reset !== undefined && Q.result === undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
   if (b.dataset.p !== undefined && b.dataset.o !== undefined && Q.result === undefined) {
     const p = Q.parts[+b.dataset.p];

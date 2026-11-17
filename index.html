@@ -46,7 +46,7 @@ header h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px;text-shado
 main{max-width:800px;margin:0 auto;padding:18px 16px 0}
 .spacer{height:92px}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:32px 18px;padding-top:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:64px 18px;padding-top:48px}
 .big{font-size:22px;font-weight:900;font-family:Rubik,sans-serif;color:var(--ink)}
 .rank{font-size:14px;color:var(--muted);font-weight:600}
 
@@ -71,26 +71,19 @@ main{max-width:800px;margin:0 auto;padding:18px 16px 0}
 .leaf-br{bottom:-12px;right:-12px;transform:rotate(135deg)}
 .leaf-tr{top:-12px;right:-12px;transform:rotate(45deg)}
 
-/* peeking animals (behind the card) */
+/* one animal per card, peeking from behind the top edge */
+.slot{position:relative;display:flex}
+.slot .card{flex:1;display:flex;flex-direction:column;justify-content:center}
 .peek-animal{
-  position:absolute;z-index:-2;
+  position:absolute;z-index:1;bottom:calc(100% - 20px);line-height:1;font-size:54px;
   filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));
   transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
 }
-.peek-animal.top-left{top:-35px;left:-25px;font-size:55px;transform:rotate(-15deg)}
-.peek-animal.bottom-left{bottom:0;left:-35px;font-size:45px;transform:rotate(-25deg)}
-.peek-animal.top-center{top:-45px;left:50%;transform:translateX(-50%);font-size:60px}
-.peek-animal.bottom-center{bottom:-30px;left:50%;transform:translateX(-50%);font-size:40px}
-.peek-animal.top-right{top:-35px;right:-25px;font-size:55px;transform:rotate(15deg)}
-.peek-animal.bottom-right{bottom:0;right:-35px;font-size:45px;transform:rotate(25deg)}
-.card:hover .peek-animal.top-left{transform:rotate(-5deg) translateY(-12px)}
-.card:hover .peek-animal.bottom-left{transform:rotate(-15deg) translateX(-10px) translateY(-5px)}
-.card:hover .peek-animal.top-center{transform:translateX(-50%) translateY(-12px)}
-.card:hover .peek-animal.bottom-center{transform:translateX(-50%) translateY(-6px)}
-.card:hover .peek-animal.top-right{transform:rotate(5deg) translateY(-12px)}
-.card:hover .peek-animal.bottom-right{transform:rotate(15deg) translateX(10px) translateY(-5px)}
-
-.topic .big{white-space:nowrap;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
+.peek-animal.p0{left:10%}
+.peek-animal.p1{left:50%;margin-left:-27px}
+.peek-animal.p2{right:10%}
+.slot:hover .peek-animal{transform:translateY(-10px)}
+.topic-title{white-space:nowrap;font-size:22px;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
 
 .wood-btn-small{
   background:linear-gradient(180deg,#b97a44,#8b5a2b);
@@ -243,6 +236,7 @@ const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const provider = new GoogleAuthProvider();
 let user = null;
+let cloudReady = false;
 
 /* ---------- helpers ---------- */
 const KEY = 'jungle-math-v4';
@@ -485,18 +479,18 @@ function genAngleDraw() {
 }
 
 const CATS = [
-  { id: 'digit', name: 'שינוי ספרה', animals: [{ icon: '🦁', pos: 'top-left' }, { icon: '🐒', pos: 'bottom-left' }], gen: genDigit },
-  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animals: [{ icon: '🦉', pos: 'top-center' }], gen: genCompare },
-  { id: 'nocalc', name: 'השוואה בלי חישוב', animals: [{ icon: '🐢', pos: 'bottom-center' }], gen: genNoCalc },
-  { id: 'decomp', name: 'פירוק מספר', animals: [{ icon: '🐨', pos: 'top-center' }], gen: genDecomp },
-  { id: 'order', name: 'סידור מספרים', animals: [{ icon: '🦓', pos: 'top-right' }, { icon: '🐒', pos: 'bottom-right' }], gen: genOrder },
-  { id: 'numline', name: 'ישר מספרים', animals: [{ icon: '🦒', pos: 'bottom-right' }], gen: genNumLine },
-  { id: 'seq', name: 'סדרות', animals: [{ icon: '🐸', pos: 'bottom-left' }], gen: genSeq },
-  { id: 'seqmember', name: 'המשך הסדרה', animals: [{ icon: '🦜', pos: 'top-right' }], gen: genSeqMember },
-  { id: 'samedigits', name: 'אותן ספרות', animals: [{ icon: '🦋', pos: 'top-left' }], gen: genSameDigits },
-  { id: 'column', name: 'חיבור וחיסור', animals: [{ icon: '🐜', pos: 'bottom-center' }], gen: genColumn },
-  { id: 'angleid', name: 'סוגי זוויות', animals: [{ icon: '🦅', pos: 'top-center' }], gen: genAngleId },
-  { id: 'angledraw', name: 'שרטוט זווית', animals: [{ icon: '🐍', pos: 'bottom-right' }], gen: genAngleDraw }
+  { id: 'digit', name: 'שינוי ספרה', animal: '🦁', gen: genDigit },
+  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animal: '🦉', gen: genCompare },
+  { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐢', gen: genNoCalc },
+  { id: 'decomp', name: 'פירוק מספר', animal: '🐨', gen: genDecomp },
+  { id: 'order', name: 'סידור מספרים', animal: '🦓', gen: genOrder },
+  { id: 'numline', name: 'ישר מספרים', animal: '🦒', gen: genNumLine },
+  { id: 'seq', name: 'סדרות', animal: '🐸', gen: genSeq },
+  { id: 'seqmember', name: 'המשך הסדרה', animal: '🦜', gen: genSeqMember },
+  { id: 'samedigits', name: 'אותן ספרות', animal: '🐘', gen: genSameDigits },
+  { id: 'column', name: 'חיבור וחיסור', animal: '🐒', gen: genColumn },
+  { id: 'angleid', name: 'סוגי זוויות', animal: '🦅', gen: genAngleId },
+  { id: 'angledraw', name: 'שרטוט זווית', animal: '🐍', gen: genAngleDraw }
 ];
 
 /* ---------- state ---------- */
@@ -517,7 +511,7 @@ const progressRef = uid => doc(db, 'users', uid, 'data', 'progress');
 let saveTimer = null;
 function save() {
   persistLocal();
-  if (user) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
+  if (user && cloudReady) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
 }
 async function cloudSave() {
   if (!user) return;
@@ -525,10 +519,12 @@ async function cloudSave() {
   catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); }
 }
 async function cloudLoad() {
+  const u0 = user;
   try {
     const snap = await getDoc(progressRef(user.uid));
     if (snap.exists() && snap.data().state) { S = mergeState(snap.data().state); persistLocal(); }
-    else { await cloudSave(); }
+    else { cloudReady = true; await cloudSave(); }
+    if (user === u0) cloudReady = true;
   } catch (e) {
     console.warn(e);
     toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
@@ -561,7 +557,7 @@ async function login() {
     if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
       await signInWithRedirect(auth, provider);
     } else if (e.code !== 'auth/popup-closed-by-user') {
-      console.warn(e); toast('ההתחברות לא הושלמה');
+      console.warn(e); toast('ההתחברות לא הושלמה (' + (e.code || e.message) + ')');
     }
   }
 }
@@ -585,21 +581,22 @@ function refreshCurrentView() {
 function renderHome() {
   const today = new Date().toDateString();
   const doneToday = S.today.day === today ? S.today.count : 0;
-  const cards = CATS.map(c => {
+  const cards = CATS.map((c, i) => {
     const m = mast(c.id);
-    const animalsHTML = (c.animals || []).map(a => `<div class="peek-animal ${a.pos}">${a.icon}</div>`).join('');
     return `
-      <div class="card ${c.id}">
-        ${animalsHTML}
-        <div class="card-leaf leaf-tl">🌿</div>
-        <div class="card-leaf leaf-tr">🌿</div>
-        <div class="card-leaf leaf-br">🌿</div>
-        <div class="topic-content" style="position:relative;z-index:2">
-          <div class="big">${c.name}</div>
-          <div class="rank" style="margin-top:6px">רמה: ${TIERS[m.tier]}</div>
-          <button type="button" class="wood-btn-small" style="pointer-events:none">${rank(m.score)} ${m.medal ? '🏅' : ''}</button>
+      <div class="slot">
+        <div class="peek-animal p${i % 3}">${c.animal}</div>
+        <div class="card cat-${c.id}">
+          <div class="card-leaf leaf-tl">🌿</div>
+          <div class="card-leaf leaf-tr">🌿</div>
+          <div class="card-leaf leaf-br">🌿</div>
+          <div class="topic-content" style="position:relative;z-index:2">
+            <div class="big topic-title">${c.name}</div>
+            <div class="rank" style="margin-top:6px">רמה: ${TIERS[m.tier]}</div>
+            <button type="button" class="wood-btn-small" style="pointer-events:none">${rank(m.score)} ${m.medal ? '🏅' : ''}</button>
+          </div>
+          <div class="bar" style="position:relative;z-index:2"><span style="width:${m.score}%"></span></div>
         </div>
-        <div class="bar" style="position:relative;z-index:2"><span style="width:${m.score}%"></span></div>
       </div>`;
   }).join('');
 
@@ -608,7 +605,7 @@ function renderHome() {
     <div class="hero-banner">
       <div class="hero-monkey">🐵</div>
       <div class="hero-bubble">
-        ברוכים הבאים לג'ונגל!
+        ${user ? 'שלום ' + esc((user.displayName || '').split(' ')[0] || 'חבר') + '!' : 'ברוכים הבאים לג\'ונגל!'}
         <div style="font-size:14px;color:#5c3a21;font-weight:600;margin-top:4px">
           אימונים שהושלמו היום: ${doneToday}.<br>אימון רגיל: כ-5 דקות.
         </div>
@@ -619,7 +616,20 @@ function renderHome() {
     </div>
     <h2>אזור האימונים</h2>
     <div class="grid">${cards}</div>`;
+  fitTitles();
 }
+
+function fitTitles() {
+  const ts = [...document.querySelectorAll('#view-home .topic-title')];
+  if (!ts.length) return;
+  ts.forEach(t => { t.style.fontSize = '22px'; });
+  let size = 22;
+  ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(22 * t.clientWidth / t.scrollWidth)); });
+  size = Math.max(size, 12);
+  ts.forEach(t => { t.style.fontSize = size + 'px'; });
+}
+window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
 
 function renderCamp() {
   const shop = ITEMS.map(it => {
@@ -753,7 +763,6 @@ function renderPlay() {
   const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
   const showTimer = !locked && S.settings.timer !== 'none';
 
-  $('#qcard').classList.toggle('locked', locked);
   $('#qcard').innerHTML = `
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
@@ -874,7 +883,6 @@ function endSession() {
   save(); updateWallet();
   Q = null;
   const canBonus = session.kind === 'base';
-  $('#qcard').classList.remove('locked');
   $('#qcard').innerHTML = `
     <div style="font-size:80px;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3))">🎁</div>
     <div class="big" style="text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,0.5);font-size:32px">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
@@ -897,7 +905,7 @@ function handlePlayClick(t) {
   if (b.id === 'checkBtn') { check(); return; }
   if (b.id === 'nextBtn') { nextQ(); return; }
   if (b.id === 'hintBtn') { $('#hintBox').textContent = Q.hint; return; }
-  if (b.dataset.reset !== undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
+  if (b.dataset.reset !== undefined && Q.result === undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
   if (b.dataset.p !== undefined && b.dataset.o !== undefined && Q.result === undefined) {
     const p = Q.parts[+b.dataset.p];
     if (p.type === 'buttons') { p.v = p.opts[+b.dataset.o]; renderPlay(); }
@@ -931,11 +939,10 @@ document.addEventListener('keydown', e => {
 
 /* ---------- auth state ---------- */
 getRedirectResult(auth).catch(e => console.warn(e));
-onAuthStateChanged(auth, async u => {
-  user = u;
-  if (u) await cloudLoad();
-  updateWallet();
-  refreshCurrentView();
+onAuthStateChanged(auth, u => {
+  user = u; cloudReady = false;
+  updateWallet(); refreshCurrentView();
+  if (u) cloudLoad().then(() => { updateWallet(); refreshCurrentView(); });
 });
 
 /* ---------- start ---------- */

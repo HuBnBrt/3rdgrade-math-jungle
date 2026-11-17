@@ -548,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v48';
+const APP_VERSION = 'v49';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1092,7 +1092,7 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], sessions: 0, today: { day: '', count: 0 } });
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
@@ -1244,7 +1244,7 @@ function renderHome() {
         <small>אימונים היום: ${doneToday} · אימון רגיל כ-5 דקות</small>
       </div>
       <div class="hero-board">
-        <button type="button" class="big-green-btn" id="startBtn">התחלת אימון</button>
+        <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'המשך אימון' : 'התחלת אימון'}</button>
       </div>
     </div>
     <div class="grid cats">${cards}</div>`;
@@ -1358,7 +1358,15 @@ function planTopics(n) {
   if (!S.rot.length) S.rot = CATS.map(c => c.id);
   return shuffle(chosen);
 }
+const resumeKey = (kind, only) => kind === 'bonus' ? 'bonus' : (only || 'base');
 function startSession(kind, only) {
+  const rs = S.resume && S.resume[resumeKey(kind, only)];
+  if (rs && rs.done < rs.total && rs.done > 0 && (only || (rs.topics && rs.topics.length))) {
+    session = JSON.parse(JSON.stringify(rs));
+    toast('ממשיכים מאיפה שהפסקנו 👍');
+    nextQ();
+    return;
+  }
   session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
   if (!only) { session.topics = planTopics(session.total); save(); }
   nextQ();
@@ -1546,6 +1554,8 @@ function setupDraw(svg, p) {
 function record(ok) {
   const m = mast(Q.cat);
   session.done++;
+  if (!S.resume) S.resume = {};
+  S.resume[resumeKey(session.kind, session.only)] = JSON.parse(JSON.stringify(session));
   if (ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
@@ -1577,6 +1587,7 @@ function check() {
 
 function endSession() {
   stopTimer();
+  if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
   if (!S.gear) S.gear = {};
   const acc = session.total ? session.correct / session.total : 0;
   const rr = Math.random();

@@ -662,6 +662,8 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   #view-settings .s-reset #resetBtn{padding:.4em}
   #view-settings .s-signs .rank{font-size:calc(var(--s)*1.1);line-height:1.45;gap:.35em}
 }
+#resetBtn.danger{background:linear-gradient(180deg,#e53935,#b71c1c);color:#fff;border-color:#7f0000;box-shadow:0 4px 0 #7f0000;animation:shake .4s}
+.reset-warn{color:#fff;background:#b71c1c;border-radius:10px;padding:.4em .6em;font-weight:800;font-size:calc(var(--s)*.9);line-height:1.35;text-align:center}
 </style>
 </head>
 <body>
@@ -693,7 +695,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v76';
+const APP_VERSION = 'v77';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1522,7 +1524,14 @@ function buyItem(id) {
 }
 function handleReset() {
   const b = $('#resetBtn');
-  if (!resetArmed) { resetArmed = true; b.textContent = 'לחצו שוב לאישור'; return; }
+  if (!resetArmed) {
+    resetArmed = true; b.classList.add('danger'); b.textContent = '⚠️ לחיצה נוספת תמחק הכל';
+    const w = document.createElement('div'); w.className = 'reset-warn'; w.id = 'resetWarn';
+    w.textContent = 'כל המטבעות, הגביעים, האוסף וההתקדמות בכל הנושאים יימחקו, גם בענן. אי אפשר לשחזר.';
+    b.insertAdjacentElement('afterend', w);
+    clearTimeout(window.__rt); window.__rt = setTimeout(() => { if (resetArmed) { resetArmed = false; renderSettings(); } }, 6000);
+    return;
+  }
   S = DEFAULT(); save(); updateWallet(); resetArmed = false; renderSettings(); toast('הנתונים אופסו');
 }
 

@@ -366,6 +366,20 @@ header .chip{order:2;flex:none}
 #qcard .question-board:has(.prompt.compact){padding:clamp(6px,1.4vh,14px) 14px}
 #qcard .parts:has(svg[data-draw]){flex:1 1 auto;min-height:0}
 #qcard .parts svg[data-draw]{height:min(44vh,420px);width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:0;margin:4px auto}
+/* ranks and levels on topic cards */
+.cats .card .stars{font-size:clamp(11px,10cqh,16px);line-height:1.1;margin-top:2px;white-space:nowrap;color:#5c3a21;font-weight:800}
+.cats .card .stars .off{filter:grayscale(1) opacity(.35)}
+.cats .card .stars .lvl{font-size:.85em}
+.cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
+.rk-bronze .rankbadge{background:#e6b98a;color:#6b3e14;border-color:#8b5a2b}
+.rk-silver .rankbadge{background:#eceff1;color:#455a64;border-color:#90a4ae}
+.rk-gold .rankbadge{background:#ffe082;color:#7a5200;border-color:#f9a825}
+.cats .card.rk-silver{border-color:#78909c;background:linear-gradient(180deg,#dcc9b4,#b8946e)}
+.cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
+.bar.prog{position:relative}
+.bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
+@container (max-height:92px){.cats .card .stars .lvl{display:none}}
+@container (max-height:66px){.cats .card .rankbadge{display:none}}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -403,7 +417,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v25';
+const APP_VERSION = 'v26';
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -815,16 +829,16 @@ function renderHome() {
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
-        <div class="card cat-${c.id}">
+        <div class="card cat-${c.id} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
           <div class="topic-content" style="position:relative;z-index:2">
             <div class="big topic-title">${c.name}</div>
-            <div class="rank" style="margin-top:6px">רמה: ${TIERS[m.tier]}</div>
-            <button type="button" class="wood-btn-small" style="pointer-events:none">${rank(m.score)} ${m.medal ? '🏅' : ''}</button>
+            <div class="stars" title="רמה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
+            <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
           </div>
-          <div class="bar" style="position:relative;z-index:2"><span style="width:${m.score}%"></span></div>
+          <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
         </div>
       </div>`;
   }).join('');

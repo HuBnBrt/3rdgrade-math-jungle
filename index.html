@@ -532,9 +532,10 @@ header h1{font-size:calc(var(--s)*1.15)}
 .cats .card .rec-badge{font-size:max(8px,calc(var(--u)*5.5))}
 .cats .card .card-leaf{font-size:max(14px,calc(var(--u)*8))}
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.1;margin-bottom:0;min-height:0}
-@container (max-height:150px){.cats .card .rankbadge{display:none}}
-@container (max-height:115px){.cats .card .stars .lvl{display:none}}
-@container (max-width:125px){.cats .card .stars .lvl,.cats .card .card-leaf{display:none}.cats .card .practice-btn{width:100%;padding:0}}
+@container (max-height:118px){.cats .card .rankbadge{display:none}}
+@container (max-height:96px){.cats .card .stars .lvl{display:none}}
+@container (max-width:104px){.cats .card .stars .lvl{display:none}}
+@container (max-width:125px){.cats .card .card-leaf{display:none}.cats .card .practice-btn{width:100%;padding:0}}
 @container (min-aspect-ratio:8/5){.cats .card .practice-btn{height:max(18px,22cqh);font-size:max(10px,11cqh)}.cats .card .stars{font-size:max(10px,11cqh)}}
 @container (max-height:68px){.cats .card .stars{display:none}}
 /* play screen: all text sizes derive from one unit */
@@ -614,6 +615,32 @@ header h1{font-size:calc(var(--s)*1.15)}
 #view-settings .tsel{flex-direction:column;align-items:stretch}
 #view-settings .tsel .ghost-btn{display:flex;flex-direction:column;align-items:center;gap:.1em;line-height:1.25}
 #view-settings .tsel .ghost-btn small{font:600 .8em Heebo,sans-serif;opacity:.85}
+/* settings layouts: 3 columns sideways, 2 columns upright on tablets, 1 on phones */
+#view-settings .s-ver{font-size:calc(var(--s)*.8) !important}
+@media (min-width:600px){
+#view-settings .banner{grid-area:top}
+#view-settings .s-timer{grid-area:timer}#view-settings .s-nick{grid-area:nick}#view-settings .s-signs{grid-area:signs}
+#view-settings .s-reset{grid-area:reset}#view-settings .s-install{grid-area:inst}}
+#view-settings .s-signs .rank{font-size:calc(var(--s)*1.2)}
+#view-settings .s-timer .tsel{flex:1}#view-settings .s-timer .tsel .ghost-btn{flex:1;justify-content:center}
+@media (min-width:700px) and (min-aspect-ratio:4/3){
+  #view-settings:not(.hidden){overflow:hidden;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto auto 1fr;
+    grid-template-areas:"top top top" "timer signs nick" "timer signs reset" "timer signs inst";align-content:stretch}
+  #view-settings .s-timer,#view-settings .s-signs,#view-settings .s-nick{justify-content:flex-start}
+  #view-settings .s-signs .rank{font-size:calc(var(--s)*1.3);line-height:1.7}
+  #view-settings .s-install{justify-content:flex-start}
+}
+@media (min-width:600px) and (max-aspect-ratio:4/3){
+  #view-settings:not(.hidden){--s:clamp(12px,min(1.7vh,2.6vw),19px);grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-areas:"top top" "timer nick" "timer reset" "signs signs" "inst inst";align-content:start}
+  #view-settings .s-timer,#view-settings .s-nick{justify-content:flex-start}
+}
+#view-settings h2{line-height:1.2;min-height:1.2em}
+#view-settings .tsel .ghost-btn b{font-size:1.15em}#view-settings .tsel .ghost-btn small{font-size:.85em}
+#view-settings .s-install .rank{font-size:calc(var(--s)*.85)}
+@media (min-width:600px){#view-settings{position:relative}#view-settings .s-ver{position:absolute;bottom:0;left:6px;margin:0 !important}
+  #view-settings .s-signs .rank{display:flex;flex-direction:column;gap:.6em}}
+@container (min-height:97px){.cats .card .topic-content{justify-content:flex-start;padding-top:calc(var(--u)*3);gap:calc(var(--u)*2.5)}}
 </style>
 </head>
 <body>
@@ -645,7 +672,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v70';
+const APP_VERSION = 'v72';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -655,7 +682,7 @@ const isStandalone = () => matchMedia('(display-mode: standalone)').matches || n
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
 function installBlock() {
   if (isStandalone()) return '';
-  return `<div class="card" style="margin-top:20px"><h2 style="margin-top:8px">📲 התקנה במכשיר</h2>
+  return `<div class="card s-install" style="margin-top:20px"><h2 style="margin-top:8px">📲 התקנה במכשיר</h2>
     ${installEvt ? `<button type="button" class="big-green-btn" id="installBtn" style="width:100%">התקנת האפליקציה</button>`
     : isIOS() ? `<div class="rank" style="text-align:right">באייפון: לוחצים על כפתור השיתוף (▫️⬆️) ואז "הוסף למסך הבית".</div>`
     : `<div class="rank" style="text-align:right">בדפדפן: תפריט ⋮ ← "התקנת אפליקציה" / "הוספה למסך הבית". אם הכפתור לא מופיע כאן, ייתכן שכבר הותקנה.</div>`}</div>`;
@@ -1445,22 +1472,22 @@ function renderSettings() {
   const opts = [['none', 'בלי שעון', 'עונים בנחת, אין מדידת זמן'], ['gentle', 'שעון רגוע', 'רואים כמה זמן עבר, בלי לחץ'], ['challenge', 'שעון אתגר', '25 שניות לכל שאלה']];
   $('#view-settings').innerHTML = `
     ${loginBlock()}
-    <div class="card" style="margin-top:20px">
+    <div class="card s-timer" style="margin-top:20px">
       <h2 style="margin-top:8px">⏱️ שעון בזמן התרגול</h2>
       <div class="seg tsel">${opts.map(([v, l, d]) => `<button type="button" class="ghost-btn ${S.settings.timer === v ? 'on' : ''}" data-timer="${v}" aria-pressed="${S.settings.timer === v}"><b>${l}</b><small>${d}</small></button>`).join('')}</div>
     </div>
-    <div class="card" style="margin-top:20px"><h2 style="margin-top:8px">👤 איך לפנות אליך?</h2>
+    <div class="card s-nick" style="margin-top:20px"><h2 style="margin-top:8px">👤 איך לפנות אליך?</h2>
       <input id="nickInput" type="text" maxlength="20" placeholder="כינוי (למשל: אדיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
       <div class="seg">${[['m', 'תלמיד'], ['f', 'תלמידה'], ['', 'לא לציין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div>
       <div class="rank" style="margin-top:8px">הכינוי והמין משפיעים על הפנייה אליך באפליקציה.</div></div>
-    <div class="card" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מה אומרים הסימנים?</h2>
-      <div class="rank" style="text-align:right;line-height:1.6">⭐ <b>כוכבים</b> = רמת הקושי בנושא: מתחילים, מתקדמים, אלופים. עולים רמה אחרי 3 תשובות נכונות ברצף.<br>🥉🥈🥇 <b>ארד, כסף, זהב</b> = הציון בנושא: מתחת ל-40 ארד, 40 עד 69 כסף, 70 ומעלה זהב.<br>🏆 <b>גביע</b> = רמת אלופים וגם זהב באותו נושא.</div></div>
+    <div class="card s-signs" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מה אומרים הסימנים?</h2>
+      <div class="rank" style="text-align:right;line-height:1.6"><span>⭐ <b>כוכבים</b> = רמת הקושי בנושא: מתחילים, מתקדמים, אלופים. עולים רמה אחרי 3 תשובות נכונות ברצף.</span><span>🥉🥈🥇 <b>ארד, כסף, זהב</b> = הציון בנושא: מתחת ל-40 ארד, 40 עד 69 כסף, 70 ומעלה זהב.</span><span>🏆 <b>גביע</b> = רמת אלופים וגם זהב באותו נושא.</span></div></div>
     ${installBlock()}
-    <div class="card" style="margin-top:28px">
+    <div class="card s-reset" style="margin-top:28px">
       <h2 style="margin-top:8px">איפוס</h2>
       <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">איפוס נתונים</button>
     </div>
-    <div class="rank" style="text-align:center;margin:14px 0">גרסת האפליקציה: ${APP_VERSION}</div>`;
+    <div class="rank s-ver" style="text-align:center;margin:14px 0">גרסת האפליקציה: ${APP_VERSION}</div>`;
 }
 
 /* ---------- shop & settings actions ---------- */

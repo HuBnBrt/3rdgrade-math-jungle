@@ -388,7 +388,7 @@ header .chip{order:2;flex:none}
 #qcard .parts:has(svg[data-draw]){flex:1 1 auto;min-height:0}
 #qcard .parts svg[data-draw]{height:min(44vh,420px);width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:0;margin:4px auto}
 /* ranks and levels on topic cards */
-.cats .card .stars{font-size:clamp(11px,10cqh,16px);line-height:1.1;margin-top:2px;white-space:nowrap;color:#5c3a21;font-weight:800}
+.cats .card .stars{font-size:min(clamp(11px,10cqh,18px),7cqw);overflow:hidden;max-width:100%;line-height:1.1;margin-top:2px;white-space:nowrap;color:#5c3a21;font-weight:800}
 .cats .card .stars .off{filter:grayscale(1) opacity(.35)}
 .cats .card .stars .lvl{font-size:.85em}
 .cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
@@ -411,6 +411,12 @@ header .chip{order:2;flex:none}
 .vert td.vq{color:#d84a2b;letter-spacing:.2em}
 .cats .card .trophy-mark{position:absolute;top:-14px;inset-inline-start:-8px;z-index:6;font-size:clamp(22px,40cqh,34px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));animation:float 3s ease-in-out infinite alternate}
 .trophy-line{background:rgba(255,255,255,.85);border:3px dashed #d4a017;border-radius:14px;padding:8px;margin:8px 0;font-weight:800;font-size:18px;text-align:center}
+@container (max-width:118px){.cats .card .stars .lvl{display:none}}
+@media (min-width:1000px){.cats .card .stars{font-size:min(clamp(11px,11cqh,36px),8.5cqw)}
+.cats .card .rankbadge{font-size:clamp(10px,8cqh,26px);padding:1px clamp(10px,6cqw,24px)}
+.cats .card .practice-btn{height:clamp(18px,12cqh,46px);font-size:clamp(10px,6.5cqh,22px);padding:0 clamp(12px,8cqw,30px)}
+.cats .card .bar.prog{height:clamp(8px,3.5cqh,16px)}}
+@media (min-width:1000px){main{max-width:2200px}.grid.cats{grid-template-rows:repeat(var(--rows),minmax(0,360px));gap:12px 18px;--an:clamp(30px,6.5vh,64px)}}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -448,7 +454,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v38';
+const APP_VERSION = 'v39';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1131,7 +1137,7 @@ function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
   const card = document.querySelector('#view-home .cats .card');
-  const base = card ? Math.max(11, Math.min(22, Math.floor(card.clientHeight * 0.17))) : 22;
+  const base = card ? Math.max(11, Math.min(40, Math.floor(card.clientHeight * 0.19))) : 22;
   ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = base + 'px'; });
   let size = base;
   ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(base * t.clientWidth / t.scrollWidth)); });

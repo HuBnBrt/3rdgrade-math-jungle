@@ -564,6 +564,23 @@ header h1{font-size:calc(var(--s)*1.15)}
 #qcard .question-board svg.angle{height:min(30vh,52vw,calc(var(--q)*14));max-height:none;width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:70px;margin:0 auto calc(var(--q)*.4)}
 #qcard .question-board:has(svg.angle) .prompt{font-size:calc(var(--q)*1.15);margin:0;flex:none}
 #qcard .question-board:has(svg.angle){padding:calc(var(--q)*.5) 14px;flex:0 1 auto;min-height:0;overflow:hidden}
+/* ordering question: fixed slots, nothing jumps */
+#qcard .parts:has(.ordwrap){display:block}
+.ordwrap{width:min(100%,calc(var(--q)*34));margin:0 auto;text-align:center}
+.ord-label{color:#fffdf6;font-weight:800;font-size:calc(var(--q)*.9);text-shadow:0 1px 2px rgba(0,0,0,.4);margin:2px 0}
+#qcard .ordwrap .seq,#qcard .ordwrap .opts.ord{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:clamp(4px,1.2vw,10px);direction:ltr;margin:0 0 6px;min-height:0}
+#qcard .ordwrap .seq span,#qcard .ordwrap .opts.ord .opt{min-width:0;padding:.35em 0;font-size:min(4.4vw,calc(var(--q)*1.25));text-align:center;white-space:nowrap}
+#qcard .ordwrap .seq span.empty{background:rgba(255,255,255,.35);color:rgba(107,66,26,.55);border:2px dashed #b47a46}
+#qcard .ordwrap .opts.ord{padding:0 clamp(7px,1vh,12px)}
+#qcard .ordwrap .opts.ord .opt.used{visibility:hidden;pointer-events:none}
+#qcard .parts:has(.drawwrap){display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+#qcard .drawwrap{flex:1 1 auto;min-height:0}
+#qcard .parts .drawwrap svg[data-draw]{flex:0 1 auto;min-height:70px;max-height:none;height:min(44vh,60vw,calc(var(--q)*18))}
+#qcard .drawwrap .draw-help{flex:none}
+#qcard .question-board:has(.prompt.compact){min-height:0;flex:none;padding:calc(var(--q)*.45) 14px}
+#qcard .question-board:has(.prompt.compact) .prompt{margin:0}
+#qcard .drawwrap .draw-help{line-height:1.25;margin-top:2px;font-size:calc(var(--q)*.92)}
+@media (orientation:landscape) and (max-height:480px){.ord-label{display:none}#qcard .ordwrap .ghost-btn{margin-top:2px !important}}
 </style>
 </head>
 <body>
@@ -595,7 +612,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v62';
+const APP_VERSION = 'v63';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1552,12 +1569,12 @@ function partHTML(p, i) {
     return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
   }
   if (p.type === 'order') {
-    const left = p.items.map((x, j) => ({ x, j })).filter(o => !p.v.includes(o.x));
-    const chosen = p.v.length ? p.v.map(x => `<span>${fmt(x)}</span>`).join('') : '<span class="rank" style="margin:auto">טרם נבחרו מספרים</span>';
-    return `<div class="seq">${chosen}</div><div class="opts ord">${left.map(o => `<button type="button" class="opt" data-p="${i}" data-o="${o.j}">${fmt(o.x)}</button>`).join('')}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button>`;
+    const slots = p.items.map((_, k) => k < p.v.length ? `<span>${fmt(p.v[k])}</span>` : `<span class="empty">${k + 1}</span>`).join('');
+    const bank = p.items.map((x, j) => `<button type="button" class="opt${p.v.includes(x) ? ' used' : ''}" data-p="${i}" data-o="${j}"${p.v.includes(x) ? ' tabindex="-1" aria-hidden="true"' : ''}>${fmt(x)}</button>`).join('');
+    return `<div class="ordwrap"><div class="ord-label">הסדר שבחרת, מהקטן לגדול:</div><div class="seq">${slots}</div><div class="ord-label">המספרים לבחירה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button></div>`;
   }
   if (p.type === 'draw') {
-    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"><b>איך משרטטים?</b> גוררים באצבע (או בעכבר) את <b>העיגול הכתום</b> שבקצה הקו הירוק. ${esc(p.help || '')}</div></div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>איך משרטטים?</b> גוררים באצבע (או בעכבר) את <b>העיגול הכתום</b>. הקו הירוק מסתובב, והזווית נפתחת או נסגרת. כשהזווית מוכנה לוחצים על "בדיקה".</div></div>`;
   }
   return '';
 }

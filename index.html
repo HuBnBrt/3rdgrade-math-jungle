@@ -389,6 +389,7 @@ header .chip{order:2;flex:none}
 #qcard .parts svg[data-draw]{height:min(44vh,420px);width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:0;margin:4px auto}
 /* ranks and levels on topic cards */
 .cats .card .stars{font-size:min(clamp(11px,10cqh,18px),7cqw);overflow:hidden;max-width:100%;line-height:1.1;margin-top:2px;white-space:nowrap;color:#5c3a21;font-weight:800}
+.cats .card .stars,.cats .card .rankbadge{flex:none}
 .cats .card .stars .off{filter:grayscale(1) opacity(.35)}
 .cats .card .stars .lvl{font-size:.85em}
 .cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
@@ -547,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v46';
+const APP_VERSION = 'v47';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -614,6 +615,18 @@ const ITEMS = [
   { id: 'frog', name: 'צפרדע', icon: '🐸', price: 8 },
   { id: 'croc', name: 'תנין', icon: '🐊', price: 20 }
 ];
+
+const GEAR = [
+  { id: 'boots', name: 'מגפי טיול', icon: '🥾', r: 0 }, { id: 'hat', name: 'כובע ספארי', icon: '🧢', r: 0 },
+  { id: 'bag', name: 'תרמיל', icon: '🎒', r: 0 }, { id: 'tent', name: 'אוהל', icon: '⛺', r: 0 },
+  { id: 'shell', name: 'צדף קסום', icon: '🐚', r: 0 }, { id: 'feather', name: 'נוצת תוכי', icon: '🪶', r: 0 },
+  { id: 'torch', name: 'פנס', icon: '🔦', r: 1 }, { id: 'map', name: 'מפת אוצר', icon: '🗺️', r: 1 },
+  { id: 'compass', name: 'מצפן', icon: '🧭', r: 1 }, { id: 'scope', name: 'משקפת', icon: '🔭', r: 1 },
+  { id: 'beads', name: 'שרשרת חרוזים', icon: '📿', r: 1 }, { id: 'eye', name: 'קמע עין', icon: '🧿', r: 1 },
+  { id: 'gem', name: 'יהלום הג\'ונגל', icon: '💎', r: 2 }, { id: 'trident', name: 'קלשון הזהב', icon: '🔱', r: 2 },
+  { id: 'star', name: 'כוכב המזל', icon: '🌟', r: 2 }, { id: 'crown', name: 'כתר המלך', icon: '👑', r: 2 }
+];
+const RARITY = ['רגיל', 'נדיר', 'אגדי'];
 
 /* ---------- question generators ---------- */
 function genDigit(t) {
@@ -1024,8 +1037,11 @@ function genColumn(t) {
   };
 }
 
+let angBag = [], angDrawBag = [];
+function bagPick(bag, items) { if (!bag.length) bag.push(...shuffle(items.slice())); return bag.pop(); }
 function genAngleId() {
-  const deg = pick([25, 40, 55, 70, 80, 85, 90, 100, 110, 120, 135, 150, 165, 180]);
+  const cls = bagPick(angBag, ['חדה', 'ישרה', 'קהה', 'שטוחה']);
+  const deg = cls === 'חדה' ? pick([20, 30, 40, 55, 65, 75, 82]) : cls === 'ישרה' ? 90 : cls === 'שטוחה' ? 180 : pick([100, 110, 120, 135, 150, 165]);
   const cx = 160, cy = 170, L = 110;
   const rad = deg * Math.PI / 180;
   const x2 = (cx + L * Math.cos(rad)).toFixed(1), y2 = (cy - L * Math.sin(rad)).toFixed(1);
@@ -1039,7 +1055,7 @@ function genAngleId() {
 }
 
 function genAngleDraw() {
-  const target = pick(['חדה', 'ישרה', 'קהה']);
+  const target = bagPick(angDrawBag, ['חדה', 'ישרה', 'קהה']);
   const text = { 'חדה': 'יש לשרטט זווית חדה', 'ישרה': 'יש לשרטט זווית ישרה', 'קהה': 'יש לשרטט זווית קהה' }[target];
   const check = v => {
     if (typeof v !== 'number') return false;
@@ -1076,7 +1092,7 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, mastery: {}, settings: { timer: 'none' }, rot: [], sessions: 0, today: { day: '', count: 0 } });
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
@@ -1239,18 +1255,13 @@ function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
   const card = document.querySelector('#view-home .cats .card');
-  const base = card ? Math.max(11, Math.min(40, Math.floor(card.clientHeight * 0.19))) : 22;
-  ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = base + 'px'; });
+  const base = card ? Math.max(11, Math.min(44, Math.floor(card.clientHeight * 0.17))) : 22;
+  const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
+  ts.forEach(t => t.classList.add('wrap'));
+  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
   let size = base;
-  ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(base * t.clientWidth / t.scrollWidth)); });
-  const minSize = Math.min(window.innerWidth < 700 ? 11 : 14, base);
-  if (size < minSize) { size = minSize; ts.forEach(t => t.classList.add('wrap')); }
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
-  const cards = [...document.querySelectorAll('#view-home .cats .card')];
-  for (let i = 0; i < 10 && size > 10; i++) {
-    if (!cards.some(c => c.scrollHeight > c.clientHeight + 1)) break;
-    size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; });
-  }
+  while (size > 10 && bad()) { size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; }); }
 }
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
@@ -1264,18 +1275,18 @@ function renderCamp() {
         <div class="ic">${it.icon}</div>
         <b class="big nm">${it.name}</b>
         <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
-        <div class="rank">באוסף: ${owned}</div>
-        <button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
+        ${owned ? '<button type="button" class="ghost-btn" disabled>באוסף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
           ${canAfford ? 'לקנייה' : 'אין מטבעות'}
-        </button>
+        </button>`}
       </div>`;
   }).join('');
 
   const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
+  const gearShelf = GEAR.filter(g => (S.gear || {})[g.id]).map(g => `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`).join('');
   const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
-  const collection = ownedItems.length || trophyShelf
-    ? trophyShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
-    : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם חיות לאוסף!</div>';
+  const collection = ownedItems.length || trophyShelf || gearShelf
+    ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+    : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם ציוד הישרדות!</div>';
 
   $('#view-camp').innerHTML = `
     <h2 class="camp-title">🏕️ חנות המחנה</h2>
@@ -1302,11 +1313,11 @@ function renderSettings() {
 /* ---------- shop & settings actions ---------- */
 function buyItem(id) {
   const it = ITEMS.find(x => x.id === id);
-  if (!it || S.coins < it.price) return;
+  if (!it || S.coins < it.price || S.items[it.id]) return;
   S.coins -= it.price;
-  S.items[it.id] = (S.items[it.id] || 0) + 1;
+  S.items[it.id] = 1;
   save(); updateWallet(); renderCamp();
-  toast(`התקבל ${it.name} חדש לאוסף!`);
+  toast(`${it.name} הצטרף לאוסף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
@@ -1316,7 +1327,10 @@ function handleReset() {
 
 /* ---------- session flow ---------- */
 function pickCat() {
-  if (session && session.only) return CATS.find(c => c.id === session.only);
+  if (session && session.only) {
+    const o = (session.only === 'angleid' || session.only === 'angledraw') ? pick(['angleid', 'angledraw']) : session.only;
+    return CATS.find(c => c.id === o);
+  }
   if (session && session.topics) return CATS.find(c => c.id === session.topics[session.done % session.topics.length]);
   const pool = CATS.filter(c => c.id !== lastCat);
   const w = pool.map(c => 110 - mast(c.id).score);
@@ -1566,8 +1580,17 @@ function check() {
 
 function endSession() {
   stopTimer();
-  const item = pick(ITEMS);
-  S.items[item.id] = (S.items[item.id] || 0) + 1;
+  if (!S.gear) S.gear = {};
+  const acc = session.total ? session.correct / session.total : 0;
+  const rr = Math.random();
+  const wantR = acc >= 0.875 ? (rr < 0.45 ? 2 : rr < 0.85 ? 1 : 0) : acc >= 0.6 ? (rr < 0.1 ? 2 : rr < 0.5 ? 1 : 0) : (rr < 0.03 ? 1 : 0);
+  const left = GEAR.filter(g => !S.gear[g.id]);
+  let gift = null, giftCoins = 0;
+  if (left.length) {
+    const pool = left.filter(g => g.r === wantR);
+    gift = pick(pool.length ? pool : left);
+    S.gear[gift.id] = true;
+  } else { giftCoins = 10; S.coins += giftCoins; session.coins += giftCoins; }
   if (session.kind === 'base') {
     const today = new Date().toDateString();
     if (S.today.day !== today) S.today = { day: today, count: 0 };
@@ -1583,7 +1606,7 @@ function endSession() {
     <div class="sum-box">
       <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
-      <p>נפתחה תיבה: <span class="sum-item">${item.icon}</span> ${item.name} התווסף לאוסף!</p>
+      <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) התווסף לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
     </div>
     <div class="sum-actions">
       ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}

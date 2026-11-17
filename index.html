@@ -409,6 +409,8 @@ header .chip{order:2;flex:none}
 .vert td.vs{min-width:1.1em;color:#d84a2b}
 .vert tr.vl td:not(.vs){border-top:4px solid #163b2a}
 .vert td.vq{color:#d84a2b;letter-spacing:.2em}
+.cats .card .trophy-mark{position:absolute;top:-14px;inset-inline-start:-8px;z-index:6;font-size:clamp(22px,40cqh,34px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));animation:float 3s ease-in-out infinite alternate}
+.trophy-line{background:rgba(255,255,255,.85);border:3px dashed #d4a017;border-radius:14px;padding:8px;margin:8px 0;font-weight:800;font-size:18px;text-align:center}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -423,7 +425,7 @@ header .chip{order:2;flex:none}
   <div class="wallet">
     <span id="userChip" class="user-chip"></span>
     <span class="chip">🪙 <b id="coins">0</b></span>
-    <span class="chip">🏅 <b id="medals">0</b></span>
+    <span class="chip">🏆 <b id="trophies">0</b></span>
   </div>
 </header>
 
@@ -446,7 +448,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v37';
+const APP_VERSION = 'v38';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1003,13 +1005,13 @@ async function cloudLoad() {
     toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
   }
 }
-function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false }; return S.mastery[id]; }
+function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
 
 /* ---------- session / view state ---------- */
 let Q = null, session = null, lastCat = null, currentView = 'home';
 let timerInt = null, toastTimer = null, resetArmed = false;
 
-function updateWallet() { $('#coins').textContent = S.coins; $('#medals').textContent = S.medals.length; }
+function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).filter(m => m.trophy).length; }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
@@ -1102,6 +1104,7 @@ function renderHome() {
             <div class="big topic-title">${c.name}</div>
             <div class="stars" title="רמה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
             <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
+            ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
           </div>
           <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
           <button type="button" class="practice-btn" data-practice="${c.id}">תרגול נושא זה</button>
@@ -1156,8 +1159,9 @@ function renderCamp() {
   }).join('');
 
   const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
-  const collection = ownedItems.length
-    ? ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
+  const collection = ownedItems.length || trophyShelf
+    ? trophyShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
     : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם חיות לאוסף!</div>';
 
   $('#view-camp').innerHTML = `
@@ -1388,6 +1392,12 @@ function record(ok) {
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
   if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מדליית זהב הושגה!'); }
+  if (!m.trophy && m.score >= 70 && m.tier >= 3) {
+    m.trophy = true;
+    const nm = CATS.find(c => c.id === Q.cat).name;
+    (session.trophies = session.trophies || []).push(nm);
+    toast(`🏆 גביע! אלופים בנושא: ${nm}`);
+  }
   save(); updateWallet();
 }
 
@@ -1419,6 +1429,7 @@ function endSession() {
     <div class="big" style="text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,0.5);font-size:32px">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
     <div style="text-align:center;background:rgba(255,255,255,0.8);padding:16px;border-radius:16px;margin:20px 0;border:3px dashed #8b5a2b">
       <p style="margin:0 0 10px;font-weight:800;font-size:20px">${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
+      ${session.trophies && session.trophies.length ? `<p class="trophy-line" style="margin:0 0 10px">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
       <p style="margin:0;font-weight:800;font-size:18px">נפתחה תיבה: <span style="font-size:30px;vertical-align:middle">${item.icon}</span> ${item.name} התווסף לאוסף!</p>
     </div>
     <div class="row" style="flex-direction:column;gap:16px">

@@ -385,6 +385,9 @@ header .chip{order:2;flex:none}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
 @container (max-height:92px){.cats .card .stars .lvl{display:none}}
 @container (max-height:66px){.cats .card .rankbadge{display:none}}
+.cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
+.cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
+@container (max-height:80px){.cats .card .stars{display:none}.cats .card .practice-btn{height:17px;font-size:10px;padding:0 10px;margin-top:2px}}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -422,7 +425,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v27';
+const APP_VERSION = 'v28';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -858,6 +861,7 @@ function renderHome() {
             <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
           </div>
           <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
+          <button type="button" class="practice-btn" data-practice="${c.id}">תרגול נושא זה</button>
         </div>
       </div>`;
   }).join('');
@@ -952,6 +956,7 @@ function handleReset() {
 
 /* ---------- session flow ---------- */
 function pickCat() {
+  if (session && session.only) return CATS.find(c => c.id === session.only);
   const pool = CATS.filter(c => c.id !== lastCat);
   const w = pool.map(c => 110 - mast(c.id).score);
   let r = Math.random() * w.reduce((a, b) => a + b, 0);
@@ -959,8 +964,8 @@ function pickCat() {
   return pool[pool.length - 1];
 }
 
-function startSession(kind) {
-  session = { kind, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
+function startSession(kind, only) {
+  session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
   nextQ();
 }
 
@@ -1201,6 +1206,8 @@ document.addEventListener('click', e => {
   const t = e.target;
   const nav = t.closest('.nav [data-go]');
   if (nav) { showView(nav.dataset.go); return; }
+  const pr = t.closest('[data-practice]');
+  if (pr) { startSession('base', pr.dataset.practice); return; }
   if (t.closest('#startBtn')) { startSession('base'); return; }
   const act = t.closest('[data-act]');
   if (act && act.dataset.act === 'logout') { doLogout(); return; }

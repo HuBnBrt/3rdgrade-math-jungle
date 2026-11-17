@@ -548,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v47';
+const APP_VERSION = 'v48';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1327,10 +1327,7 @@ function handleReset() {
 
 /* ---------- session flow ---------- */
 function pickCat() {
-  if (session && session.only) {
-    const o = (session.only === 'angleid' || session.only === 'angledraw') ? pick(['angleid', 'angledraw']) : session.only;
-    return CATS.find(c => c.id === o);
-  }
+  if (session && session.only) return CATS.find(c => c.id === session.only);
   if (session && session.topics) return CATS.find(c => c.id === session.topics[session.done % session.topics.length]);
   const pool = CATS.filter(c => c.id !== lastCat);
   const w = pool.map(c => 110 - mast(c.id).score);

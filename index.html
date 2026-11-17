@@ -361,6 +361,11 @@ header .chip{order:2;flex:none}
 #qcard .feedback{font-size:clamp(14px,2.5vh,22px)}
 @media (max-width:480px){#qcard [style*="font-size:28px"]{font-size:22px !important}#qcard [style*="font-size:36px"]{font-size:28px !important}#qcard [style*="font-size:32px"]{font-size:26px !important}#qcard input.num,#qcard input.text{width:100%}}
 @media (max-width:480px){#qcard .prompt{font-size:clamp(16px,2.7vh,21px);line-height:1.4}#qcard .question-board{padding:8px 12px}#qcard .opt{font-size:clamp(16px,2.8vh,20px)}#qcard .fbslot{height:clamp(52px,9vh,80px)}#qcard .opts{margin:4px 0}}
+/* drawing question: small instruction, big drawing */
+#qcard .prompt.compact{font-size:clamp(18px,3.2vh,30px)}
+#qcard .question-board:has(.prompt.compact){padding:clamp(6px,1.4vh,14px) 14px}
+#qcard .parts:has(svg[data-draw]){flex:1 1 auto;min-height:0}
+#qcard .parts svg[data-draw]{height:min(44vh,420px);width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:0;margin:4px auto}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -398,7 +403,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v23';
+const APP_VERSION = 'v25';
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -636,7 +641,7 @@ function genColumn(t) {
 }
 
 function genAngleId() {
-  const deg = pick([40, 70, 85, 90, 120, 150, 180]);
+  const deg = pick([25, 40, 55, 70, 80, 85, 90, 100, 110, 120, 135, 150, 165, 180]);
   const cx = 160, cy = 170, L = 110;
   const rad = deg * Math.PI / 180;
   const x2 = (cx + L * Math.cos(rad)).toFixed(1), y2 = (cy - L * Math.sin(rad)).toFixed(1);
@@ -659,8 +664,8 @@ function genAngleDraw() {
     return v > 95 && v < 175;
   };
   return {
-    body: `<div class="prompt">${text}</div>`,
-    drawInit: rnd(20, 160),
+    body: `<div class="prompt compact">${text}</div>`,
+    drawInit: target === 'ישרה' ? pick([30, 45, 135, 150]) : 90,
     parts: [{ type: 'draw', check }],
     hint: 'יש לגרור את הקצה הצהוב למיקום המתאים.',
     explain: `שורטטה זווית בערך של ${target}.`
@@ -928,8 +933,18 @@ function startSession(kind) {
 function nextQ() {
   stopTimer();
   if (session.done >= session.total) return endSession();
-  const cat = pickCat();
-  Q = cat.gen(mast(cat.id).tier);
+  // avoid repeating a question (same text/numbers) seen recently, also across sessions
+  if (!Array.isArray(S.recent)) S.recent = [];
+  const sigOf = body => { let h = 0; for (let i = 0; i < body.length; i++) h = (h * 31 + body.charCodeAt(i)) | 0; return h; };
+  let cat, sig;
+  for (let tries = 0; tries < 60; tries++) {
+    cat = pickCat();
+    Q = cat.gen(mast(cat.id).tier);
+    sig = sigOf(Q.body + (Q.sig || ''));
+    if (!S.recent.includes(sig)) break;
+  }
+  S.recent.push(sig);
+  if (S.recent.length > 60) S.recent.shift();
   Q.cat = cat.id; Q.note = ''; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
   Q.parts.forEach(p => { if (p.type === 'order') p.v = []; if (p.type === 'draw') p.v = Q.drawInit; });
   lastCat = cat.id;

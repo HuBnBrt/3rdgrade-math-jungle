@@ -154,6 +154,8 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
   font-size:22px;font-weight:800;text-align:center;color:#4a2810;box-shadow:inset 0 0 20px rgba(180,122,70,0.1);
 }
 .opts{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;justify-content:center}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:min(100%,420px);margin-inline:auto}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))) .opt{width:100%}
 .opt{
   background:linear-gradient(180deg,#e0e0e0,#bdbdbd);color:#333;border:3px solid #9e9e9e;border-radius:16px;
   min-width:80px;font-size:22px;direction:ltr;
@@ -556,7 +558,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v59';
+const APP_VERSION = 'v60';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

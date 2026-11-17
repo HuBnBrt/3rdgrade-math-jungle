@@ -62,7 +62,6 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
   text-align:center;
   transition:transform 0.2s;
 }
-.card:hover{transform:translateY(-4px)}
 .card::before{
   content:"";position:absolute;top:0;left:0;right:0;bottom:0;
   background:repeating-linear-gradient(to bottom,transparent,transparent 10px,rgba(107,66,26,0.05) 10px,rgba(107,66,26,0.05) 20px);
@@ -84,7 +83,6 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
 .peek-animal.p0{left:10%}
 .peek-animal.p1{left:50%;margin-left:-27px}
 .peek-animal.p2{right:10%}
-.slot:hover .peek-animal{transform:translateY(-10px)}
 .slot,.slot .card{min-width:0}
 .topic-title{white-space:nowrap;font-size:22px;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
 .topic-title.wrap{white-space:normal;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.2}
@@ -246,7 +244,7 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 .home-top{flex:none;display:flex;gap:12px;align-items:center;justify-content:center;margin:2px 0 6px}
 .home-top .hero-bubble{margin:0;padding:6px 14px;text-align:center;font-size:17px;line-height:1.35}
 .home-top .hero-bubble small{display:block;font-size:13px;color:#5c3a21;font-weight:600}
-.home-top .hero-board{width:auto;flex:0 1 380px;padding:8px;border-radius:16px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.2),0 5px 0 #3b220d,0 8px 12px rgba(0,0,0,.3)}
+.home-top .hero-board{z-index:0;width:auto;flex:0 1 380px;padding:8px;border-radius:16px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.2),0 5px 0 #3b220d,0 8px 12px rgba(0,0,0,.3)}
 .home-top .big-green-btn{font-size:clamp(17px,3.4vh,24px);padding:8px 14px;box-shadow:0 4px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,.3)}
 .grid.cats{flex:1;min-height:0;padding-top:0;gap:8px 14px;align-content:center;--an:clamp(26px,5.6vh,50px);--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,210px))}
 @media (min-width:700px){.grid.cats{--cols:4;--rows:3}}
@@ -306,6 +304,32 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 .camp-collection .owned-animal{font-size:clamp(24px,4.5vh,40px)}
 #view-settings .card{margin-top:12px !important;padding:12px}
 #view-settings h2{margin:0 0 8px;font-size:18px}
+@media (max-height:480px){
+  header{padding:4px 12px 10px}header h1{font-size:15px}.chip{padding:0 10px;font-size:13px}
+  .nav button{flex-direction:row;justify-content:center;gap:6px;padding:4px}.nav button .e{font-size:16px}
+  #qcard{padding:6px 14px;gap:4px}#qcard .qhead,#qcard .bar{display:none}
+  #qcard .fbslot{height:46px}#qcard .feedback .mascot{display:none}
+  main{padding:6px 10px}
+}
+#qcard .parts:has(svg){flex-direction:column;align-items:center;gap:0}
+#qcard .parts svg.angle,#qcard .question-board svg.angle{max-height:min(22vh,200px)}
+#qcard .opts .opt{min-width:56px;padding:clamp(5px,1vh,8px) 12px}
+#qcard .feedback{font-size:clamp(13px,2vh,17px);line-height:1.25}
+@media (max-width:480px){header h1{font-size:15px}header{padding:6px 12px 12px}.wallet{gap:5px}.chip{padding:1px 10px;font-size:14px}#qcard{padding:8px 12px}}
+#qcard .parts.multi{flex-wrap:nowrap;gap:10px 14px;align-items:flex-start}
+#qcard .parts.multi .row{margin-top:0;flex:1 1 0;min-width:0;max-width:220px}
+#qcard .parts.multi label{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:clamp(14px,2.2vh,18px) !important}
+#qcard .parts.multi input.num{width:100%;max-width:160px}
+#qcard .parts.multi .part-fix{font-size:clamp(11px,1.8vh,14px)}
+@media (max-width:480px){#qcard [style*="font-size:28px"]{font-size:21px !important}#qcard [style*="font-size:36px"]{font-size:28px !important}}
+@media (max-width:600px){
+  .home-top{flex-direction:column;gap:6px;margin-bottom:4px}
+  .home-top .hero-bubble{padding:3px 12px;font-size:15px}
+  .home-top .hero-bubble small{display:inline;margin-inline-start:6px;font-size:12px}
+  .home-top .hero-board{width:100%;flex:none;padding:5px}
+  .home-top .big-green-btn{font-size:19px;padding:6px 10px}
+  .banner{font-size:14px;padding:6px 10px;gap:6px}
+}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -343,7 +367,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v17';
+const APP_VERSION = 'v19';
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",

@@ -517,6 +517,10 @@ header .chip{order:2;flex:none}
 .cats .card{display:flex;flex-direction:column;justify-content:center}
 .cats .card .topic-content{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
 @media (max-width:600px){.home-top .hero-board{flex:none !important;width:100% !important}}
+.modal-back{position:fixed;inset:0;background:rgba(20,40,30,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{background:#fff9ec;border:4px solid #8b5a2b;border-radius:22px;padding:20px 18px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.modal .m-ic{font-size:48px}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
+.modal .m-act{display:flex;flex-direction:column;gap:10px}
 .cats .card .topic-title{overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
 </style>
 </head>
@@ -549,9 +553,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v56';
+const APP_VERSION = 'v57';
+function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
@@ -564,10 +569,43 @@ function installBlock() {
     : `<div class="rank" style="text-align:right">בדפדפן: תפריט ⋮ ← "התקנת אפליקציה" / "הוספה למסך הבית". אם הכפתור לא מופיע כאן, ייתכן שכבר הותקנה.</div>`}</div>`;
 }
 const wantInstall = () => !isStandalone() && /[?&]install\b/.test(location.search);
-function installBar() {
-  if (!wantInstall()) return '';
-  return `<div class="install-bar"><span>📲 להתקנת האפליקציה במכשיר</span><button type="button" class="big-green-btn" id="installBtn">${installEvt ? 'התקנה' : isIOS() ? 'איך מתקינים?' : 'התקנה'}</button></div>`;
+function installBar() { return ''; }
+/* ---------- pop-up prompts: install + update ---------- */
+let modalOpen = false, pendingUpdate = null, installAsked = false;
+function showModal({ icon, title, text, ok, cancel, onOk, onNo }) {
+  if (modalOpen) return; modalOpen = true;
+  const d = document.createElement('div'); d.className = 'modal-back';
+  d.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="m-ic">${icon}</div><h2>${title}</h2><p>${text}</p><div class="m-act"><button type="button" class="big-green-btn" data-m="ok">${ok}</button>${cancel ? `<button type="button" class="ghost-btn" data-m="no">${cancel}</button>` : ''}</div></div>`;
+  d.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.remove(); modalOpen = false; if (b.dataset.m === 'ok') { if (onOk) onOk(); } else if (onNo) onNo(); });
+  document.body.appendChild(d);
 }
+function maybePrompts() {
+  if (modalOpen || currentView === 'play') return;
+  if (pendingUpdate) {
+    const v = pendingUpdate;
+    showModal({ icon: '🆕', title: 'יצאה גרסה חדשה!', text: 'יש שיפורים ותיקונים באפליקציה. ההתקדמות והמטבעות נשמרים.', ok: 'עדכון עכשיו', cancel: 'אחר כך', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
+    return;
+  }
+  let dismissed = 0; try { dismissed = +localStorage.getItem('jungle-install-no') || 0; } catch (e) {}
+  const recentNo = Date.now() - dismissed < 3 * 864e5;
+  if (installAsked || isStandalone() || !(installEvt || isIOS() || wantInstall()) || (recentNo && !wantInstall())) return;
+  installAsked = true;
+  showModal({ icon: '📲', title: 'להתקין את האפליקציה?', text: isIOS() && !installEvt ? 'באייפון: לוחצים על כפתור השיתוף ואז "הוסף למסך הבית". כך האפליקציה נפתחת במסך מלא, כמו כל אפליקציה.' : 'האפליקציה תופיע במסך הבית ותיפתח במסך מלא, בלי דפדפן.', ok: isIOS() && !installEvt ? 'הבנתי' : 'התקנה', cancel: 'לא עכשיו', onOk: () => { if (!(isIOS() && !installEvt)) doInstall(); }, onNo: () => { try { localStorage.setItem('jungle-install-no', String(Date.now())); } catch (e) {} } });
+}
+async function checkUpdate() {
+  try {
+    const r = await fetch('sw.js?' + Date.now(), { cache: 'no-store' });
+    const m = (await r.text()).match(/const C='jungle-v(\d+)'/);
+    if (m && +m[1] > parseInt(APP_VERSION.slice(1), 10)) { pendingUpdate = m[1]; maybePrompts(); }
+  } catch (e) {}
+}
+async function applyUpdate(v) {
+  try { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } catch (e) {}
+  location.href = location.pathname + '?v=' + v;
+}
+setTimeout(() => { checkUpdate(); maybePrompts(); }, 3500);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+setInterval(checkUpdate, 10 * 60 * 1000);
 async function doInstall() {
   if (!installEvt) { toast(isIOS() ? 'באייפון: כפתור השיתוף ואז "הוסף למסך הבית"' : 'בתפריט הדפדפן ⋮ בוחרים "התקנת אפליקציה" או "הוספה למסך הבית"'); return; } installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; if (currentView === 'home') renderHome(); else renderSettings(); }
 /* ---------- Firebase ---------- */
@@ -1093,10 +1131,11 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, sessions: 0, today: { day: '', count: 0 } });
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, profile: { nick: '', gender: '' }, sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
+  profile: { ...DEFAULT().profile, ...(x.profile || {}) },
   today: { ...DEFAULT().today, ...(x.today || {}) }
 });
 let S = DEFAULT();
@@ -1118,8 +1157,8 @@ async function cloudSave() {
   catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); return; }
   try {
     const topics = {};
-    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: c.name.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
+    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
 let teacherFocus = null;
@@ -1153,7 +1192,8 @@ function toast(msg) {
 }
 
 /* ---------- auth UI ---------- */
-const firstName = () => esc((user && user.displayName || '').split(' ')[0] || 'חבר');
+const firstName = () => esc((S.profile && S.profile.nick) || (user && user.displayName || '').split(' ')[0] || 'חבר');
+const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
 let authError = '';
 function loginBlock() {
   if (user) return '';
@@ -1214,6 +1254,7 @@ function showView(name) {
   if (name === 'camp') renderCamp();
   if (name === 'settings') renderSettings();
   mountGoogleButtons();
+  if (name !== 'play') setTimeout(maybePrompts, 600);
 }
 function refreshCurrentView() {
   renderUserChip();
@@ -1311,6 +1352,12 @@ function renderSettings() {
   const opts = [['none', 'ללא הגבלת זמן'], ['gentle', 'רגוע: מראה את הזמן'], ['challenge', 'אתגר: 25 שניות לשאלה']];
   $('#view-settings').innerHTML = `
     ${loginBlock()}
+    <div class="card" style="margin-top:20px"><h2 style="margin-top:8px">👤 פרטי התלמיד/ה</h2>
+      <input id="nickInput" type="text" maxlength="20" placeholder="כינוי (למשל: עדיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
+      <div class="seg">${[['m', 'תלמיד'], ['f', 'תלמידה'], ['', 'לא לציין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div>
+      <div class="rank" style="margin-top:8px">הכינוי והמין משפיעים על הפנייה אליך באפליקציה.</div></div>
+    <div class="card" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מה אומרים הסימנים?</h2>
+      <div class="rank" style="text-align:right;line-height:1.6">⭐ <b>כוכבים</b> = רמת הקושי בנושא: מתחילים, מתקדמים, אלופים. עולים רמה אחרי 3 תשובות נכונות ברצף.<br>🥉🥈🥇 <b>ארד, כסף, זהב</b> = הציון בנושא: מתחת ל-40 ארד, 40 עד 69 כסף, 70 ומעלה זהב.<br>🏆 <b>גביע</b> = רמת אלופים וגם זהב באותו נושא.</div></div>
     ${installBlock()}
     <div class="card" style="margin-top:20px">
       <h2 style="margin-top:8px">מצב זמן</h2>
@@ -1330,7 +1377,7 @@ function buyItem(id) {
   S.coins -= it.price;
   S.items[it.id] = 1;
   save(); updateWallet(); renderCamp();
-  toast(`${it.name} הצטרף לאוסף!`);
+  toast(`${plain(it.name)} הצטרף לאוסף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
@@ -1594,7 +1641,7 @@ function record(ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
     m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
-    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${CATS.find(c => c.id === Q.cat).name}`); }
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
   } else {
     m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
@@ -1604,7 +1651,7 @@ function record(ok) {
     m.trophy = true;
     const nm = CATS.find(c => c.id === Q.cat).name;
     (session.trophies = session.trophies || []).push(nm);
-    toast(`🏆 גביע! אלופים בנושא: ${nm}`);
+    toast(`🏆 גביע! אלופים בנושא: ${plain(nm)}`);
   }
   save(); updateWallet();
 }
@@ -1648,6 +1695,7 @@ function endSession() {
     <div class="sum-box">
       <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
+      ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כל הכבוד אלוף! 🏆', 'כל הכבוד אלופה! 🏆', 'כל הכבוד! 🏆')}</p>` : ''}
       <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) התווסף לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
     </div>
     <div class="sum-actions">
@@ -1674,6 +1722,7 @@ function handlePlayClick(t) {
 }
 
 /* ---------- global events ---------- */
+document.addEventListener('input', e => { if (e.target && e.target.id === 'nickInput') { S.profile.nick = e.target.value.trim().slice(0, 20); save(); } });
 document.addEventListener('click', e => {
   const t = e.target;
   const nav = t.closest('.nav [data-go]');
@@ -1686,6 +1735,8 @@ document.addEventListener('click', e => {
   if (act && act.dataset.act === 'usermenu') { $('#userMenu').classList.toggle('hidden'); return; }
   if (!t.closest('#userChip')) { const m = $('#userMenu'); if (m) m.classList.add('hidden'); }
   if (t.closest('#installBtn')) { doInstall(); return; }
+  const gd = t.closest('[data-gender]');
+  if (gd) { S.profile.gender = gd.dataset.gender; save(); renderSettings(); return; }
   const tm = t.closest('[data-timer]');
   if (tm) { S.settings.timer = tm.dataset.timer; save(); renderSettings(); return; }
   const buy = t.closest('[data-buy]');

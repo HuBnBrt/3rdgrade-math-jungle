@@ -548,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v49';
+const APP_VERSION = 'v50';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1092,7 +1092,7 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, sessions: 0, today: { day: '', count: 0 } });
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
@@ -1114,7 +1114,12 @@ function save() {
 async function cloudSave() {
   if (!user) return;
   try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
-  catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); }
+  catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); return; }
+  try {
+    const topics = {};
+    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: c.name, score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, focus: S.focus || null, version: APP_VERSION }, { merge: true });
+  } catch (e) { console.warn('profile', e); }
 }
 async function cloudLoad() {
   const u0 = user;
@@ -1554,6 +1559,10 @@ function setupDraw(svg, p) {
 function record(ok) {
   const m = mast(Q.cat);
   session.done++;
+  if (!S.stats) S.stats = {};
+  const st = S.stats[Q.cat] || (S.stats[Q.cat] = { ok: 0, bad: 0, h: '' });
+  if (ok) st.ok++; else st.bad++;
+  st.h = (st.h + (ok ? '1' : '0')).slice(-12);
   if (!S.resume) S.resume = {};
   S.resume[resumeKey(session.kind, session.only)] = JSON.parse(JSON.stringify(session));
   if (ok) {

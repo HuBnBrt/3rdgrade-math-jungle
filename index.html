@@ -224,6 +224,54 @@ input.num.bad{border-color:#c62828;background:#ffebee}
 .collection-shelf{background:linear-gradient(180deg,#81c784,#4caf50);border-radius:20px;padding:20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;border:4px solid #388e3c;border-bottom-width:10px;box-shadow:inset 0 4px 0 rgba(255,255,255,0.3)}
 .owned-animal{font-size:50px;filter:drop-shadow(0 4px 2px rgba(0,0,0,0.2));animation:float 3s ease-in-out infinite alternate}
 @keyframes float{0%{transform:translateY(0)}100%{transform:translateY(-8px)}}
+
+/* ===== no-scroll app shell ===== */
+html,body{height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh}
+header{position:relative;flex:none;padding:8px 16px 14px}
+header h1{font-size:20px}
+.chip{padding:2px 12px;font-size:15px}
+main{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;padding:12px 14px 12px;overflow:hidden}
+main>section{flex:1;min-height:0;display:flex;flex-direction:column}
+#view-camp,#view-settings{display:block;overflow-y:auto}
+.spacer{display:none}
+.nav{position:static;flex:none;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{padding:6px 4px 8px;gap:2px;font-size:14px}
+.nav button .e{font-size:20px}
+.banner{margin:0 0 8px;padding:6px 12px}
+.gbtn{min-height:40px}
+
+/* home: everything fits on one screen */
+.home-top{flex:none;display:flex;gap:12px;align-items:center;justify-content:center;margin:2px 0 6px}
+.home-top .hero-bubble{margin:0;padding:6px 14px;text-align:center;font-size:17px;line-height:1.35}
+.home-top .hero-bubble small{display:block;font-size:13px;color:#5c3a21;font-weight:600}
+.home-top .hero-board{width:auto;flex:0 1 380px;padding:8px;border-radius:16px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.2),0 5px 0 #3b220d,0 8px 12px rgba(0,0,0,.3)}
+.home-top .big-green-btn{font-size:clamp(17px,3.4vh,24px);padding:8px 14px;box-shadow:0 4px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,.3)}
+.grid.cats{flex:1;min-height:0;padding-top:0;gap:8px 14px;align-content:center;--an:clamp(26px,5.6vh,50px);--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,210px))}
+@media (min-width:700px){.grid.cats{--cols:4;--rows:3}}
+@media (min-width:1000px){.grid.cats{--cols:6;--rows:2}}
+@media (orientation:landscape) and (max-height:560px){.grid.cats{--cols:6;--rows:2}}
+@media (max-width:699px){.grid.cats{--cols:3}}
+.cats .slot{padding-top:calc(var(--an)*.63);min-height:0}
+.cats .peek-animal{font-size:var(--an);bottom:calc(100% - var(--an))}
+.cats .peek-animal.p1{margin-left:calc(var(--an)*-.5)}
+.cats .card{container-type:size;padding:6px 8px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.1),0 5px 0 #5c3a21,0 8px 10px rgba(0,0,0,.15)}
+.cats .card-leaf{font-size:18px}
+.cats .card .rank{font-size:clamp(10px,10cqh,14px);margin-top:2px !important}
+.cats .wood-btn-small{padding:2px 14px;margin-top:4px;font-size:clamp(10px,10cqh,15px)}
+.cats .card .bar{margin-top:6px;height:8px;border-width:1px}
+@container (max-height:92px){.cats .card .rank{display:none}}
+@container (max-height:66px){.cats .wood-btn-small{display:none}}
+
+/* play: fit the screen height */
+#qcard{margin:auto;width:100%;max-height:100%;overflow:auto;padding:clamp(8px,1.8vh,16px) 22px}
+#qcard .question-board{padding:clamp(8px,1.8vh,14px) 18px;margin:clamp(4px,1vh,8px) 0 clamp(6px,1.4vh,12px)}
+#qcard .prompt{font-size:clamp(16px,2.7vh,22px)}
+#qcard [style*="font-size:28px"]{font-size:clamp(20px,3.8vh,28px) !important}
+#qcard .opt{padding:clamp(6px,1.2vh,8px) 18px;font-size:clamp(17px,2.8vh,20px)}
+#qcard input.num,#qcard input.text{padding:clamp(6px,1.2vh,10px) 14px;font-size:clamp(18px,2.8vh,22px)}
+#qcard .action-btn{padding:clamp(8px,1.6vh,14px) 28px;font-size:clamp(16px,2.6vh,20px)}
+#qcard .bar{margin-top:6px}
 </style>
 </head>
 <body>
@@ -241,7 +289,6 @@ input.num.bad{border-color:#c62828;background:#ffebee}
   <section id="view-play" class="hidden"><div class="card" id="qcard"></div></section>
   <section id="view-camp" class="hidden"></section>
   <section id="view-settings" class="hidden"></section>
-  <div class="spacer"></div>
 </main>
 
 <nav class="nav" aria-label="ניווט">
@@ -676,19 +723,15 @@ function renderHome() {
 
   $('#view-home').innerHTML = `
     ${loginBlock()}
-    <div class="hero-banner">
-      <div class="hero-monkey">🐵</div>
+    <div class="home-top">
       <div class="hero-bubble">
-        ${user ? 'שלום ' + firstName() + '!' : 'ברוכים הבאים לג\'ונגל!'}
-        <div style="font-size:14px;color:#5c3a21;font-weight:600;margin-top:4px">
-          אימונים שהושלמו היום: ${doneToday}.<br>אימון רגיל: כ-5 דקות.
-        </div>
+        🐵 ${user ? 'שלום ' + firstName() + '!' : 'ברוכים הבאים לג\'ונגל!'}
+        <small>אימונים היום: ${doneToday} · אימון רגיל כ-5 דקות</small>
       </div>
       <div class="hero-board">
         <button type="button" class="big-green-btn" id="startBtn">❯ התחלת אימון ❮</button>
       </div>
     </div>
-    <h2>אזור האימונים</h2>
     <div class="grid cats">${cards}</div>`;
   fitTitles();
 }
@@ -696,10 +739,13 @@ function renderHome() {
 function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
-  ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = '22px'; });
-  let size = 22;
-  ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(22 * t.clientWidth / t.scrollWidth)); });
-  if (size < 14) { size = 14; ts.forEach(t => t.classList.add('wrap')); }
+  const card = document.querySelector('#view-home .cats .card');
+  const base = card ? Math.max(11, Math.min(22, Math.floor(card.clientHeight * 0.17))) : 22;
+  ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = base + 'px'; });
+  let size = base;
+  ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(base * t.clientWidth / t.scrollWidth)); });
+  const minSize = Math.min(14, base);
+  if (size < minSize) { size = minSize; ts.forEach(t => t.classList.add('wrap')); }
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
 }
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });

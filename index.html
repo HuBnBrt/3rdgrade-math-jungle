@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f7a3d">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>ארץ הג'ונגל במתמטיקה</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -417,7 +422,21 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v26';
+const APP_VERSION = 'v27';
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
+window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+function installBlock() {
+  if (isStandalone()) return '';
+  return `<div class="card" style="margin-top:20px"><h2 style="margin-top:8px">📲 התקנה במכשיר</h2>
+    ${installEvt ? `<button type="button" class="big-green-btn" id="installBtn" style="width:100%">התקנת האפליקציה</button>`
+    : isIOS() ? `<div class="rank" style="text-align:right">באייפון: לוחצים על כפתור השיתוף (▫️⬆️) ואז "הוסף למסך הבית".</div>`
+    : `<div class="rank" style="text-align:right">בדפדפן: תפריט ⋮ ← "התקנת אפליקציה" / "הוספה למסך הבית". אם הכפתור לא מופיע כאן, ייתכן שכבר הותקנה.</div>`}</div>`;
+}
+async function doInstall() { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; renderSettings(); }
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -904,6 +923,7 @@ function renderSettings() {
   const opts = [['none', 'ללא הגבלת זמן'], ['gentle', 'רגוע: מראה את הזמן'], ['challenge', 'אתגר: 25 שניות לשאלה']];
   $('#view-settings').innerHTML = `
     ${loginBlock()}
+    ${installBlock()}
     <div class="card" style="margin-top:20px">
       <h2 style="margin-top:8px">מצב זמן</h2>
       <div class="seg">${opts.map(([v, l]) => `<button type="button" class="ghost-btn ${S.settings.timer === v ? 'on' : ''}" data-timer="${v}" aria-pressed="${S.settings.timer === v}">${l}</button>`).join('')}</div>
@@ -1186,6 +1206,7 @@ document.addEventListener('click', e => {
   if (act && act.dataset.act === 'logout') { doLogout(); return; }
   if (act && act.dataset.act === 'usermenu') { $('#userMenu').classList.toggle('hidden'); return; }
   if (!t.closest('#userChip')) { const m = $('#userMenu'); if (m) m.classList.add('hidden'); }
+  if (t.closest('#installBtn')) { doInstall(); return; }
   const tm = t.closest('[data-timer]');
   if (tm) { S.settings.timer = tm.dataset.timer; save(); renderSettings(); return; }
   const buy = t.closest('[data-buy]');

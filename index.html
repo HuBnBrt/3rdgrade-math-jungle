@@ -14,8 +14,12 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta property="og:type" content="website">
 <meta property="og:title" content="הג'ונגל של המתמטיקה - לכיתה ג'">
-<meta property="og:description" content="אימון משחקי למבחן במתמטיקה בכיתה ג'. בואו להתאמן עם האריה, הפיל והקוף!">
+<meta property="og:description" content="אימון משחקי למבחן במתמטיקה בכיתה ג'">
 <meta property="og:image" content="https://hubnbrt.github.io/3rdgrade-math-jungle/share.jpg?v=2">
+<meta property="og:image:secure_url" content="https://hubnbrt.github.io/3rdgrade-math-jungle/share.jpg?v=2">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="הג'ונגל של המתמטיקה לכיתה ג' - האריה, הפיל והקוף">
+<meta property="og:site_name" content="הג'ונגל של המתמטיקה">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://hubnbrt.github.io/3rdgrade-math-jungle/">
@@ -442,7 +446,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v36';
+const APP_VERSION = 'v37';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });

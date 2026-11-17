@@ -650,6 +650,9 @@ header h1{font-size:calc(var(--s)*1.15)}
   .cats .card .stars,.cats .card .rankbadge{margin-top:0}
   .cats .card .rankbadge{display:inline-block}
 }
+/* plain header edge: no scallops, no extra bottom padding */
+header::after{display:none}
+header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px,calc(var(--s)*.45)) !important}
 </style>
 </head>
 <body>
@@ -681,7 +684,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v74';
+const APP_VERSION = 'v75';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

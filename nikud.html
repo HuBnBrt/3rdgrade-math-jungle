@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest?v=5">
+<meta name="theme-color" content="#2f6b45">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon.png?v=5">
+<link rel="shortcut icon" href="favicon.ico?v=5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:type" content="website">
+<meta property="og:title" content="הג'ונגל של המתמטיקה - לכיתה ג'">
+<meta property="og:description" content="אימון משחקי למבחן במתמטיקה בכיתה ג'">
+<meta property="og:image" content="https://hubnbrt.github.io/3rdgrade-math-jungle/share.jpg?v=2">
+<meta property="og:image:secure_url" content="https://hubnbrt.github.io/3rdgrade-math-jungle/share.jpg?v=2">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="הג'ונגל של המתמטיקה לכיתה ג' - האריה, הפיל והקוף">
+<meta property="og:site_name" content="הג'ונגל של המתמטיקה">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://hubnbrt.github.io/3rdgrade-math-jungle/">
+<meta property="og:locale" content="he_IL">
+<meta name="twitter:card" content="summary_large_image">
+<title>ארץ הג'ונגל במתמטיקה (מנוקד)</title><meta name="robots" content="noindex">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canopy:#163b2a; --moss:#2f6b4f; --leaf:#4caf7a; --leaf-soft:#dcefd9;
+  --sand:#f9f4e8; --paper:#fffdf6; --amber:#f0a430; --clay:#b5532f; --bad:#c94b3d;
+  --ink:#3b220d; --muted:#5c3a21; --r:20px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--sand);
+  color:var(--ink);font-family:Heebo,system-ui,sans-serif;font-size:17px;line-height:1.55;
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(76,175,122,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(47,107,79,0.06) 0%, transparent 40%);
+}
+h1,h2,.display{font-family:Rubik,Heebo,sans-serif}
+h2{font-size:22px;margin:32px 0 16px;font-weight:900;color:var(--canopy);text-align:center}
+
+/* header */
+header{
+  position:sticky;top:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:14px 18px 22px;color:#fff;
+  background:linear-gradient(180deg,var(--moss),var(--canopy));
+  box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-10px;height:12px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M0 0 Q15 12 30 0 T60 0 T90 0 T120 0 V12 H0Z' fill='%23163b2a'/></svg>") repeat-x;
+  background-size:60px 12px;
+}
+header h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px;text-shadow:0 2px 4px rgba(0,0,0,0.4)}
+.wallet{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.2);padding:4px 14px;border-radius:99px;font-weight:900;font-size:16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2)}
+.chip b{font-family:Rubik,sans-serif;font-size:18px;color:var(--amber)}
+
+main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
+.spacer{height:92px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:64px 18px;padding-top:48px}
+.big{font-size:22px;font-weight:900;font-family:Rubik,sans-serif;color:var(--ink)}
+.rank{font-size:14px;color:var(--muted);font-weight:600}
+
+/* wooden cards */
+.card{
+  background:linear-gradient(180deg,#d8a675,#b47a46);
+  border-radius:var(--r);padding:18px 12px;
+  border:4px solid #6b421a;
+  box-shadow:inset 0 0 10px rgba(0,0,0,0.1),0 8px 0 #5c3a21,0 12px 15px rgba(0,0,0,0.15);
+  position:relative;z-index:10;
+  text-align:center;
+  transition:transform 0.2s;
+}
+.card::before{
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(to bottom,transparent,transparent 10px,rgba(107,66,26,0.05) 10px,rgba(107,66,26,0.05) 20px);
+  border-radius:14px;pointer-events:none;z-index:-1;
+}
+.card-leaf{position:absolute;font-size:26px;z-index:12;filter:drop-shadow(0 3px 2px rgba(0,0,0,0.3));pointer-events:none}
+.leaf-tl{top:-12px;left:-12px;transform:rotate(-45deg)}
+.leaf-br{bottom:-12px;right:-12px;transform:rotate(135deg)}
+.leaf-tr{top:-12px;right:-12px;transform:rotate(45deg)}
+
+/* one animal per card, peeking from behind the top edge */
+.slot{position:relative;display:flex}
+.slot .card{flex:1;display:flex;flex-direction:column;justify-content:center}
+.peek-animal{
+  position:absolute;z-index:1;bottom:calc(100% - 20px);line-height:1;font-size:54px;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.peek-animal.p0{left:10%}
+.peek-animal.p1{left:50%;margin-left:-27px}
+.peek-animal.p2{right:10%}
+.slot,.slot .card{min-width:0}
+.topic-title{white-space:nowrap;font-size:22px;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
+.topic-title.wrap{white-space:normal;min-height:2.4em;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.grid.cats{--cols:2;grid-template-columns:repeat(var(--cols),minmax(0,1fr))}
+@media (min-width:520px){.grid.cats{--cols:3}}
+@media (min-width:760px){.grid.cats{--cols:4}}
+@media (min-width:1100px){.grid.cats{--cols:6}}
+.prompt,.question-board,.hero-bubble{text-wrap:balance}
+
+.wood-btn-small{
+  background:linear-gradient(180deg,#b97a44,#8b5a2b);
+  border:2px solid #5c3a21;color:#fff;border-radius:8px;
+  padding:6px 18px;font-weight:900;box-shadow:0 4px 0 #4a2810;
+  font-size:15px;margin-top:12px;font-family:Rubik,sans-serif;cursor:pointer;
+  text-shadow:0 1px 2px rgba(0,0,0,0.5);
+}
+.bar{height:12px;background:#8b5a2b;border-radius:99px;overflow:hidden;margin-top:14px;border:2px solid #5c3a21;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3)}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#8bc34a,#4caf50);border-radius:99px;transition:width .4s}
+
+/* hero */
+.hero-banner{text-align:center;margin:30px auto 40px;position:relative;max-width:450px}
+.hero-monkey{font-size:80px;position:absolute;top:-65px;left:50%;transform:translateX(-50%);z-index:1;filter:drop-shadow(0 5px 5px rgba(0,0,0,0.3))}
+.hero-bubble{
+  background:#fff;border-radius:16px;padding:12px 20px;display:inline-block;position:relative;margin-bottom:16px;
+  font-weight:900;color:#163b2a;box-shadow:0 4px 0 rgba(0,0,0,0.1);border:2px solid #e0e0e0;z-index:5;
+}
+.hero-board{
+  background:linear-gradient(180deg,#966030,#6c421e);padding:16px;border-radius:20px;border:4px solid #4a2810;
+  position:relative;z-index:10;box-shadow:inset 0 0 10px rgba(0,0,0,0.2),0 8px 0 #3b220d,0 15px 20px rgba(0,0,0,0.3);width:100%;
+}
+.big-green-btn{
+  width:100%;font-size:26px;padding:18px;border-radius:12px;
+  background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;border:3px solid #a5d6a7;
+  box-shadow:0 6px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3);text-shadow:0 2px 3px rgba(0,0,0,0.4);
+  font-family:Rubik,sans-serif;font-weight:900;cursor:pointer;transition:transform 0.1s,box-shadow 0.1s;
+}
+.big-green-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3)}
+
+/* banner (login / info) */
+.banner{
+  background:var(--paper);border:3px dashed #b47a46;border-radius:16px;padding:12px 16px;margin:16px 0;
+  color:#4a2810;font-weight:800;text-align:center;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;
+}
+
+/* play */
+.question-board{
+  padding:24px;background:var(--paper);border:3px dashed #b47a46;border-radius:20px;margin:16px 0 24px;
+  font-size:22px;font-weight:800;text-align:center;color:#4a2810;box-shadow:inset 0 0 20px rgba(180,122,70,0.1);
+}
+.opts{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;justify-content:center}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:min(100%,420px);margin-inline:auto}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))) .opt{width:100%}
+.opt{
+  background:linear-gradient(180deg,#e0e0e0,#bdbdbd);color:#333;border:3px solid #9e9e9e;border-radius:16px;
+  min-width:80px;font-size:22px;direction:ltr;
+  box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #757575;
+  font-family:Rubik,sans-serif;font-weight:900;padding:12px 20px;cursor:pointer;
+  transition:transform 0.1s,box-shadow 0.1s,background 0.2s;
+}
+.opt:active{transform:translateY(6px);box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 0 0 #757575}
+.opt.sel{background:linear-gradient(180deg,#fff9c4,#fff59d);border-color:#fbc02d;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #f57f17;color:#f57f17}
+.opt.good{background:linear-gradient(180deg,#c8e6c9,#a5d6a7);border-color:#4caf50;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #2e7d32;color:#1b5e20;transform:scale(1.05)}
+.opt.bad{background:linear-gradient(180deg,#ffcdd2,#ef9a9a);border-color:#f44336;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #c62828;color:#b71c1c;animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+input.num,input.text{font:inherit;font-size:22px;padding:12px 16px;border:3px solid #b47a46;border-radius:14px;width:180px;text-align:center;direction:ltr;background:var(--paper);font-family:Rubik,sans-serif;font-weight:900;color:#4a2810}
+input.text{width:100%;direction:rtl;text-align:right}
+.locked{pointer-events:none}
+.prompt{font-size:22px;font-weight:800;margin:6px 0 12px;line-height:1.85}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Rubik,sans-serif}
+.seq{min-height:60px;display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:rgba(255,255,255,0.5);border-radius:16px;direction:ltr;margin-bottom:12px;border:2px dashed #b47a46}
+.seq span{background:#6b421a;color:#fff;padding:8px 16px;border-radius:12px;font-weight:900;font-family:Rubik,sans-serif}
+.timer{display:inline-block;margin:4px auto 12px;padding:6px 16px;border-radius:99px;background:var(--moss);color:#fff;font-weight:900;font-family:Rubik,sans-serif;font-size:18px;box-shadow:0 3px 0 var(--canopy)}
+.timer.urgent{background:var(--bad);animation:shake .4s infinite}
+.timer-wrap{text-align:center}
+svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;touch-action:none;background:rgba(255,255,255,0.5);border-radius:16px;border:3px dashed #b47a46}
+
+/* action buttons */
+.action-btn{
+  font:inherit;font-weight:900;cursor:pointer;border-radius:16px;padding:14px 28px;font-size:18px;
+  background:linear-gradient(180deg,var(--leaf),var(--moss));color:#fff;border:2px solid #81c784;
+  box-shadow:0 6px 0 #1b5e20;transition:transform .1s,box-shadow .1s;
+}
+.action-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20}
+.ghost-btn{
+  background:var(--paper);color:var(--muted);border:3px solid #b47a46;box-shadow:0 6px 0 #8b5a2b;
+  font-weight:900;border-radius:16px;padding:14px 24px;cursor:pointer;transition:transform 0.1s;font-size:18px;font-family:Rubik,sans-serif;
+}
+.ghost-btn:active{transform:translateY(6px);box-shadow:0 0 0 #8b5a2b}
+.ghost-btn:disabled{opacity:.5;cursor:not-allowed}
+.ghost-btn.on{background:#4caf50;color:#fff;border-color:#2e7d32;box-shadow:0 6px 0 #1b5e20}
+
+/* feedback */
+.feedback{display:flex;gap:16px;align-items:center;padding:18px;border-radius:20px;margin-top:16px;font-weight:800;font-size:18px}
+.feedback .mascot{font-size:45px;flex:0 0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2))}
+.feedback.ok{background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7}
+.feedback.no{background:#ffebee;color:#c62828;border:2px solid #ef9a9a}
+
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:16px}
+.seg{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.seg .ghost-btn{font-size:16px;padding:10px 16px;box-shadow:0 4px 0 #8b5a2b}
+
+/* bottom nav */
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--paper);border-top:3px solid #e0e0e0;box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;background:transparent;color:#8d6e63;border:none;border-radius:0;padding:12px 4px 14px;font-weight:900;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:Rubik,sans-serif;cursor:pointer}
+.nav button .e{font-size:24px;filter:grayscale(1) opacity(0.6);transition:0.2s}
+.nav button[aria-current="page"]{color:#4caf50;background:linear-gradient(180deg,transparent,rgba(76,175,80,0.1));border-top:3px solid #4caf50;margin-top:-3px}
+.nav button[aria-current="page"] .e{filter:none;transform:scale(1.15)}
+
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--canopy);color:#fff;padding:14px 24px;border-radius:16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:900;font-weight:900;white-space:nowrap;box-shadow:0 10px 20px rgba(0,0,0,0.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
+.hidden{display:none !important}
+.user-chip{position:relative}
+.user-btn{cursor:pointer;color:#fff;font:inherit;font-weight:900;display:flex;align-items:center;gap:6px}
+.user-btn{white-space:nowrap;max-width:none}.user-name{white-space:nowrap;overflow:visible}
+.user-btn img{width:24px;height:24px;border-radius:50%}
+.user-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;min-width:210px;background:var(--paper);color:var(--ink);border:3px solid #b47a46;border-radius:16px;padding:14px;box-shadow:0 10px 24px rgba(0,0,0,.3);z-index:200;display:flex;flex-direction:column;gap:8px;text-align:center}
+.um-name{font-weight:900}.um-mail{font-size:13px;color:var(--muted);direction:ltr}
+.gbtn{min-height:44px;display:flex;justify-content:center}
+.auth-error{width:100%;color:var(--bad);font-weight:800;font-size:15px}
+
+/* compact play layout */
+#qcard{max-width:min(980px,94vw);margin:0 auto;padding:16px 22px}
+#qcard .question-board{padding:14px 18px;margin:8px 0 12px}
+#qcard .prompt{margin:2px 0 6px;line-height:1.55}
+#qcard .bar{margin-top:8px}
+#qcard .opts{margin:8px 0;gap:10px}
+#qcard .opt{padding:8px 18px;font-size:20px}
+#qcard .feedback{padding:10px 16px;margin-top:10px;font-size:17px}
+#qcard .feedback .mascot{font-size:34px}
+.parts{display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:center;align-items:flex-start}
+.parts>.row{margin-top:6px}
+.part-fix{direction:rtl;display:block;font-size:15px;font-weight:800;margin-top:4px;text-align:center}
+.part-fix.ok{color:#1b5e20}.part-fix.no{color:#b71c1c}
+input.num.good{border-color:#2e7d32;background:#e8f5e9}
+input.num.bad{border-color:#c62828;background:#ffebee}
+@media (max-width:600px){#qcard{padding:14px}}
+
+/* shop & collection */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:20px;margin-top:14px}
+.collection-shelf{background:linear-gradient(180deg,#81c784,#4caf50);border-radius:20px;padding:20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;border:4px solid #388e3c;border-bottom-width:10px;box-shadow:inset 0 4px 0 rgba(255,255,255,0.3)}
+.owned-animal{font-size:50px;filter:drop-shadow(0 4px 2px rgba(0,0,0,0.2));animation:float 3s ease-in-out infinite alternate}
+@keyframes float{0%{transform:translateY(0)}100%{transform:translateY(-8px)}}
+
+/* ===== no-scroll app shell ===== */
+html,body{height:100%;overflow:hidden}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh}
+header{position:relative;flex:none;padding:8px 16px 14px}
+header h1{font-size:20px}
+.chip{padding:2px 12px;font-size:15px}
+main{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;padding:12px 14px 12px;overflow:hidden}
+main>section{flex:1;min-height:0;display:flex;flex-direction:column}
+#view-settings{display:block;overflow-y:auto}
+.spacer{display:none}
+.nav{position:static;flex:none;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{padding:6px 4px 8px;gap:2px;font-size:14px}
+.nav button .e{font-size:20px}
+.banner{margin:0 0 8px;padding:6px 12px}
+.gbtn{min-height:40px}
+
+/* home: everything fits on one screen */
+.home-top{flex:none;display:flex;gap:12px;align-items:center;justify-content:center;margin:2px 0 6px}
+.home-top .hero-bubble{margin:0;padding:6px 14px;text-align:center;font-size:17px;line-height:1.35}
+.home-top .hero-bubble small{display:block;font-size:13px;color:#5c3a21;font-weight:600}
+.home-top .hero-board{z-index:0;width:auto;flex:0 1 380px;padding:8px;border-radius:16px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.2),0 5px 0 #3b220d,0 8px 12px rgba(0,0,0,.3)}
+.home-top .big-green-btn{font-size:clamp(17px,3.4vh,24px);padding:8px 14px;box-shadow:0 4px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,.3)}
+.grid.cats{flex:1;min-height:0;padding-top:0;gap:8px 14px;align-content:center;--an:clamp(26px,5.6vh,50px);--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,210px))}
+@media (min-width:700px){.grid.cats{--cols:4;--rows:4}}
+@media (min-width:1000px){.grid.cats{--cols:8;--rows:2}}
+@media (orientation:landscape) and (max-height:560px){.grid.cats{--cols:8;--rows:2}}
+@media (max-width:699px){.grid.cats{--cols:4;--rows:4}}
+.cats .slot{padding-top:calc(var(--an)*.63);min-height:0}
+.cats .peek-animal{font-size:var(--an);bottom:calc(100% - var(--an))}
+.cats .peek-animal.p1{margin-left:calc(var(--an)*-.5)}
+.cats .card{container-type:size;padding:6px 8px;border-width:3px;box-shadow:inset 0 0 10px rgba(0,0,0,.1),0 5px 0 #5c3a21,0 8px 10px rgba(0,0,0,.15)}
+.cats .card-leaf{font-size:18px}
+.cats .card .rank{font-size:clamp(10px,10cqh,14px);margin-top:2px !important}
+.cats .wood-btn-small{padding:2px 14px;margin-top:4px;font-size:clamp(10px,10cqh,15px)}
+.cats .card .bar{margin-top:6px;height:8px;border-width:1px}
+@container (max-height:92px){.cats .card .rank{display:none}}
+@container (max-height:66px){.cats .wood-btn-small{display:none}}
+
+/* play: fit the screen height */
+#qcard{margin:auto;width:100%;height:auto;max-height:100%;overflow:clip;overflow-clip-margin:16px;display:flex;flex-direction:column;gap:clamp(4px,1vh,10px);padding:clamp(8px,1.8vh,16px) 22px}
+#qcard.summary{justify-content:center}
+#qcard>*{flex:none}
+#qcard .qhead{display:flex;align-items:center;justify-content:center;gap:12px;min-height:26px}
+#qcard .qhead .timer{margin:0;padding:2px 12px;font-size:15px}
+#qcard .question-board{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;margin:0;overflow:hidden}
+#qcard .question-board svg.angle{max-height:26vh;width:auto;max-width:100%}
+#qcard .parts svg.angle{max-height:30vh;width:auto;max-width:100%;margin:4px auto}
+#qcard .fbslot{height:clamp(66px,12vh,104px);display:flex;align-items:stretch}
+#qcard .fbslot>*{flex:1}
+#qcard .feedback{margin:0;padding:6px 14px;font-size:clamp(14px,2.3vh,17px);line-height:1.35;overflow:hidden}
+#qcard .hintbox{color:#fffdf6;font-weight:800;font-size:clamp(14px,2.3vh,16px);text-align:center;align-self:center;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+#qcard .question-board{min-height:clamp(70px,14vh,140px)}
+#qcard .seq{min-height:clamp(40px,6vh,60px);padding:8px;margin-bottom:6px;gap:6px}
+#qcard .ghost-btn{padding:clamp(6px,1.2vh,12px) 18px;font-size:clamp(14px,2.3vh,18px);box-shadow:0 4px 0 #8b5a2b}
+#qcard .qactions{margin-top:0;padding-top:8px;border-top:2px dashed rgba(0,0,0,.1)}
+#qcard .question-board{padding:clamp(8px,1.8vh,14px) 18px}
+#qcard .prompt{font-size:clamp(16px,2.7vh,22px)}
+#qcard [style*="font-size:28px"]{font-size:clamp(20px,3.8vh,28px) !important}
+#qcard .opt{padding:clamp(6px,1.2vh,8px) 18px;font-size:clamp(17px,2.8vh,20px)}
+#qcard input.num,#qcard input.text{padding:clamp(6px,1.2vh,10px) 14px;font-size:clamp(18px,2.8vh,22px)}
+#qcard .action-btn{padding:clamp(8px,1.6vh,14px) 28px;font-size:clamp(16px,2.6vh,20px)}
+#qcard .bar{margin:0}
+/* camp: shop + collection on one screen */
+.camp-title{margin:0 0 6px;font-size:18px;text-align:center;flex:none}
+.shop{flex:1;min-height:0;display:grid;gap:8px 10px;align-content:center;--cols:3;--rows:4;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,190px))}
+@media (min-width:700px){.shop{--cols:5;--rows:2}}
+@media (orientation:landscape) and (max-height:560px){.shop{--cols:5;--rows:2}}
+.shop .card{container-type:size;padding:6px;border-width:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:0;box-shadow:inset 0 0 10px rgba(0,0,0,.1),0 4px 0 #5c3a21}
+.shop .card .ic{font-size:clamp(26px,32cqh,52px);line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
+.shop .card .nm{font-size:clamp(13px,12cqh,19px)}
+.shop .card .chip{padding:0 10px;font-size:clamp(11px,9cqh,15px)}
+.shop .card .rank{font-size:clamp(10px,8cqh,13px)}
+.shop .card button{width:100%;padding:clamp(3px,3cqh,8px) 6px;font-size:clamp(11px,9cqh,16px);border-radius:12px;box-shadow:0 3px 0 #1b5e20}
+.shop .card .ghost-btn{box-shadow:0 3px 0 #8b5a2b}
+@container (max-height:120px){.shop .card .rank{display:none}}
+.camp-collection{flex:none;margin-top:8px}
+.camp-collection .collection-shelf{padding:6px 12px;gap:10px;border-bottom-width:6px;min-height:clamp(40px,7vh,64px);align-items:center}
+.camp-collection .owned-animal{font-size:clamp(24px,4.5vh,40px)}
+#view-settings .card{margin-top:12px !important;padding:12px}
+#view-settings h2{margin:0 0 8px;font-size:18px}
+@media (max-height:480px){
+  header{padding:4px 12px 10px}header h1{font-size:15px}.chip{padding:0 10px;font-size:13px}
+  .nav button{flex-direction:row;justify-content:center;gap:6px;padding:4px}.nav button .e{font-size:16px}
+  #qcard{padding:6px 14px;gap:4px}#qcard .qhead,#qcard .bar{display:none}
+  #qcard .fbslot{height:46px}#qcard .feedback .mascot{display:none}
+  main{padding:6px 10px}
+}
+#qcard .parts:has(svg){flex-direction:column;align-items:center;gap:0}
+#qcard .parts svg.angle,#qcard .question-board svg.angle{max-height:min(22vh,200px)}
+#qcard .opts .opt{min-width:56px;padding:clamp(5px,1vh,8px) 12px}
+#qcard .feedback{font-size:clamp(13px,2vh,17px);line-height:1.25}
+@media (max-width:480px){header h1{font-size:15px}header{padding:6px 12px 12px}.wallet{gap:5px}.chip{padding:1px 10px;font-size:14px}#qcard{padding:8px 12px}}
+#qcard .parts.multi{flex-wrap:nowrap;gap:10px 14px;align-items:flex-start}
+#qcard .parts.multi .row{margin-top:0;flex:1 1 0;min-width:0;max-width:220px}
+#qcard .parts.multi label{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:clamp(14px,2.2vh,18px) !important}
+#qcard .parts.multi input.num{width:100%;max-width:160px}
+#qcard .parts.multi .part-fix{font-size:clamp(11px,1.8vh,14px)}
+@media (max-width:480px){#qcard [style*="font-size:28px"]{font-size:21px !important}#qcard [style*="font-size:36px"]{font-size:28px !important}}
+@media (max-width:600px){
+  .home-top{flex-direction:column;gap:6px;margin-bottom:4px}
+  .home-top .hero-bubble{padding:3px 12px;font-size:15px}
+  .home-top .hero-bubble small{display:inline;margin-inline-start:6px;font-size:12px}
+  .home-top .hero-board{width:100%;flex:none;padding:5px}
+  .home-top .big-green-btn{font-size:19px;padding:6px 10px}
+  .banner{font-size:14px;padding:6px 10px;gap:6px}
+}
+/* header: at most two rows, even with a long name */
+header h1{flex:1 1 auto;order:1}
+.wallet{display:contents}
+header .chip{order:2;flex:none}
+#userChip{order:3;max-width:100%;min-width:0}
+#userChip .user-btn{max-width:100%}
+#userChip .user-name{overflow:hidden;text-overflow:ellipsis}
+@media (max-width:480px){#userChip .user-btn{font-size:12px;padding:1px 8px}#userChip .user-btn img{width:18px;height:18px}}
+/* bigger content, no empty filler */
+#qcard .prompt{font-size:clamp(18px,3.4vh,28px);line-height:1.5;margin:4px 0}
+#qcard [style*="font-size:28px"]{font-size:clamp(24px,5.4vh,42px) !important}
+#qcard [style*="font-size:32px"]{font-size:clamp(26px,5.8vh,46px) !important}
+#qcard [style*="font-size:36px"]{font-size:clamp(28px,6.2vh,50px) !important}
+#qcard .question-board{padding:clamp(12px,3vh,28px) 18px}
+#qcard .opt{font-size:clamp(18px,3.4vh,26px);padding:clamp(8px,1.6vh,14px) clamp(16px,3vw,28px);min-width:64px}
+#qcard input.num,#qcard input.text{font-size:clamp(20px,3.6vh,28px);padding:clamp(8px,1.6vh,14px) 14px}
+#qcard .qhead .rank{font-size:clamp(14px,2.3vh,18px) !important}
+@media (max-width:480px){#qcard [style*="font-size:28px"]{font-size:22px !important}#qcard [style*="font-size:36px"]{font-size:28px !important}#qcard [style*="font-size:32px"]{font-size:26px !important}}
+/* scale up on large screens */
+#qcard .prompt{font-size:clamp(18px,4vh,38px)}
+#qcard [style*="font-size:28px"]{font-size:clamp(24px,6.6vh,64px) !important}
+#qcard [style*="font-size:32px"]{font-size:clamp(26px,7vh,70px) !important}
+#qcard [style*="font-size:36px"]{font-size:clamp(28px,7.4vh,74px) !important}
+#qcard .opt{font-size:clamp(18px,3.8vh,34px)}
+#qcard input.num,#qcard input.text{font-size:clamp(20px,4vh,36px);width:clamp(140px,22vw,260px)}
+#qcard .action-btn{font-size:clamp(16px,3vh,26px);padding:clamp(8px,1.8vh,18px) clamp(24px,3vw,40px)}
+#qcard .ghost-btn{font-size:clamp(14px,2.6vh,22px)}
+#qcard .fbslot{height:clamp(56px,10vh,92px)}
+#qcard .feedback{font-size:clamp(14px,2.5vh,22px)}
+@media (max-width:480px){#qcard [style*="font-size:28px"]{font-size:22px !important}#qcard [style*="font-size:36px"]{font-size:28px !important}#qcard [style*="font-size:32px"]{font-size:26px !important}#qcard input.num,#qcard input.text{width:100%}}
+@media (max-width:480px){#qcard .prompt{font-size:clamp(16px,2.7vh,21px);line-height:1.4}#qcard .question-board{padding:8px 12px}#qcard .opt{font-size:clamp(16px,2.8vh,20px)}#qcard .fbslot{height:clamp(52px,9vh,80px)}#qcard .opts{margin:4px 0}}
+/* drawing question: small instruction, big drawing */
+#qcard .prompt.compact{font-size:clamp(18px,3.2vh,30px)}
+#qcard .question-board:has(.prompt.compact){padding:clamp(6px,1.4vh,14px) 14px}
+#qcard .parts:has(svg[data-draw]){flex:1 1 auto;min-height:0}
+#qcard .parts svg[data-draw]{height:min(44vh,420px);width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:0;margin:4px auto}
+/* ranks and levels on topic cards */
+.cats .card .stars{font-size:min(clamp(11px,10cqh,18px),7cqw);overflow:hidden;max-width:100%;line-height:1.1;margin-top:2px;white-space:nowrap;color:#5c3a21;font-weight:800}
+.cats .card .stars,.cats .card .rankbadge{flex:none}
+.cats .card .stars .off{filter:grayscale(1) opacity(.35)}
+.cats .card .stars .lvl{font-size:.85em}
+.cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
+.rk-bronze .rankbadge{background:#e6b98a;color:#6b3e14;border-color:#8b5a2b}
+.rk-silver .rankbadge{background:#eceff1;color:#455a64;border-color:#90a4ae}
+.rk-gold .rankbadge{background:#ffe082;color:#7a5200;border-color:#f9a825}
+.cats .card.rk-silver{border-color:#78909c;background:linear-gradient(180deg,#dcc9b4,#b8946e)}
+.cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
+.bar.prog{position:relative}
+.bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
+.cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
+.cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
+.vert{border-collapse:collapse;margin:6px auto;font:900 clamp(26px,5vh,40px)/1.15 Rubik,sans-serif;color:#163b2a;background:#fff9;border-radius:12px;padding:4px 14px}
+.vert td{min-width:1.1em;text-align:center;padding:0 3px}
+.vert td.vs{min-width:1.1em;color:#d84a2b}
+.vert tr.vl td:not(.vs){border-top:4px solid #163b2a}
+.vert td.vq{color:#d84a2b;letter-spacing:.2em}
+.cats .card .trophy-mark{position:absolute;top:-14px;inset-inline-start:-8px;z-index:6;font-size:clamp(22px,40cqh,34px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));animation:float 3s ease-in-out infinite alternate}
+.trophy-line{background:rgba(255,255,255,.85);border:3px dashed #d4a017;border-radius:14px;padding:8px;margin:8px 0;font-weight:800;font-size:18px;text-align:center}
+@media (min-width:1000px){main{max-width:2200px}.grid.cats{grid-template-rows:repeat(var(--rows),minmax(0,360px));gap:12px 18px;--an:clamp(30px,6.5vh,64px)}}
+/* challenge timer: the check button empties from right to left */
+.action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
+.action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
+/* two blanks: input order matches the order in the series (left to right) */
+.parts.multi{direction:ltr}
+.gap{display:inline-block;direction:rtl;unicode-bidi:isolate;font-size:.55em;font-weight:900;background:#fff3d6;border:2px dashed #b47a46;border-radius:10px;padding:2px 10px;margin:0 2px;vertical-align:middle;color:#8b5a2b}
+
+/* ---- v40 fixes ---- */
+.opts.ord{flex-wrap:nowrap;gap:clamp(4px,1.2vw,10px)}
+#qcard .opts.ord .opt{flex:1 1 0;min-width:0;padding:clamp(5px,1vh,10px) 2px;font-size:clamp(14px,min(4.6vw,3.4vh),26px);text-align:center}
+#qcard .seq{flex-wrap:nowrap;gap:clamp(4px,1.2vw,8px);padding:clamp(5px,1vh,10px)}
+#qcard .seq span{flex:1 1 0;min-width:0;text-align:center;padding:clamp(5px,1vh,8px) 2px;font-size:clamp(14px,min(4.6vw,3.4vh),26px)}
+#qcard .seq span.rank{flex:1 1 100%}
+#qcard .fbslot{height:clamp(84px,15vh,132px)}
+#qcard .feedback{padding:6px 12px;gap:10px}
+@media (max-width:480px){#qcard .feedback .mascot{display:none}#qcard .fbslot{height:clamp(84px,13vh,120px)}#qcard .feedback{font-size:15px}}
+.draw-help{font-size:clamp(15px,2.5vh,21px);font-weight:700;line-height:1.35;color:#fffdf6;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.5);align-self:stretch;max-width:100%;margin-top:6px;white-space:normal}
+.draw-help b{color:#ffe082}
+#qcard.summary{gap:clamp(4px,1.2vh,12px)}
+.sum-gift{font-size:clamp(40px,9vh,76px);line-height:1;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.sum-title{text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,.5);font:900 clamp(22px,4vh,32px)/1.15 Rubik,sans-serif}
+.sum-box{background:rgba(255,255,255,.85);padding:clamp(6px,1.4vh,14px) 12px;border-radius:16px;border:3px dashed #8b5a2b;text-align:center}
+.sum-box p{margin:clamp(2px,.6vh,8px) 0;font-weight:800;font-size:clamp(16px,2.6vh,20px)}
+.sum-box .trophy-line{border:0;background:none;padding:0}
+.sum-item{font-size:clamp(24px,4vh,32px);vertical-align:middle}
+.sum-actions{display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px)}
+.sum-actions .big-green-btn{padding:clamp(8px,1.6vh,14px) 10px;font-size:clamp(17px,3vh,24px)}
+.sum-actions .ghost-btn{width:100%;background:#fff;padding:clamp(8px,1.6vh,14px)}
+/* phone held sideways */
+@media (orientation:landscape) and (max-height:560px){
+  header{padding:3px 12px 8px}
+  .home-top .hero-bubble{display:none}
+  .home-top{margin:0 0 4px}
+  .home-top .hero-board{flex:0 1 340px;padding:3px}
+  .home-top .big-green-btn{font-size:16px;padding:3px 10px}
+  .cats .card .topic-title{line-height:1.05}
+  .grid.cats{gap:6px 8px;--cols:8;--rows:2}
+}
+
+/* one-line expressions */
+#qcard [style*="font-size:28px"]{font-size:clamp(18px,min(4.4vw,5.4vh),40px) !important}
+#qcard .question-board .ltr{white-space:nowrap;max-width:100%}
+
+.install-bar{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff8e1;border:3px solid #f0a430;border-radius:14px;padding:4px 10px;margin:0 0 6px;font-weight:900;font-size:15px}
+.install-bar .big-green-btn{width:auto;padding:4px 16px;font-size:16px;margin:0;box-shadow:0 3px 0 #1b5e20}
+
+.drawwrap{display:flex;flex-direction:column;align-items:center;width:100%;min-height:0}
+#qcard .parts:has(.drawwrap){display:block}
+#qcard [style*="font-size:28px"]{font-size:clamp(18px,min(5.6vw,5.4vh),42px) !important}
+
+.feedback .fb-text{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;text-align:center}
+.feedback .fb-head{display:block;font-weight:900;text-wrap:balance}
+.feedback .fb-body{display:block;text-wrap:balance;font-weight:700}
+
+/* phone held sideways: squeeze chrome, keep content */
+@media (orientation:landscape) and (max-height:480px){
+  header h1{display:none}
+  header{padding:2px 10px 6px;justify-content:flex-end;min-height:0}
+  .nav button{padding:1px 4px;font-size:12px}.nav button .e{font-size:14px}
+  .install-bar{display:none}
+  #qcard{padding:4px 12px;gap:3px}
+  #qcard .prompt{font-size:clamp(14px,5vh,20px);margin:0;line-height:1.25}
+  #qcard .question-board{padding:4px 10px;min-height:0}
+  #qcard .fbslot{height:54px}
+  #qcard .feedback{font-size:13px;padding:3px 10px;line-height:1.2}
+  #qcard .feedback .mascot{display:none}
+  #qcard .action-btn{font-size:15px;padding:5px 22px}#qcard .ghost-btn{font-size:13px;padding:4px 12px}
+  #qcard input.num,#qcard input.text{font-size:20px;padding:2px 8px;width:clamp(120px,30vw,220px)}
+  #qcard .opts .opt,#qcard .opts.ord .opt{font-size:17px;padding:3px 2px}
+  #qcard .seq{min-height:0;padding:3px}#qcard .seq span{font-size:17px;padding:3px 2px}
+  #qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:20px !important}
+  #qcard .parts svg[data-draw]{height:min(34vh,150px)}
+  .draw-help{font-size:12px;margin-top:2px}.draw-help b:first-child{display:none}
+  .sum-gift{display:none}.sum-title{font-size:20px}.sum-box{padding:3px 8px}.sum-box p{font-size:14px;margin:1px 0}
+  .sum-actions{flex-direction:row}.sum-actions>*{flex:1;font-size:14px !important;padding:5px 6px !important}
+}
+
+@media (orientation:landscape) and (max-height:480px){
+  #qcard .part-fix.no{display:none}
+  #qcard .row label{font-size:16px !important}
+  #qcard .question-board{overflow:visible;flex:none}
+}
+
+.cats .card{display:flex;flex-direction:column;justify-content:center}
+.cats .card .topic-content{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+@media (max-width:600px){.home-top .hero-board{flex:none !important;width:100% !important}}
+.cats .card.rec{outline:4px solid #ffd54f;outline-offset:1px;animation:recpulse 1.6s ease-in-out infinite alternate}
+@keyframes recpulse{from{box-shadow:0 0 0 0 rgba(255,213,79,.0),0 5px 0 #5c3a21}to{box-shadow:0 0 14px 4px rgba(255,213,79,.9),0 5px 0 #5c3a21}}
+.rec-badge{position:absolute;top:-13px;inset-inline-end:-7px;z-index:7;transform:rotate(-7deg);white-space:nowrap;background:rgba(255,255,255,.92);border:2px solid #c0392b;outline:1px solid #c0392b;outline-offset:1px;border-radius:6px;padding:0 4px;font:900 clamp(8px,1.2vh,13px)/1.2 Heebo,sans-serif;color:#c0392b;text-align:center;letter-spacing:.2px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.modal-back{position:fixed;inset:0;background:rgba(20,40,30,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{background:#fff9ec;border:4px solid #8b5a2b;border-radius:22px;padding:20px 18px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.modal .m-ic{font-size:48px}.modal .m-img{width:clamp(90px,22vh,150px);height:auto;display:block;margin:0 auto}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
+.modal .m-act{display:flex;flex-direction:column;gap:10px}
+.cats .card .topic-title{overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
+
+/* ===== v62: one harmonic scale for everything ===== */
+:root{--s:clamp(12px,min(2.1vh,3.7vw),22px)}
+header h1{font-size:calc(var(--s)*1.15)}
+.chip{font-size:var(--s)}.chip b{font-size:1.15em}
+#userChip .user-btn{font-size:calc(var(--s)*.85)}
+.nav button{font-size:calc(var(--s)*.95)}.nav button .e{font-size:calc(var(--s)*1.4)}
+.home-top .hero-bubble{font-size:calc(var(--s)*1.1)}.home-top .hero-bubble small{font-size:.78em}
+.home-top .big-green-btn{font-size:calc(var(--s)*1.5)}
+.home-top .hero-board{flex:0 1 calc(var(--s)*26)}
+.camp-title{font-size:calc(var(--s)*1.25)}
+.toast{font-size:calc(var(--s)*1.05);max-width:92vw;white-space:normal;text-align:center}
+/* home grid: 4x4 on tall screens, 8x2 on wide ones */
+.grid.cats{--cols:4;--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,380px));gap:clamp(6px,1.2vh,14px) clamp(6px,1.2vw,18px);--an:clamp(24px,min(5.6vh,9vw),64px)}
+@media (min-aspect-ratio:3/2){.grid.cats{--cols:8;--rows:2}}
+/* everything inside a topic card is a fraction of the card itself */
+.cats .card{--u:min(1.25cqh,2.1cqw);padding:clamp(4px,.9vh,10px) clamp(4px,.6vw,10px)}
+.cats .card .stars{display:block;font-size:max(10px,calc(var(--u)*6.5));margin-top:calc(var(--u)*1.5);text-align:center}
+.cats .card .stars .lvl{font-size:.8em}
+.cats .card .rankbadge{font-size:max(10px,calc(var(--u)*6.5));padding:.05em 1em;margin-top:calc(var(--u)*2)}
+.cats .card .bar.prog{height:max(6px,calc(var(--u)*3.5));margin-top:max(3px,calc(var(--u)*3))}
+.cats .card .practice-btn{display:block;height:max(18px,calc(var(--u)*13));font-size:max(9px,calc(var(--u)*5.8));padding:0 .6em;margin-top:max(3px,calc(var(--u)*3));max-width:100%}
+.cats .card .trophy-mark{font-size:max(20px,calc(var(--u)*14))}
+.cats .card .rec-badge{font-size:max(8px,calc(var(--u)*5.5))}
+.cats .card .card-leaf{font-size:max(14px,calc(var(--u)*8))}
+.cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.1;margin-bottom:0;min-height:0}
+@container (max-height:118px){.cats .card .rankbadge{display:none}}
+@container (max-height:96px){.cats .card .stars .lvl{display:none}}
+@container (max-width:104px){.cats .card .stars .lvl{display:none}}
+@container (max-width:125px){.cats .card .card-leaf{display:none}.cats .card .practice-btn{width:100%;padding:0}}
+@container (min-aspect-ratio:8/5){.cats .card .practice-btn{height:max(18px,22cqh);font-size:max(10px,11cqh)}.cats .card .stars{font-size:max(10px,11cqh)}}
+@container (max-height:68px){.cats .card .stars{display:none}}
+/* play screen: all text sizes derive from one unit */
+#qcard{--q:clamp(12.5px,min(2.5vh,4.2vw),26px)}
+#qcard .qhead .rank{font-size:var(--q) !important}
+#qcard .prompt{font-size:calc(var(--q)*1.35)}
+#qcard .prompt.compact{font-size:calc(var(--q)*1.25)}
+#qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:min(5.6vw,calc(var(--q)*2)) !important}
+#qcard .opt{font-size:calc(var(--q)*1.3)}
+#qcard .opts.ord .opt,#qcard .seq span{font-size:min(4.6vw,calc(var(--q)*1.3))}
+#qcard input.num,#qcard input.text{font-size:calc(var(--q)*1.4)}
+#qcard .action-btn{font-size:calc(var(--q)*1.2)}
+#qcard .ghost-btn{font-size:var(--q)}
+#qcard .feedback{font-size:var(--q)}
+#qcard .feedback .mascot{font-size:calc(var(--q)*2)}
+#qcard .fbslot{height:calc(var(--q)*5.6)}
+#qcard .hintbox,.draw-help{font-size:var(--q)}
+#qcard .part-fix,#qcard .parts.multi .part-fix{font-size:calc(var(--q)*.9)}
+#qcard .parts.multi label,#qcard .row label{font-size:var(--q) !important}
+#qcard .vert{font-size:calc(var(--q)*2)}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))){width:min(100%,calc(var(--q)*24))}
+.sum-title{font-size:calc(var(--q)*1.6)}.sum-box p{font-size:calc(var(--q)*1.05)}.sum-gift{font-size:calc(var(--q)*4)}
+.sum-actions .big-green-btn{font-size:calc(var(--q)*1.25)}
+@media (orientation:landscape) and (max-height:480px){#qcard .fbslot{height:calc(var(--q)*4.3)}.sum-gift{display:none}}
+.modal h2{font-size:calc(var(--s)*1.5)}.modal p{font-size:calc(var(--s)*1.1)}.modal .big-green-btn{font-size:calc(var(--s)*1.4);padding:.5em}
+/* the drawing is the question: make it the biggest thing */
+#qcard .question-board svg.angle{height:min(30vh,52vw,calc(var(--q)*14));max-height:none;width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:70px;margin:0 auto calc(var(--q)*.4)}
+#qcard .question-board:has(svg.angle) .prompt{font-size:calc(var(--q)*1.15);margin:0;flex:none}
+#qcard .question-board:has(svg.angle){padding:calc(var(--q)*.5) 14px;flex:0 1 auto;min-height:0;overflow:hidden}
+/* ordering question: fixed slots, nothing jumps */
+#qcard .parts:has(.ordwrap){display:block}
+.ordwrap{width:min(100%,calc(var(--q)*34));margin:0 auto;text-align:center}
+.ord-label{color:#fffdf6;font-weight:800;font-size:calc(var(--q)*.9);text-shadow:0 1px 2px rgba(0,0,0,.4);margin:2px 0}
+#qcard .ordwrap .seq,#qcard .ordwrap .opts.ord{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:clamp(4px,1.2vw,10px);direction:ltr;margin:0 0 6px;min-height:0}
+#qcard .ordwrap .seq span,#qcard .ordwrap .opts.ord .opt{min-width:0;padding:.35em 0;font-size:min(4.4vw,calc(var(--q)*1.25));text-align:center;white-space:nowrap}
+#qcard .ordwrap .seq span.empty{background:rgba(255,255,255,.35);color:rgba(107,66,26,.55);border:2px dashed #b47a46}
+#qcard .ordwrap .opts.ord{padding:0 clamp(7px,1vh,12px)}
+#qcard .ordwrap .opts.ord .opt.used{visibility:hidden;pointer-events:none}
+#qcard .parts:has(.drawwrap){display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+#qcard .drawwrap{flex:1 1 auto;min-height:0}
+#qcard .parts .drawwrap svg[data-draw]{flex:0 1 auto;min-height:70px;max-height:none;height:min(44vh,60vw,calc(var(--q)*18))}
+#qcard .drawwrap .draw-help{flex:none}
+#qcard .question-board:has(.prompt.compact){min-height:0;flex:none;padding:calc(var(--q)*.45) 14px}
+#qcard .question-board:has(.prompt.compact) .prompt{margin:0}
+#qcard .drawwrap .draw-help{line-height:1.25;margin-top:2px;font-size:calc(var(--q)*.92)}
+@media (orientation:landscape) and (max-height:480px){.ord-label{display:none}#qcard .ordwrap .ghost-btn{margin-top:2px !important}}
+/* camp: 5x2 everywhere, card contents proportional to the card */
+.shop{--cols:5;--rows:2;grid-template-rows:repeat(var(--rows),minmax(0,300px));gap:clamp(6px,1.2vh,14px) clamp(4px,1vw,14px)}
+.shop .card{--u:min(1cqh,1.9cqw);padding:clamp(3px,.8vh,10px) clamp(2px,.5vw,10px);gap:max(2px,calc(var(--u)*2));overflow:hidden}
+.shop .card .ic{font-size:max(22px,calc(var(--u)*28))}
+.shop .card .nm{font-size:max(11px,calc(var(--u)*11));line-height:1.1}
+.shop .card .chip{font-size:max(10px,calc(var(--u)*9));padding:0 .7em;white-space:nowrap}
+.shop .card button{font-size:max(10px,calc(var(--u)*9));padding:.35em 0;white-space:nowrap;border-radius:max(8px,calc(var(--u)*6))}
+.camp-collection .collection-shelf{gap:clamp(4px,1vw,12px);padding:clamp(4px,1vh,10px) 10px}
+.camp-collection .owned-animal{font-size:clamp(22px,min(4.5vh,7vw),44px)}
+/* settings: readable column, same scale */
+#view-settings>*{max-width:760px;margin-inline:auto}
+#view-settings .rank{font-size:calc(var(--s)*.95)}
+#view-settings h2{font-size:calc(var(--s)*1.25)}
+#view-settings .seg .ghost-btn,#view-settings #resetBtn{font-size:var(--s)}
+/* titles: always two lines in upright cards, so all cards line up */
+.cats .card .topic-title .tbr{font-style:normal}
+@container (max-aspect-ratio:8/5){
+  .cats .card .topic-title,.cats .card .topic-title.wrap{display:flex;align-items:flex-end;justify-content:center;min-height:2.2em}
+  .cats .card .topic-title .tbr::after{content:"\A";white-space:pre}
+}
+/* settings: cards in a grid, text on the shared scale */
+#view-settings:not(.hidden){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(var(--s)*24)),1fr));gap:calc(var(--s)*.9);align-content:start;align-items:stretch;overflow-y:auto;padding:4px 4px 12px}
+#view-settings>*{max-width:none;margin:0 !important}
+#view-settings>.banner,#view-settings>.rank{grid-column:1/-1}
+#view-settings .card{padding:calc(var(--s)*.9) !important;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--s)*.5)}
+#view-settings h2{font-size:calc(var(--s)*1.35);margin:0}
+#view-settings .rank{font-size:calc(var(--s)*1.05);line-height:1.5;margin:0 !important}
+#view-settings #nickInput{font-size:calc(var(--s)*1.25) !important;padding:.5em !important}
+#view-settings .seg{margin:0;gap:calc(var(--s)*.5)}
+#view-settings .seg .ghost-btn,#view-settings #resetBtn,#view-settings .big-green-btn{font-size:calc(var(--s)*1.1);padding:.55em 1em}
+#view-settings .tsel{flex-direction:column;align-items:stretch}
+#view-settings .tsel .ghost-btn{display:flex;flex-direction:column;align-items:center;gap:.1em;line-height:1.25}
+#view-settings .tsel .ghost-btn small{font:600 .8em Heebo,sans-serif;opacity:.85}
+/* settings layouts: 3 columns sideways, 2 columns upright on tablets, 1 on phones */
+#view-settings .s-ver{font-size:calc(var(--s)*.8) !important}
+@media (min-width:600px){
+#view-settings .banner{grid-area:top}
+#view-settings .s-timer{grid-area:timer}#view-settings .s-nick{grid-area:nick}#view-settings .s-signs{grid-area:signs}
+#view-settings .s-reset{grid-area:reset}#view-settings .s-install{grid-area:inst}}
+#view-settings .s-signs .rank{font-size:calc(var(--s)*1.2)}
+#view-settings .s-timer .tsel{flex:1}#view-settings .s-timer .tsel .ghost-btn{flex:1;justify-content:center}
+@media (min-width:700px) and (min-aspect-ratio:4/3){
+  #view-settings:not(.hidden){overflow:hidden;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto auto 1fr;
+    grid-template-areas:"top top top" "timer signs nick" "timer signs reset" "timer signs inst";align-content:stretch}
+  #view-settings .s-timer,#view-settings .s-signs,#view-settings .s-nick{justify-content:flex-start}
+  #view-settings .s-signs .rank{font-size:calc(var(--s)*1.3);line-height:1.7}
+  #view-settings .s-install{justify-content:flex-start}
+}
+@media (min-width:600px) and (max-aspect-ratio:4/3){
+  #view-settings:not(.hidden){--s:clamp(12px,min(1.7vh,2.6vw),19px);grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-areas:"top top" "timer nick" "timer reset" "signs signs" "inst inst";align-content:start}
+  #view-settings .s-timer,#view-settings .s-nick{justify-content:flex-start}
+}
+#view-settings h2{line-height:1.2;min-height:1.2em}
+#view-settings .tsel .ghost-btn b{font-size:1.15em}#view-settings .tsel .ghost-btn small{font-size:.85em}
+#view-settings .s-install .rank{font-size:calc(var(--s)*.85)}
+@media (min-width:600px){#view-settings{position:relative}#view-settings .s-ver{position:absolute;bottom:0;left:6px;margin:0 !important}
+  #view-settings .s-signs .rank{display:flex;flex-direction:column;gap:.6em}}
+@container (min-height:97px){.cats .card .topic-content{justify-content:flex-start;padding-top:calc(var(--u)*3);gap:calc(var(--u)*2.5)}}
+/* squarish cards (upright tablets): stars and rank side by side, so everything can be bigger */
+@container (min-aspect-ratio:1/1) and (max-aspect-ratio:8/5){
+  .cats .card *{--u:min(1.75cqh,2.3cqw)}
+  .cats .card .topic-content{flex-direction:row;flex-wrap:wrap;align-content:center;justify-content:center;column-gap:calc(var(--u)*3);row-gap:calc(var(--u)*1.5);padding-top:0}
+  .cats .card .topic-title{flex:0 0 100%}
+  .cats .card .stars .lvl{display:none}
+  .cats .card .stars,.cats .card .rankbadge{margin-top:0}
+  .cats .card .rankbadge{display:inline-block}
+}
+/* plain header edge: no scallops, no extra bottom padding */
+header::after{display:none}
+header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px,calc(var(--s)*.45)) !important}
+@media (min-width:600px) and (max-aspect-ratio:4/3){
+  #view-settings:not(.hidden){gap:calc(var(--s)*.7)}
+  #view-settings .card{padding:calc(var(--s)*.7) !important;gap:calc(var(--s)*.45)}
+  #view-settings .s-nick .seg{flex-wrap:nowrap}
+  #view-settings .s-nick .seg .ghost-btn{flex:1 1 0;min-width:0;padding:.45em .3em;white-space:nowrap}
+  #view-settings .tsel .ghost-btn{padding:.35em .6em}
+  #view-settings .s-reset #resetBtn{padding:.4em}
+  #view-settings .s-signs .rank{font-size:calc(var(--s)*1.1);line-height:1.45;gap:.35em}
+}
+#resetBtn.danger{background:linear-gradient(180deg,#e53935,#b71c1c);color:#fff;border-color:#7f0000;box-shadow:0 4px 0 #7f0000;animation:shake .4s}
+.reset-warn{color:#fff;background:#b71c1c;border-radius:10px;padding:.4em .6em;font-weight:800;font-size:calc(var(--s)*.9);line-height:1.35;text-align:center}
+/* gentle wave along the collection shelf: each item starts a little after its neighbour */
+.collection-shelf .owned-animal{animation:shelfwave 4.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * -0.22s)}
+.collection-shelf .owned-animal:nth-child(even){animation-delay:calc(var(--i,0) * -0.22s - 2.1s)}
+@keyframes shelfwave{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.collection-shelf .owned-animal{animation:none}}
+/* nikud version: room for vowel marks */
+.cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
+#qcard .prompt{line-height:1.7}
+.feedback .fb-text{line-height:1.45}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="display"><a href="admin.html" tabindex="-1" aria-hidden="true" style="color:inherit;text-decoration:none;cursor:default;-webkit-tap-highlight-color:transparent">🌴</a> אֶרֶץ הַגּ'וּנְגֶּל בְּמָתֵמָטִיקָה</h1>
+  <div class="wallet">
+    <span id="userChip" class="user-chip"></span>
+    <span class="chip">🪙 <b id="coins">0</b></span>
+    <span class="chip">🏆 <b id="trophies">0</b></span>
+  </div>
+</header>
+
+<main>
+  <section id="view-home"></section>
+  <section id="view-play" class="hidden"><div class="card" id="qcard"></div></section>
+  <section id="view-camp" class="hidden"></section>
+  <section id="view-settings" class="hidden"></section>
+</main>
+
+<nav class="nav" aria-label="נִיוּוּט">
+  <button type="button" data-go="home" aria-current="page"><span class="e">🏠</span>בַּיִת</button>
+  <button type="button" data-go="camp"><span class="e">🏕️</span>הַמַּחֲנֶה</button>
+  <button type="button" data-go="settings"><span class="e">⚙️</span>הַגְדָּרוֹת</button>
+</nav>
+<div id="toast" class="toast" role="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const APP_VERSION = 'v79';
+function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
+window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+function installBlock() {
+  if (isStandalone()) return '';
+  return `<div class="card s-install" style="margin-top:20px"><h2 style="margin-top:8px">📲 הַתְקָנָה בַּמַּכְשִׁיר</h2>
+    ${installEvt ? `<button type="button" class="big-green-btn" id="installBtn" style="width:100%">הַתְקָנַת הָאַפְּלִיקַצְיָה</button>`
+    : isIOS() ? `<div class="rank" style="text-align:right">בְּאַיְיפוֹן: לוֹחֲצִים עַל כַּפְתּוֹר הַשִּׁיתּוּף (▫️⬆️) וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת".</div>`
+    : `<div class="rank" style="text-align:right">בַּדַּפְדְּפָן: תַּפְרִיט ⋮ ← "הַתְקָנַת אַפְּלִיקַצְיָה" / "הוֹסָפָה לְמָסַךְ הַבַּיִת". אִם הַכַּפְתּוֹר לֹא מוֹפִיעַ כָּאן, יִיתָּכֵן שֶׁכְּבָר הוּתְקְנָה.</div>`}</div>`;
+}
+const wantInstall = () => !isStandalone() && /[?&]install\b/.test(location.search);
+function installBar() { return ''; }
+/* ---------- pop-up prompts: install + update ---------- */
+let modalOpen = false, pendingUpdate = null, installAsked = false;
+function showModal({ icon, title, text, ok, cancel, onOk, onNo }) {
+  if (modalOpen) return; modalOpen = true;
+  const d = document.createElement('div'); d.className = 'modal-back';
+  d.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="m-ic">${icon}</div><h2>${title}</h2><p>${text}</p><div class="m-act"><button type="button" class="big-green-btn" data-m="ok">${ok}</button>${cancel ? `<button type="button" class="ghost-btn" data-m="no">${cancel}</button>` : ''}</div></div>`;
+  d.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.remove(); modalOpen = false; if (b.dataset.m === 'ok') { if (onOk) onOk(); } else if (onNo) onNo(); });
+  document.body.appendChild(d);
+}
+function maybePrompts() {
+  if (modalOpen || currentView === 'play') return;
+  if (pendingUpdate) {
+    const v = pendingUpdate;
+    showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: 'יָצְאָה גִּרְסָה חֲדָשָׁה!', text: 'יֵשׁ שִׁיפּוּרִים וְתִיקּוּנִים בָּאַפְּלִיקַצְיָה. הַהִתְקַדְּמוּת וְהַמַּטְבְּעוֹת נִשְׁמָרִים.', ok: 'עִדְכּוּן עַכְשָׁיו', cancel: 'אַחַר כָּךְ', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
+    return;
+  }
+  let dismissed = 0; try { dismissed = +localStorage.getItem('jungle-install-no') || 0; } catch (e) {}
+  const recentNo = Date.now() - dismissed < 3 * 864e5;
+  if (installAsked || isStandalone() || !(installEvt || isIOS() || wantInstall()) || (recentNo && !wantInstall())) return;
+  installAsked = true;
+  showModal({ icon: '📲', title: 'לְהַתְקִין אֶת הָאַפְּלִיקַצְיָה?', text: isIOS() && !installEvt ? 'בְּאַיְיפוֹן: לוֹחֲצִים עַל כַּפְתּוֹר הַשִּׁיתּוּף וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת". כָּךְ הָאַפְּלִיקַצְיָה נִפְתַּחַת בְּמָסַךְ מָלֵא, כְּמוֹ כָּל אַפְּלִיקַצְיָה.' : 'הָאַפְּלִיקַצְיָה תּוֹפִיעַ בְּמָסַךְ הַבַּיִת וְתִיפָּתַח בְּמָסַךְ מָלֵא, בְּלִי דַּפְדְּפָן.', ok: isIOS() && !installEvt ? 'הֵבַנְתִּי' : 'הַתְקָנָה', cancel: 'לֹא עַכְשָׁיו', onOk: () => { if (!(isIOS() && !installEvt)) doInstall(); }, onNo: () => { try { localStorage.setItem('jungle-install-no', String(Date.now())); } catch (e) {} } });
+}
+async function checkUpdate() {
+  try {
+    // read the published page itself, bypassing every cache, so we only offer a version that is really there
+    const r = await fetch('./?fresh=' + Date.now(), { cache: 'no-store' });
+    const m = (await r.text()).match(/const APP_VERSION = 'v(\d+)'/);
+    if (m && +m[1] > parseInt(APP_VERSION.slice(1), 10)) { pendingUpdate = m[1]; maybePrompts(); }
+  } catch (e) {}
+}
+async function applyUpdate(v) {
+  try { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } catch (e) {}
+  location.replace(location.pathname + '?v=' + v + '&t=' + Date.now());
+}
+setTimeout(() => { checkUpdate(); maybePrompts(); }, 3500);
+try { new Image().src = 'monkey-update.png'; } catch (e) {}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { installAsked = false; checkUpdate(); setTimeout(maybePrompts, 1200); } });
+setInterval(checkUpdate, 10 * 60 * 1000);
+async function doInstall() {
+  if (!installEvt) { toast(isIOS() ? 'בְּאַיְיפוֹן: כַּפְתּוֹר הַשִּׁיתּוּף וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת"' : 'בְּתַפְרִיט הַדַּפְדְּפָן ⋮ בּוֹחֲרִים "הַתְקָנַת אַפְּלִיקַצְיָה" אוֹ "הוֹסָפָה לְמָסַךְ הַבַּיִת"'); return; } installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; if (currentView === 'home') renderHome(); else renderSettings(); }
+/* ---------- Firebase ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
+  authDomain: "jungle-math-kids.firebaseapp.com",
+  projectId: "jungle-math-kids",
+  storageBucket: "jungle-math-kids.firebasestorage.app",
+  messagingSenderId: "984154992852",
+  appId: "1:984154992852:web:49dcb9957f8baa4e108b41"
+};
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const GOOGLE_CLIENT_ID = '984154992852-n6het6uoa54l5fu7607if8cub9ct5amk.apps.googleusercontent.com';
+let user = null;
+let cloudReady = false;
+
+/* ---------- helpers ---------- */
+const KEY = 'jungle-math-v4';
+const OLD_KEY = 'jungle-math-v3';
+const CHALLENGE_MS = 25000;
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = rnd(0, i); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const parseNum = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^-?\d+$/.test(s) ? Number(s) : NaN; };
+const perms = a => a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
+const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const TIERS = [null, 'מַתְחִילִים', 'מִתְקַדְּמִים', 'אַלּוּפִים'];
+const PLACE = { 1: 'הַיְּחִידוֹת', 10: 'הָעֲשָׂרוֹת', 100: 'הַמֵּאוֹת', 1000: 'הָאֲלָפִים' };
+const angleClass = d => d < 90 ? 'חַדָּה' : d === 90 ? 'יְשָׁרָה' : d < 180 ? 'קֵהָה' : 'שְׁטוּחָה';
+const rank = s => s >= 70 ? 'זָהָב' : s >= 40 ? 'כֶּסֶף' : 'אָרָד';
+
+const ITEMS = [
+  { id: 'lion', name: 'אַרְיֵה', icon: '🦁', price: 15 },
+  { id: 'elephant', name: 'פִּיל', icon: '🐘', price: 15 },
+  { id: 'leopard', name: 'נָמֵר', icon: '🐆', price: 20 },
+  { id: 'giraffe', name: 'גִ\'ירָפָה', icon: '🦒', price: 25 },
+  { id: 'monkey', name: 'קוֹף', icon: '🐒', price: 10 },
+  { id: 'parrot', name: 'תּוּכִּי', icon: '🦜', price: 10 },
+  { id: 'zebra', name: 'זֶבְּרָה', icon: '🦓', price: 10 },
+  { id: 'koala', name: 'קוֹאָלָה', icon: '🐨', price: 20 },
+  { id: 'frog', name: 'צְפַרְדֵּעַ', icon: '🐸', price: 8 },
+  { id: 'croc', name: 'תַּנִּין', icon: '🐊', price: 20 }
+];
+
+const GEAR = [
+  { id: 'boots', name: 'מַגְּפֵי טִיּוּל', icon: '🥾', r: 0 }, { id: 'hat', name: 'כּוֹבַע סָפָארִי', icon: '🧢', r: 0 },
+  { id: 'bag', name: 'תַּרְמִיל', icon: '🎒', r: 0 }, { id: 'tent', name: 'אוֹהֶל', icon: '⛺', r: 0 },
+  { id: 'shell', name: 'צֶדֶף קָסוּם', icon: '🐚', r: 0 }, { id: 'feather', name: 'נוֹצַת תּוּכִּי', icon: '🪶', r: 0 },
+  { id: 'torch', name: 'פָּנָס', icon: '🔦', r: 1 }, { id: 'map', name: 'מַפַּת אוֹצָר', icon: '🗺️', r: 1 },
+  { id: 'compass', name: 'מַצְפֵּן', icon: '🧭', r: 1 }, { id: 'scope', name: 'מְשַׁקֶּפֶת', icon: '🔭', r: 1 },
+  { id: 'beads', name: 'שַׁרְשֶׁרֶת חֲרוּזִים', icon: '📿', r: 1 }, { id: 'eye', name: 'קָמֵעַ עַיִן', icon: '🧿', r: 1 },
+  { id: 'gem', name: 'יַהֲלוֹם הַגּ\'וּנְגֶּל', icon: '💎', r: 2 }, { id: 'trident', name: 'קִלְּשׁוֹן הַזָּהָב', icon: '🔱', r: 2 },
+  { id: 'star', name: 'כּוֹכַב הַמַּזָּל', icon: '🌟', r: 2 }, { id: 'crown', name: 'כֶּתֶר הַמֶּלֶךְ', icon: '👑', r: 2 }
+];
+const RARITY = ['רָגִיל', 'נָדִיר', 'אַגָּדִי'];
+
+/* ---------- question generators ---------- */
+function genDigit(t) {
+  const len = t === 1 ? 3 : 4;
+  let n, s;
+  do { n = len === 3 ? rnd(100, 999) : rnd(1000, 9999); s = String(n); } while (![...s].some(ch => s.split(ch).length === 2));
+  let i, old, e;
+  do { i = rnd(0, len - 1); old = Number(s[i]); e = rnd(0, 9); }
+  while (e === old || (i === 0 && e === 0) || s.split(String(old)).length !== 2);
+  const pv = 10 ** (len - 1 - i);
+  const diff = (e - old) * pv;
+  if (Math.random() < .4) {
+    const nn = n + diff;
+    return {
+      body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> מְשַׁנִּים אֶת סִפְרַת ${PLACE[pv]} לְ-${e}.<br>מָה הַמִּסְפָּר הֶחָדָשׁ?</div>`,
+      parts: [{ type: 'num', ans: nn }],
+      hint: `סִפְרַת ${PLACE[pv]} הִיא הַסִּפְרָה ${old}. מַחְלִיפִים אוֹתָהּ בְּ-${e} וּשְׁאָר הַסְּפָרוֹת נִשְׁאָרוֹת.`,
+      explain: `<span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(nn)}</span>.`
+    };
+  }
+  const amount = Math.abs(diff), grows = diff > 0;
+  return {
+    body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> שׁוּנְּתָה הַסִּפְרָה ${old} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
+    parts: [
+      { type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' },
+      { type: 'num', label: 'בְּכַמָּה', ans: amount }
+    ],
+    hint: 'כְּדַאי לָשִׂים לֵב לְאֵיזֶה מָקוֹם שַׁיֶּיכֶת הַסִּפְרָה. הַהֶפְרֵשׁ מוּכְפָּל בְּעֵרֶךְ הַמָּקוֹם.',
+    explain: `הַסִּפְרָה ${old} נִמְצֵאת בַּמָּקוֹם ${PLACE[pv]}. לָכֵן הַמִּסְפָּר ${grows ? 'גָּדַל' : 'קָטַן'} בְּ-${fmt(amount)}.`
+  };
+}
+
+function genCompare(t) {
+  const R = t === 1 ? 60 : t === 2 ? 500 : 5000;
+  let L, Rt, lv, rv;
+  if (Math.random() < .5) {
+    const a = rnd(1, R), b = rnd(1, R), c = rnd(1, R), d = rnd(1, R);
+    L = `${fmt(a)} + ${fmt(b)}`; Rt = `${fmt(c)} + ${fmt(d)}`; lv = a + b; rv = c + d;
+  } else {
+    const b = rnd(1, R), a = b + rnd(0, R), c = rnd(1, R), d = c + rnd(0, R);
+    L = `${fmt(a)} − ${fmt(b)}`; Rt = `${fmt(d)} − ${fmt(c)}`; lv = a - b; rv = d - c;
+  }
+  const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
+  return {
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint: 'יֵשׁ לְחַשֵּׁב אֶת שְׁנֵי הַצְּדָדִים, וְאָז לְהַשְׁווֹת אֶת הַתּוֹצָאוֹת.',
+    explain: `<span class="ltr">${fmt(lv)} ${sym==='<'?'&lt;':sym==='>'?'&gt;':'='} ${fmt(rv)}</span>`
+  };
+}
+
+function genNoCalc(t) {
+  const R = t === 1 ? 90 : t === 2 ? 900 : 9000;
+  const kind = pick(['sameA', 'sameB', 'addSame']);
+  let L, Rt, lv, rv, hint;
+  if (kind === 'sameA') {
+    const b = rnd(1, R), c = rnd(1, R), A = Math.max(b, c) + rnd(0, R);
+    L = `${fmt(A)} − ${fmt(b)}`; Rt = `${fmt(A)} − ${fmt(c)}`; lv = A - b; rv = A - c;
+    hint = 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.';
+  } else if (kind === 'sameB') {
+    const B = rnd(1, R), A = B + rnd(0, R), C = B + rnd(0, R);
+    L = `${fmt(A)} − ${fmt(B)}`; Rt = `${fmt(C)} − ${fmt(B)}`; lv = A - B; rv = C - B;
+    hint = 'הַמִּסְפָּר שֶׁמַּחְסִירִים זֵהֶה. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.';
+  } else {
+    const A = rnd(1, R), b = rnd(1, R), c = rnd(1, R);
+    L = `${fmt(A)} + ${fmt(b)}`; Rt = `${fmt(A)} + ${fmt(c)}`; lv = A + b; rv = A + c;
+    hint = 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.';
+  }
+  const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
+  return {
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן לְלֹא צוֹרֶךְ בְּחִישּׁוּב מְדוּיָּק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint,
+    explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${sym==='<'?'&lt;':sym==='>'?'&gt;':'='}</span>.`
+  };
+}
+
+function genDecomp(t) {
+  const len = t === 1 ? 3 : 4;
+  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
+  const comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i));
+  const m = rnd(0, len - 1);
+  const shown = comps.map((c, j) => j === m ? '___' : fmt(c)).join(' + ');
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַפֵּירוּק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
+    parts: [{ type: 'num', ans: comps[m] }],
+    hint: 'כָּל סִפְרָה שָׁווָה לָעֵרֶךְ שֶׁלָּהּ לְפִי הַמָּקוֹם.',
+    explain: (() => {
+      const given = comps.filter((c, j) => j !== m).map(fmt);
+      const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' וְ-' + given[given.length - 1] : given[0];
+      const place = 10 ** (len - 1 - m), digit = comps[m] / place;
+      const UN = { 1: 'יְחִידוֹת', 10: 'עֲשָׂרוֹת', 100: 'מֵאוֹת', 1000: 'אֲלָפִים' };
+      if (digit === 0) return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא 0: אֵין ${UN[place]} בְּמִסְפָּר. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
+      return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא ${fmt(comps[m])}: הַסִּפְרָה ${digit} נִמְצֵאת בַּמָּקוֹם ${PLACE[place]} וְשָׁווֶה ${fmt(comps[m])}. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
+    })()
+  };
+}
+
+function genOrder(t) {
+  const R = t === 1 ? 999 : t === 2 ? 3000 : 9999;
+  const set = new Set();
+  while (set.size < 5) set.add(rnd(10, R));
+  const nums = [...set];
+  const sorted = [...nums].sort((x, y) => x - y);
+  return {
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ עַל הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
+    parts: [{ type: 'order', items: shuffle(nums), ans: sorted }],
+    hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
+    explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
+  };
+}
+
+function genNumLine(t) {
+  const base = t === 1 ? 100 : t === 2 ? 1000 : 3000;
+  const a = rnd(base / 10, base / 10 + 80) * 10;
+  const b = a + 100;
+  const inside = a + rnd(1, 99);
+  const outs = new Set();
+  while (outs.size < 3) { const x = Math.random() < .5 ? a - rnd(5, 70) : b + rnd(5, 70); if (x > 0) outs.add(x); }
+  const opts = shuffle([inside, ...outs]).map(fmt);
+  return {
+    body: `<div class="prompt">הַמִּסְפָּרִים <span class="ltr">${fmt(a)}</span> וְ-<span class="ltr">${fmt(b)}</span> הֵם קַצְווֹת הַקֶּטַע.<br>אֵיזֶה מִסְפָּר נִמְצָא בְּתוֹךְ הַקֶּטַע?</div>`,
+    parts: [{ type: 'buttons', opts, ans: fmt(inside) }],
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `${fmt(inside)} נִמְצָא בֵּין ${fmt(a)} לְ-${fmt(b)}.`
+  };
+}
+
+function genSeq(t) {
+  const k = pick([[1, 2, 5, 10], [10, 20, 50, 100], [100, 200, 500, 1000]][t - 1]);
+  const desc = Math.random() < .3;
+  const s = desc
+    ? k * rnd(7, Math.max(7, Math.min(60, Math.floor(9999 / k))))
+    : k * rnd(2, Math.max(2, Math.min(60, Math.floor(9000 / k) - 6)));
+  const terms = [0, 1, 2, 3, 4, 5].map(i => s + (desc ? -i : i) * k);
+  const blanks = pick([[1, 3], [2, 4], [1, 4]]);
+  const sortedBlanks = [...blanks].sort((x, y) => x - y);
+  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חָסֵר ${sortedBlanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַסִּדְרָה, שֶׁמַּמְשִׁיכָה בִּקְפִיצוֹת שֶׁל ${fmt(k)}:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
+    parts: sortedBlanks.map((bi, j) => ({ type: 'num', label: `חָסֵר ${j + 1}`, ans: terms[bi] })),
+    hint: `בְּכָל שָׁלָב יֵשׁ קְפִיצָה קְבוּעָה שֶׁל ${fmt(k)}.`,
+    explain: `הַסִּדְרָה הַמְּלֵאָה: ${terms.map(fmt).join(', ')}`
+  };
+}
+
+function genSeqMember(t) {
+  const k = pick([[2, 5, 10], [10, 20, 50], [100, 200, 500]][t - 1]);
+  const s = k * rnd(2, Math.max(2, Math.min(60, Math.floor(9000 / k) - 10)));
+  const shown = [0, 1, 2, 3].map(i => fmt(s + i * k)).join(', ');
+  const m = rnd(6, 30);
+  const yes = Math.random() < .5;
+  const X = yes ? s + m * k : s + m * k + rnd(1, k - 1);
+  const isIn = (X - s) % k === 0;
+  return {
+    body: `<div class="prompt">סִדְרָה: <span class="ltr">${shown}, ...</span><br>הַאִם הַמִּסְפָּר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יוֹפִיעַ בְּהֶמְשֵׁךְ הַסִּדְרָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['כֵּן', 'לֹא'], ans: isIn ? 'כֵּן' : 'לֹא' }],
+    hint: 'יֵשׁ לִבְדּוֹק אִם הַהֶפְרֵשׁ בֵּין הַמִּסְפָּר הַמְּבוּקָּשׁ לַמִּסְפָּר הָרִאשׁוֹן מִתְחַלֵּק בִּקְפִיצָה.',
+    explain: `הַמִּסְפָּר ${isIn ? 'אָכֵן יוֹפִיעַ' : 'לֹא יוֹפִיעַ'} כִּי הוּא ${isIn ? 'מִתְחַלֵּק' : 'לֹא מִתְחַלֵּק'} בִּקְפִיצוֹת שֶׁל ${fmt(k)}.`
+  };
+}
+
+function genSameDigits(t) {
+  const len = t === 1 ? 3 : 4;
+  const odd = Math.random() < .5, smaller = Math.random() < .6;
+  const pw = odd ? 'אִי-זוּגִי' : 'זוּגִי', dw = smaller ? 'הַקָּטָן' : 'הַגָּדוֹל';
+  let n, valid = [];
+  for (;;) {
+    n = len === 3 ? rnd(200, 999) : rnd(2000, 9999);
+    const d = String(n).split('');
+    if (new Set(d).size !== len) continue;
+    valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => (smaller ? v < n : v > n) && (v % 2 === 1) === odd))];
+    if (valid.length) break;
+  }
+  const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
+  return {
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר ${pw}, ${dw} מִ-<span class="ltr">${fmt(n)}</span>, הַמּוּרְכָּב מֵאוֹתָן סְפָרוֹת.</div>`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: odd ? 'מִסְפָּר אִי-זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 1, 3, 5, 7 אוֹ 9.' : 'מִסְפָּר זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 0, 2, 4, 6 אוֹ 8.',
+    explain: q => {
+      const mine = Number(String(q.parts[0].v ?? '').replace(/[,\s]/g, ''));
+      const others = valid.filter(x => x !== mine);
+      const list = others.slice(0, 3).map(fmt).join(', ');
+      if (q.result) return others.length ? `אַגַּב, אֶפְשָׁר הָיָה גַּם: ${list}.` : 'זוֹ הָיְיתָה הָאֶפְשָׁרוּת הַיְּחִידָה.';
+      return `לְמָשָׁל: ${list}.`;
+    }
+  };
+}
+
+/* ---------- numbers in words ---------- */
+const W_ONES = ['', 'אַחַת', 'שְׁתַּיִים', 'שָׁלוֹשׁ', 'אַרְבַּע', 'חָמֵשׁ', 'שֵׁשׁ', 'שֶׁבַע', 'שְׁמוֹנֶה', 'תֵּשַׁע'];
+const W_TEENS = ['עֶשֶׂר', 'אַחַת עֶשְׂרֵה', 'שְׁתֵּים עֶשְׂרֵה', 'שְׁלוֹשׁ עֶשְׂרֵה', 'אַרְבַּע עֶשְׂרֵה', 'חֲמֵשׁ עֶשְׂרֵה', 'שֵׁשׁ עֶשְׂרֵה', 'שְׁבַע עֶשְׂרֵה', 'שְׁמוֹנֶה עֶשְׂרֵה', 'תְּשַׁע עֶשְׂרֵה'];
+const W_TENS = ['', '', 'עֶשְׂרִים', 'שְׁלוֹשִׁים', 'אַרְבָּעִים', 'חֲמִישִּׁים', 'שִׁישִּׁים', 'שִׁבְעִים', 'שְׁמוֹנִים', 'תִּשְׁעִים'];
+const W_THOU = ['', 'אֶלֶף', 'אַלְפַּיִים', 'שְׁלוֹשֶׁת אֲלָפִים', 'אַרְבַּעַת אֲלָפִים', 'חֲמֵשֶׁת אֲלָפִים', 'שֵׁשֶׁת אֲלָפִים', 'שִׁבְעַת אֲלָפִים', 'שְׁמוֹנַת אֲלָפִים', 'תִּשְׁעַת אֲלָפִים'];
+function numWords(n) {
+  const parts = [];
+  const th = Math.floor(n / 1000), h = Math.floor(n % 1000 / 100), r = n % 100;
+  if (th) parts.push(W_THOU[th]);
+  if (h) parts.push(h === 1 ? 'מֵאָה' : h === 2 ? 'מָאתַיִים' : W_ONES[h] + ' מֵאוֹת');
+  if (r) {
+    if (r < 10) parts.push(W_ONES[r]);
+    else if (r < 20) parts.push(W_TEENS[r - 10]);
+    else { parts.push(W_TENS[Math.floor(r / 10)]); if (r % 10) parts.push(W_ONES[r % 10]); }
+  }
+  if (parts.length > 1) parts[parts.length - 1] = 'וְ' + parts[parts.length - 1];
+  return parts.join(' ');
+}
+function genWords(t) {
+  const n = t === 1 ? rnd(101, 999) : rnd(1001, 9999);
+  const s = String(n);
+  const decoys = new Set();
+  let guard = 0;
+  while (decoys.size < 3 && guard++ < 200) {
+    let d;
+    const k = rnd(0, 2);
+    if (k === 0) { const a = s.split(''); const i = rnd(0, a.length - 2); [a[i], a[i + 1]] = [a[i + 1], a[i]]; d = Number(a.join('')); }
+    else { const a = s.split(''); const i = rnd(0, a.length - 1); a[i] = String(rnd(0, 9)); d = Number(a.join('')); }
+    if (d !== n && d > 99 && String(d).length === s.length) decoys.add(d);
+  }
+  if (Math.random() < .5) {
+    return {
+      body: `<div class="prompt">אֵיזֶה מִסְפָּר כָּתוּב כָּאן בְּמִילִּים?</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+      parts: [{ type: 'buttons', opts: shuffle([n, ...decoys]).map(fmt), ans: fmt(n) }],
+      hint: 'כְּדַאי לִכְתּוֹב אֶת הַסְּפָרוֹת לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
+      explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
+    };
+  }
+  return {
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב בְּמִסְפָּרִים:</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+    parts: [{ type: 'num', ans: n }],
+    hint: 'כְּדַאי לִכְתּוֹב אֶת הַסְּפָרוֹת לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
+    explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
+  };
+}
+
+/* ---------- greater / smaller by N ---------- */
+function genMoreLess(t) {
+  const ds = t === 1 ? [10, 20, 50, 100, 200] : t === 2 ? [30, 59, 84, 100, 200, 400] : [59, 84, 100, 250, 400, 1000, 2000];
+  const d = pick(ds);
+  const R = t === 1 ? [200, 900] : [1000, 7000];
+  if (Math.random() < .7) {
+    const up = Math.random() < .5;
+    const n = rnd(R[0] + (up ? 0 : d), R[1]);
+    const ans = up ? n + d : n - d;
+    return {
+      body: `<div class="prompt">אֵיזֶה מִסְפָּר ${up ? 'גָּדוֹל' : 'קָטַן'} בְּ-<span class="ltr">${fmt(d)}</span> מֵהַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
+      parts: [{ type: 'num', ans }],
+      hint: up ? 'גָּדוֹל בְּ... פֵּירוּשׁוֹ לְהוֹסִיף.' : 'קָטָן בְּ... פֵּירוּשׁוֹ לְחַסֵּר.',
+      explain: `<span class="ltr">${fmt(n)} ${up ? '+' : '−'} ${fmt(d)} = ${fmt(ans)}</span>`
+    };
+  }
+  const b = rnd(R[0], R[1] - d), a = b + d;
+  return {
+    body: `<div class="prompt">בְּכַמָּה הַמִּסְפָּר <span class="ltr">${fmt(a)}</span> גָּדוֹל מֵהַמִּסְפָּר <span class="ltr">${fmt(b)}</span>?</div>`,
+    parts: [{ type: 'num', ans: d }],
+    hint: 'כְּדֵי לָדַעַת בְּכַמָּה מִסְפָּר אֶחָד גָּדוֹל מֵהַשֵּׁנִי, מְחַסְּרִים אֶת הַקָּטָן מֵהַגָּדוֹל.',
+    explain: `<span class="ltr">${fmt(a)} − ${fmt(b)} = ${fmt(d)}</span>`
+  };
+}
+
+/* ---------- compare place-value expressions ---------- */
+function genPlaceCmp(t) {
+  const mk = () => {
+    const kind = pick(['h', 'ht', 'tu', 'th']);
+    if (kind === 'h') { const h = rnd(1, 9); return { txt: `${h} מֵאוֹת`, v: h * 100 }; }
+    if (kind === 'ht') { const h = rnd(1, 9), tn = rnd(1, 9); return { txt: `${h} מֵאוֹת וְ-${tn} עֲשָׂרוֹת`, v: h * 100 + tn * 10 }; }
+    if (kind === 'tu') { const tn = rnd(5, 60), u = rnd(1, 25); return { txt: `${tn} עֲשָׂרוֹת וְ-${u} יְחִידוֹת`, v: tn * 10 + u }; }
+    const th = rnd(1, 9); return { txt: `${th} אֲלָפִים`, v: th * 1000 };
+  };
+  let A = mk(), B = mk();
+  if (t === 1) { while (A.v >= 1000 || B.v >= 1000) { A = mk(); B = mk(); } }
+  if (Math.random() < .25 && A.v % 10 === 0) B = { txt: `${A.v / 10} עֲשָׂרוֹת`, v: A.v };
+  const sym = A.v < B.v ? '<' : A.v > B.v ? '>' : '=';
+  const box = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff8;border-radius:12px;padding:4px 8px;font-weight:800;flex:1 1 0;text-align:center;min-width:0">${x}</span>`;
+  return {
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${box(A.txt)}<b>?</b>${box(B.txt)}</div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
+    explain: `${A.txt} = ${fmt(A.v)} וְ-${B.txt} = ${fmt(B.v)}. <span class="ltr">${fmt(A.v)} ${sym === '<' ? '&lt;' : sym === '>' ? '&gt;' : '='} ${fmt(B.v)}</span>`
+  };
+}
+
+/* ---------- missing number with helper exercise ---------- */
+function genEquation(t) {
+  const R = t === 1 ? [20, 99] : t === 2 ? [100, 600] : [300, 4000];
+  const kind = pick(['add', 'sub1', 'sub2']);
+  let a = rnd(R[0], R[1]), b = rnd(R[0], R[1]);
+  while (b === a) b = rnd(R[0], R[1]);
+  let eq, helper, wrong, ans;
+  if (kind === 'add') { const c = a + b; eq = `${fmt(a)} + ___ = ${fmt(c)}`; helper = `${fmt(c)} − ${fmt(a)}`; wrong = [`${fmt(c)} + ${fmt(a)}`, `${fmt(a)} − ${fmt(c)}`]; ans = b; }
+  else if (kind === 'sub1') { const A = a + b; eq = `${fmt(A)} − ___ = ${fmt(a)}`; helper = `${fmt(A)} − ${fmt(a)}`; wrong = [`${fmt(A)} + ${fmt(a)}`, `${fmt(a)} − ${fmt(A)}`]; ans = b; }
+  else { const A = a + b; eq = `___ − ${fmt(a)} = ${fmt(b)}`; helper = `${fmt(a)} + ${fmt(b)}`; wrong = [`${fmt(b)} − ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = A; }
+  const eqText = eq.replace('___', '___');
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַמִּסְפָּר הֶחָסֵר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eqText}</span></div>`,
+    parts: [
+      { type: 'buttons', label: 'תַּרְגִּיל עֵזֶר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper },
+      { type: 'num', label: 'הַמִּסְפָּר הֶחָסֵר', ans }
+    ],
+    hint: 'כְּדֵי לִמְצוֹא מִסְפָּר חָסֵר בּוֹחֲרִים תַּרְגִּיל עֵזֶר הָפוּךְ: חִיסּוּר בּוֹדֵק חִיבּוּר, וְחִיבּוּר בּוֹדֵק חִיסּוּר.',
+    explain: `תַּרְגִּיל הָעֵזֶר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כָּךְ מִתְקַבֵּל הַמִּסְפָּר הֶחָסֵר ${fmt(ans)}.`
+  };
+}
+
+/* ---------- multiplication ---------- */
+function genMult(t) {
+  const facts = t === 1 ? [2, 5, 10] : t === 2 ? [3, 4, 6] : [6, 7, 8, 9];
+  const a = pick(facts), b = rnd(2, 10);
+  const [x, y] = Math.random() < .5 ? [a, b] : [b, a];
+  const p = x * y;
+  if (Math.random() < .25) {
+    return {
+      body: `<div class="prompt"><span class="ltr" style="font-size:34px">___ × ${x} = ${p}</span></div>`,
+      parts: [{ type: 'num', ans: y }],
+      hint: `כַּמָּה פְּעָמִים צָרִיךְ לָקַחַת ${x} כְּדֵי לְקַבֵּל ${p}?`,
+      explain: `<span class="ltr">${y} × ${x} = ${p}</span>`
+    };
+  }
+  return {
+    body: `<div class="prompt"><span class="ltr" style="font-size:34px">${x} × ${y} = ?</span></div>`,
+    parts: [{ type: 'num', ans: p }],
+    hint: `אֶפְשָׁר לְחַבֵּר ${y} פְּעָמִים אֶת הַמִּסְפָּר ${x}, אוֹ לְהֵיעָזֵר בְּלוּחַ הַכֶּפֶל.`,
+    explain: `<span class="ltr">${x} × ${y} = ${p}</span>`
+  };
+}
+
+/* ---------- word problems ---------- */
+function genWord(t) {
+  const R = t === 1 ? [20, 90] : t === 2 ? [120, 600] : [300, 3000];
+  const names = [['גַּל', 1], ['נוֹעַם', 0], ['אַדִּיר', 0], ['שִׁירָה', 1], ['דָּנִיֵּאל', 0], ['מָאיָה', 1]];
+  const [nm, fem] = pick(names);
+  const [nm2, fem2] = pick(names.filter(x => x[0] !== nm));
+  const a = rnd(R[0], R[1]), b = rnd(R[0] / 2 | 0, Math.min(R[1], a - 1));
+  const g = rnd(2, t === 1 ? 5 : 9), k = rnd(2, t === 1 ? 6 : 9);
+  const T = [
+    () => ({ q: `בַּסִּפְרִיָּיה יֵשׁ ${fmt(a)} סְפָרִים. הִשְׁאִילוּ ${fmt(b)} סְפָרִים. כַּמָּה סְפָרִים נִשְׁאֲרוּ בַּסִּפְרִיָּיה?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'הִשְׁאִילוּ אוֹמֵר שֶׁהַסְּפָרִים יָצְאוּ, וְלָכֵן מְחַסְּרִים.' }),
+    () => ({ q: `בַּחֲנוּת הָיוּ ${fmt(a)} תַּפּוּחִים. הִגִּיעוּ עוֹד ${fmt(b)} תַּפּוּחִים. כַּמָּה תַּפּוּחִים יֵשׁ עַכְשָׁיו בַּחֲנוּת?`, ex: `${fmt(a)} + ${fmt(b)}`, ans: a + b, h: 'הִגִּיעוּ עוֹד אוֹמֵר שֶׁהַכַּמּוּת גָּדְלָה, וְלָכֵן מְחַבְּרִים.' }),
+    () => ({ q: `בְּכָל שַׂקִּית יֵשׁ ${g} סוּכָּרִיּוֹת. יֵשׁ ${k} שַׂקִּיּוֹת. כַּמָּה סוּכָּרִיּוֹת יֵשׁ בְּכָל הַשַּׂקִּיּוֹת?`, ex: `${g} × ${k}`, ans: g * k, h: 'כַּמּוּת זֵהָה בְּכָל קְבוּצָה: מַכְפִּילִים אֶת מִסְפַּר הַקְּבוּצוֹת בְּגוֹדֶל קְבוּצָה.' }),
+    () => ({ q: `בְּכִיתָּה א' יֵשׁ ${fmt(a)} יְלָדִים וּבְכִיתָּה ב' יֵשׁ ${fmt(b)} יְלָדִים. בְּכַמָּה יְלָדִים יֵשׁ יוֹתֵר בְּכִיתָּה א'?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'כְּשֶׁרוֹצִים לָדַעַת בְּכַמָּה יֵשׁ יוֹתֵר, מְחַסְּרִים אֶת הַקָּטָן מֵהַגָּדוֹל.' }),
+    () => ({ q: `לְ${nm} יֵשׁ ${fmt(a)} מַדְבֵּקוֹת. לְ${nm2} יֵשׁ ${fmt(b)} מַדְבֵּקוֹת פָּחוֹת מִלְּ${nm}. כַּמָּה מַדְבֵּקוֹת יֵשׁ לְ${nm2}?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'פָּחוֹת מִ... פֵּירוּשׁוֹ לְהַחְסִיר.' }),
+    () => { const c = rnd(R[0] / 2 | 0, R[1]); return { q: `בָּאוֹטוֹבּוּס הָיוּ ${fmt(a)} נוֹסְעִים. יָרְדוּ ${fmt(b)} נוֹסְעִים וְעָלוּ ${fmt(c)} נוֹסְעִים. כַּמָּה נוֹסְעִים יֵשׁ בָּאוֹטוֹבּוּס עַכְשָׁיו?`, ex: `${fmt(a)} − ${fmt(b)} + ${fmt(c)}`, ans: a - b + c, h: 'קוֹדֶם מְחַסְּרִים אֶת מִי שֶׁיָּרַד, וְאַחַר כָּךְ מוֹסִיפִים אֶת מִי שֶׁעָלָה.' }; }
+  ];
+  const w = pick(T.slice(0, t === 1 ? 5 : 6))();
+  return {
+    body: `<div class="prompt" style="font-size:22px">${w.q}</div>`,
+    parts: [{ type: 'num', ans: w.ans }],
+    hint: w.h,
+    explain: `הַתַּרְגִּיל: <span class="ltr">${w.ex} = ${fmt(w.ans)}</span>`
+  };
+}
+
+/* ---------- number line with an arrow ---------- */
+function numLineWrite(t) {
+  const step = t === 1 ? 10 : pick([10, 100]);
+  const span = step * 10;
+  const start = step === 10 ? rnd(1, t === 1 ? 9 : 90) * 100 : rnd(1, 8) * 1000;
+  const idx = rnd(1, 9), val = start + idx * step;
+  const x0 = 30, x1 = 290, y = 80;
+  let ticks = '';
+  for (let i = 0; i <= 10; i++) {
+    const x = x0 + (x1 - x0) * i / 10;
+    ticks += `<line x1="${x}" y1="${y - (i % 5 ? 8 : 14)}" x2="${x}" y2="${y + (i % 5 ? 8 : 14)}" stroke="#163b2a" stroke-width="${i % 5 ? 2 : 3}"/>`;
+  }
+  const ax = x0 + (x1 - x0) * idx / 10;
+  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="יְשַׁר מִסְפָּרִים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
+  return {
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר מְסוּמָּן בְּחֵץ?</div>${svg}`,
+    parts: [{ type: 'num', ans: val }],
+    hint: `בֵּין שְׁנֵי הַמִּסְפָּרִים הַכְּתוּבִים יֵשׁ 10 קְפִיצוֹת שָׁווֹת. כָּל קְפִיצָה הִיא ${fmt(step)}.`,
+    explain: `כָּל קְפִיצָה הִיא ${fmt(step)}. הַחֵץ נִמְצָא אַחֲרֵי ${idx} קְפִיצוֹת מִ-${fmt(start)}, וְלָכֵן הַמִּסְפָּר הוּא ${fmt(val)}.`
+  };
+}
+
+/* ---------- vertical arithmetic ---------- */
+function vertHTML(a, b, op) {
+  const sa = String(a), sb = String(b), n = Math.max(sa.length, sb.length);
+  const cells = s => [...s.padStart(n, ' ')].map(c => `<td>${c.trim()}</td>`).join('');
+  return `<table class="vert" dir="ltr"><tr><td class="vs"></td>${cells(sa)}</tr><tr><td class="vs">${op}</td>${cells(sb)}</tr><tr class="vl"><td class="vs"></td><td colspan="${n}"></td></tr><tr><td class="vs"></td><td colspan="${n}" class="vq">?</td></tr></table>`;
+}
+function hasCarry(a, b, op) {
+  let x = a, y = b, c = 0;
+  while (x > 0 || y > 0) {
+    const dx = x % 10, dy = y % 10;
+    if (op === '+') { if (dx + dy + c > 9) return true; c = 0; } else { if (dx - c < dy) return true; c = 0; }
+    x = Math.floor(x / 10); y = Math.floor(y / 10);
+  }
+  return false;
+}
+function genColumn(t) {
+  const [lo, hi] = t === 1 ? [10, 99] : t === 2 ? [100, 999] : [1000, 9999];
+  const op = pick(['+', '−']);
+  let a, b;
+  for (let i = 0; i < 40; i++) {
+    a = rnd(lo, hi); b = rnd(lo, hi);
+    if (op === '+') { if (a + b > 9999) continue; } else if (a < b) [a, b] = [b, a];
+    if (hasCarry(a, b, op) || i > 30) break;
+  }
+  const ans = op === '+' ? a + b : a - b;
+  const vertical = Math.random() < .7;
+  const body = vertical
+    ? `<div class="prompt">יֵשׁ לִפְתּוֹר בִּמְאוּנָּךְ:</div>${vertHTML(a, b, op)}`
+    : `<div class="prompt" style="font-size:36px"><span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ?</span></div>`;
+  return {
+    body, sig: String(a) + op + b,
+    parts: [{ type: 'num', ans }],
+    hint: op === '+' ? 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם הַסְּכוּם גָּדוֹל מִ-9, כּוֹתְבִים אֶת הַיְּחִידוֹת וּמַעֲבִירִים אֶת הָעֲשָׂרָה לַטּוּר הַבָּא.' : 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם אִי אֶפְשָׁר לְחַסֵּר, לוֹקְחִים עֲשָׂרָה מֵהַטּוּר הַשְּׂמָאלִי.',
+    explain: `<span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}</span>`
+  };
+}
+
+let angBag = [], angDrawBag = [];
+function bagPick(bag, items) { if (!bag.length) bag.push(...shuffle(items.slice())); return bag.pop(); }
+function genAngleId() {
+  const cls = bagPick(angBag, ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה']);
+  const deg = cls === 'חַדָּה' ? pick([20, 30, 40, 55, 65, 75, 82]) : cls === 'יְשָׁרָה' ? 90 : cls === 'שְׁטוּחָה' ? 180 : pick([100, 110, 120, 135, 150, 165]);
+  const cx = 160, cy = 170, L = 110;
+  const rad = deg * Math.PI / 180;
+  const x2 = (cx + L * Math.cos(rad)).toFixed(1), y2 = (cy - L * Math.sin(rad)).toFixed(1);
+  const svg = `<svg class="angle" viewBox="0 0 320 220" role="img" aria-label="זָווִית"><line x1="${cx}" y1="${cy}" x2="${cx + L}" y2="${cy}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
+  return {
+    body: `${svg}<div class="prompt">אֵיזֶה סוּג זָווִית מוּצָּג?</div>`,
+    parts: [{ type: 'buttons', opts: ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה'], ans: angleClass(deg) }],
+    hint: 'זָווִית יְשָׁרָה נִרְאֵית כְּמוֹ פִּינָּה שֶׁל מְרוּבָּע. חַדָּה קְטַנָּה מִמֶּנָּה, קֵהָה גְּדוֹלָה מִמֶּנָּה.',
+    explain: `הַזָּווִית הִיא ${angleClass(deg)}.`
+  };
+}
+
+function genAngleDraw() {
+  const target = bagPick(angDrawBag, ['חַדָּה', 'יְשָׁרָה', 'קֵהָה']);
+  const text = { 'חַדָּה': 'יֵשׁ לְשַׂרְטֵט זָווִית חַדָּה', 'יְשָׁרָה': 'יֵשׁ לְשַׂרְטֵט זָווִית יְשָׁרָה', 'קֵהָה': 'יֵשׁ לְשַׂרְטֵט זָווִית קֵהָה' }[target];
+  const check = v => {
+    if (typeof v !== 'number') return false;
+    if (target === 'חַדָּה') return v > 5 && v < 85;
+    if (target === 'יְשָׁרָה') return v >= 85 && v <= 95;
+    return v > 95 && v < 175;
+  };
+  return {
+    body: `<div class="prompt compact">${text}</div>`,
+    drawInit: target === 'יְשָׁרָה' ? pick([30, 45, 135, 150]) : 90,
+    parts: [{ type: 'draw', check, help: { 'חַדָּה': 'מְקָרְבִים אֶת הַקַּו הַיָּרוֹק אֶל הַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית קְטַנָּה יוֹתֵר מִפִּינָּה שֶׁל מְרוּבָּע.', 'יְשָׁרָה': 'מַעֲמִידִים אֶת הַקַּו הַיָּרוֹק בְּנִיצָּב לַקַּו הַשָּׁחוֹר, כָּךְ שֶׁיִּיווָּצְרוּ פִּינָּה שֶׁל מְרוּבָּע.', 'קֵהָה': 'מַרְחִיקִים אֶת הַקַּו הַיָּרוֹק מֵהַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית גְּדוֹלָה מִפִּינָּה שֶׁל מְרוּבָּע אֲבָל עֲדַיִין לֹא קַו יָשָׁר.' }[target] }],
+    hint: 'יֵשׁ לִגְרוֹר אֶת הַקָּצֶה הַצָּהוֹב לַמִּיקּוּם הַמַּתְאִים.',
+    explain: `שׂוּרְטְטָה זָווִית בְּעֵרֶךְ שֶׁל ${target}.`
+  };
+}
+
+const CATS = [
+  { id: 'digit', name: 'שִׁינּוּי סִפְרָה', animal: '🦁', gen: genDigit },
+  { id: 'compare', name: 'סִימָנֵי <&nbsp;>&nbsp;=', animal: '🦉', gen: t => Math.random() < .35 ? genPlaceCmp(t) : genCompare(t) },
+  { id: 'nocalc', name: 'הַשְׁווָאָה בְּלִי חִישּׁוּב', animal: '🐯', gen: genNoCalc },
+  { id: 'decomp', name: 'פֵּירוּק מִסְפָּר', animal: '🐨', gen: genDecomp },
+  { id: 'order', name: 'סִידּוּר מִסְפָּרִים', animal: '🦓', gen: genOrder },
+  { id: 'numline', name: 'יְשַׁר הַמִּסְפָּרִים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
+  { id: 'seq', name: 'סְדָרוֹת', animal: '🐸', gen: t => Math.random() < .4 ? genSeqMember(t) : genSeq(t) },
+  { id: 'samedigits', name: 'אוֹתָן סְפָרוֹת', animal: '🦥', gen: genSameDigits },
+  { id: 'column', name: 'חִיבּוּר וְחִיסּוּר', animal: '🐒', gen: genColumn },
+  { id: 'angleid', name: 'סוּגֵי זָווִיּוֹת', animal: '🦅', gen: genAngleId },
+  { id: 'angledraw', name: 'שִׂרְטוּט זָווִית', animal: '🐍', gen: genAngleDraw },
+  { id: 'words', name: 'מִסְפָּר בְּמִילִּים', animal: '🦒', gen: genWords },
+  { id: 'moreless', name: 'גָּדוֹל וְקָטָן בְּ...', animal: '🐘', gen: genMoreLess },
+  { id: 'equation', name: 'מִסְפָּר חָסֵר', animal: '🦔', gen: genEquation },
+  { id: 'mult', name: 'לוּחַ הַכֶּפֶל', animal: '🦏', gen: genMult },
+  { id: 'word', name: 'בְּעָיוֹת מִילּוּלִיּוֹת', animal: '🐊', gen: genWord }
+];
+
+/* ---------- state ---------- */
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, profile: { nick: '', gender: '' }, sessions: 0, today: { day: '', count: 0 } });
+const mergeState = x => ({
+  ...DEFAULT(), ...x,
+  settings: { ...DEFAULT().settings, ...(x.settings || {}) },
+  profile: { ...DEFAULT().profile, ...(x.profile || {}) },
+  today: { ...DEFAULT().today, ...(x.today || {}) }
+});
+let S = DEFAULT();
+try {
+  const raw = localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY);
+  if (raw) S = mergeState(JSON.parse(raw));
+} catch (e) {}
+
+function persistLocal() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const progressRef = uid => doc(db, 'users', uid, 'data', 'progress');
+let saveTimer = null;
+function save() {
+  persistLocal();
+  if (user && cloudReady) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
+}
+async function cloudSave() {
+  if (!user) return;
+  try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
+  catch (e) { console.warn(e); toast('הַשְּׁמִירָה בֶּעָנָן לֹא הִצְלִיחָה'); return; }
+  try {
+    const topics = {};
+    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
+  } catch (e) { console.warn('profile', e); }
+}
+let teacherFocus = null;
+function focusBar() {
+  const c = teacherFocus && CATS.find(x => x.id === teacherFocus);
+  return c ? `<div class="install-bar"><span>⭐ מוּמְלָץ לְתַרְגֵּל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לְתִרְגּוּל</button></div>` : '';
+}
+async function cloudLoad() {
+  const u0 = user;
+  try {
+    const snap = await getDoc(progressRef(user.uid));
+    if (snap.exists() && snap.data().state) { S = mergeState(snap.data().state); persistLocal(); }
+    else { cloudReady = true; await cloudSave(); }
+    if (user === u0) cloudReady = true;
+    try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() && pf.data().focus ? pf.data().focus.topic : null; if (currentView === 'home') renderHome(); } catch (e2) {}
+  } catch (e) {
+    console.warn(e);
+    toast('לֹא הִצְלַחְנוּ לִטְעוֹן מֵהֶעָנָן. מַמְשִׁיכִים עִם הַמֵּידָע שֶׁבַּמַּכְשִׁיר');
+  }
+}
+function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
+
+/* ---------- session / view state ---------- */
+let Q = null, session = null, lastCat = null, currentView = 'home';
+let timerInt = null, toastTimer = null, resetArmed = false;
+
+function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).filter(m => m.trophy).length; }
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ---------- auth UI ---------- */
+const firstName = () => esc((S.profile && S.profile.nick) || (user && user.displayName || '').split(' ')[0] || 'חָבֵר');
+const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
+let authError = '';
+function loginBlock() {
+  if (user) return '';
+  return `<div class="banner"><span>הִתְחַבְּרוּ עִם Google כְּדֵי לִשְׁמוֹר אֶת הַהִתְקַדְּמוּת וּלְהַמְשִׁיךְ מִכָּל מַכְשִׁיר.</span>
+    <div class="gbtn" aria-label="הִתְחַבְּרוּת עִם Google"></div>
+    ${authError ? `<div class="auth-error">${esc(authError)}</div>` : ''}</div>`;
+}
+function renderUserChip() {
+  const el = $('#userChip');
+  if (!el) return;
+  if (!user) { el.innerHTML = ''; return; }
+  const pic = user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : '👤';
+  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span class="user-name">${esc(user.displayName || user.email || 'חָבֵר')}</span> ▾</button>
+    <div class="user-menu hidden" id="userMenu">
+      <div class="um-name">${esc(user.displayName || '')}</div>
+      <div class="um-mail">${esc(user.email || '')}</div>
+      <button type="button" class="ghost-btn" data-act="logout">הִתְנַתְּקוּת</button>
+    </div>`;
+}
+function mountGoogleButtons() {
+  const holders = document.querySelectorAll('.gbtn');
+  if (!holders.length) return;
+  if (!(window.google && google.accounts && google.accounts.id)) {
+    mountGoogleButtons.tries = (mountGoogleButtons.tries || 0) + 1;
+    if (mountGoogleButtons.tries < 25) setTimeout(mountGoogleButtons, 600);
+    else holders.forEach(h => { h.textContent = 'לֹא נִיתָּן לִטְעוֹן אֶת כַּפְתּוֹר Google. בִּדְקוּ חִיבּוּר לָאִינְטֶרְנֶט וְרַעַנְנוּ אֶת הַדַּף.'; });
+    return;
+  }
+  if (!mountGoogleButtons.inited) {
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, auto_select: false, cancel_on_tap_outside: true });
+    mountGoogleButtons.inited = true;
+  }
+  holders.forEach(h => { if (!h.firstChild) google.accounts.id.renderButton(h, { type: 'standard', theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', locale: 'he' }); });
+}
+async function onGoogleCredential(resp) {
+  try {
+    authError = '';
+    await signInWithCredential(auth, GoogleAuthProvider.credential(resp.credential));
+    toast('הִתְחַבַּרְתָּ בְּהַצְלָחָה!');
+  } catch (e) {
+    console.warn(e);
+    authError = 'הַהִתְחַבְּרוּת נִכְשְׁלָה (' + (e.code || e.message) + ')';
+    refreshCurrentView();
+  }
+}
+async function doLogout() {
+  try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); await signOut(auth); toast('הִתְנַתַּקְתָּ'); }
+  catch (e) { console.warn(e); }
+}
+
+/* ---------- views ---------- */
+function showView(name) {
+  currentView = name;
+  ['home', 'play', 'camp', 'settings'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
+  document.querySelectorAll('.nav button').forEach(b => b.toggleAttribute('aria-current', b.dataset.go === name));
+  window.scrollTo(0, 0);
+  if (name === 'home') renderHome();
+  if (name === 'camp') renderCamp();
+  if (name === 'settings') renderSettings();
+  mountGoogleButtons();
+  if (name !== 'play') setTimeout(maybePrompts, 600);
+}
+function refreshCurrentView() {
+  renderUserChip();
+  if (currentView === 'home') renderHome();
+  if (currentView === 'camp') renderCamp();
+  if (currentView === 'settings') renderSettings();
+  mountGoogleButtons();
+}
+
+function renderHome() {
+  const today = new Date().toDateString();
+  const doneToday = S.today.day === today ? S.today.count : 0;
+  const cards = CATS.map((c, i) => {
+    const m = mast(c.id);
+    return `
+      <div class="slot">
+        <div class="peek-animal p${i % 3}">${c.animal}</div>
+        <div class="card cat-${c.id}${teacherFocus === c.id ? ' rec' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
+          <div class="card-leaf leaf-tl">🌿</div>
+          <div class="card-leaf leaf-tr">🌿</div>
+          <div class="card-leaf leaf-br">🌿</div>
+          ${teacherFocus === c.id ? '<div class="rec-badge">הַמְלָצָה לְתִרְגּוּל</div>' : ''}
+          <div class="topic-content" style="position:relative;z-index:2">
+            <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>
+            <div class="stars" title="רָמָה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
+            <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
+            ${m.trophy ? '<div class="trophy-mark" title="גָּבִיעַ: אַלּוּפִים בַּנּוֹשֵׂא">🏆</div>' : ''}
+          </div>
+          <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
+          <button type="button" class="practice-btn" data-practice="${c.id}">תִּרְגּוּל נוֹשֵׂא זֶה</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  $('#view-home').innerHTML = `
+    ${loginBlock()}
+    ${installBar()}
+    <div class="home-top">
+      <div class="hero-bubble">
+        🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
+        <small>אִימּוּנִים הַיּוֹם: ${doneToday} · אִימּוּן רָגִיל כְּ-5 דַּקּוֹת</small>
+      </div>
+      <div class="hero-board">
+        <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
+      </div>
+    </div>
+    <div class="grid cats">${cards}</div>`;
+  fitTitles();
+}
+
+function fitTitles() {
+  const ts = [...document.querySelectorAll('#view-home .topic-title')];
+  if (!ts.length) return;
+  const card = document.querySelector('#view-home .cats .card');
+  const base = card ? Math.max(11, Math.min(64, Math.floor(card.clientHeight * (card.clientWidth / card.clientHeight > 1.6 ? 0.24 : 0.17)), Math.floor(card.clientWidth * 0.2))) : 22;
+  const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
+  ts.forEach(t => t.classList.add('wrap'));
+  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1 || (t.firstElementChild && t.firstElementChild.getBoundingClientRect().height > size * 2.9)) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
+  let size = base;
+  ts.forEach(t => { t.style.fontSize = size + 'px'; });
+  while (size > 10 && bad()) { size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; }); }
+}
+window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
+
+function renderCamp() {
+  const shop = ITEMS.map(it => {
+    const canAfford = S.coins >= it.price;
+    const owned = S.items[it.id] || 0;
+    return `
+      <div class="card">
+        <div class="ic">${it.icon}</div>
+        <b class="big nm">${it.name}</b>
+        <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
+        ${owned ? '<button type="button" class="ghost-btn" disabled>בָּאוֹסֶף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
+          ${canAfford ? 'לִקְנִיָּיה' : 'אֵין מַטְבְּעוֹת'}
+        </button>`}
+      </div>`;
+  }).join('');
+
+  const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
+  const gearShelf = GEAR.filter(g => (S.gear || {})[g.id]).map(g => `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`).join('');
+  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
+  const collection = ownedItems.length || trophyShelf || gearShelf
+    ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+    : '<div class="rank" style="color:#fff">סִיּוּם אִימּוּנִים פּוֹתֵחַ תֵּיבוֹת עִם צִיּוּד הִישָּׂרְדוּת!</div>';
+  const waved = collection.replace(/class="owned-animal"/g, (() => { let i = 0; return () => `class="owned-animal" style="--i:${i++}"`; })());
+
+  $('#view-camp').innerHTML = `
+    <h2 class="camp-title">🏕️ חֲנוּת הַמַּחֲנֶה</h2>
+    <div class="shop">${shop}</div>
+    <div class="camp-collection"><div class="collection-shelf">${waved}</div></div>`;
+}
+
+function renderSettings() {
+  const opts = [['none', 'בְּלִי שָׁעוֹן', 'עוֹנִים בְּנַחַת, אֵין מְדִידַת זְמַן'], ['gentle', 'שְׁעוֹן רָגוּעַ', 'רוֹאִים כַּמָּה זְמַן עָבַר, בְּלִי לַחַץ'], ['challenge', 'שְׁעוֹן אֶתְגָּר', '25 שְׁנִיּוֹת לְכָל שְׁאֵלָה']];
+  $('#view-settings').innerHTML = `
+    ${loginBlock()}
+    <div class="card s-timer" style="margin-top:20px">
+      <h2 style="margin-top:8px">⏱️ שָׁעוֹן בִּזְמַן הַתִּרְגּוּל</h2>
+      <div class="seg tsel">${opts.map(([v, l, d]) => `<button type="button" class="ghost-btn ${S.settings.timer === v ? 'on' : ''}" data-timer="${v}" aria-pressed="${S.settings.timer === v}"><b>${l}</b><small>${d}</small></button>`).join('')}</div>
+    </div>
+    <div class="card s-nick" style="margin-top:20px"><h2 style="margin-top:8px">👤 אֵיךְ לִפְנוֹת אֵלֶיךָ?</h2>
+      <input id="nickInput" type="text" maxlength="20" placeholder="כִּינּוּי (לְמָשָׁל: אַדִּיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
+      <div class="seg">${[['m', 'תַּלְמִיד'], ['f', 'תַּלְמִידָה'], ['', 'לֹא לְצַיֵּין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div></div>
+    <div class="card s-signs" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מָה אוֹמְרִים הַסִּימָנִים?</h2>
+      <div class="rank" style="text-align:right;line-height:1.6"><span>⭐ <b>כּוֹכָבִים</b> = רָמַת הַקּוֹשִׁי בַּנּוֹשֵׂא: מַתְחִילִים, מִתְקַדְּמִים, אַלּוּפִים. עוֹלִים רָמָה אַחֲרֵי 3 תְּשׁוּבוֹת נְכוֹנוֹת בְּרֶצֶף.</span><span>🥉🥈🥇 <b>אָרָד, כֶּסֶף, זָהָב</b> = הַצִּיּוּן בַּנּוֹשֵׂא: מִתַּחַת לְ-40 אָרָד, 40 עַד 69 כֶּסֶף, 70 וּמַעְלָה זָהָב.</span><span>🏆 <b>גָּבִיעַ</b> = רָמַת אַלּוּפִים וְגַם זָהָב בְּאוֹתוֹ נוֹשֵׂא.</span></div></div>
+    ${installBlock()}
+    <div class="card s-reset" style="margin-top:28px">
+      <h2 style="margin-top:8px">אִיפּוּס</h2>
+      <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">אִיפּוּס נְתוּנִים</button>
+    </div>
+    <div class="rank s-ver" style="text-align:center;margin:14px 0">גִּרְסַת הָאַפְּלִיקַצְיָה: ${APP_VERSION}</div>`;
+}
+
+/* ---------- shop & settings actions ---------- */
+function buyItem(id) {
+  const it = ITEMS.find(x => x.id === id);
+  if (!it || S.coins < it.price || S.items[it.id]) return;
+  S.coins -= it.price;
+  S.items[it.id] = 1;
+  save(); updateWallet(); renderCamp();
+  toast(`${plain(it.name)} הִצְטָרֵף לָאוֹסֶף!`);
+}
+function handleReset() {
+  const b = $('#resetBtn');
+  if (!resetArmed) {
+    resetArmed = true; b.classList.add('danger'); b.textContent = '⚠️ לְחִיצָה נוֹסֶפֶת תִּמְחַק הַכֹּל';
+    const w = document.createElement('div'); w.className = 'reset-warn'; w.id = 'resetWarn';
+    w.textContent = 'כָּל הַמַּטְבְּעוֹת, הַגְּבִיעִים, הָאוֹסֶף וְהַהִתְקַדְּמוּת בְּכָל הַנּוֹשְׂאִים יִימָּחֲקוּ, גַּם בֶּעָנָן. אִי אֶפְשָׁר לְשַׁחְזֵר.';
+    b.insertAdjacentElement('afterend', w);
+    clearTimeout(window.__rt); window.__rt = setTimeout(() => { if (resetArmed) { resetArmed = false; renderSettings(); } }, 6000);
+    return;
+  }
+  S = DEFAULT(); save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
+}
+
+/* ---------- session flow ---------- */
+function pickCat() {
+  if (session && session.only) return CATS.find(c => c.id === session.only);
+  if (session && session.topics) return CATS.find(c => c.id === session.topics[session.done % session.topics.length]);
+  const pool = CATS.filter(c => c.id !== lastCat);
+  const w = pool.map(c => 110 - mast(c.id).score);
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+
+function planTopics(n) {
+  if (!Array.isArray(S.rot)) S.rot = [];
+  const valid = new Set(CATS.map(c => c.id));
+  S.rot = S.rot.filter(id => valid.has(id));
+  const take = k => { // pick k topics from remaining, weaker topics more likely
+    const out = [];
+    for (let i = 0; i < k && S.rot.length; i++) {
+      const w = S.rot.map(id => 110 - mast(id).score);
+      let r = Math.random() * w.reduce((a, b) => a + b, 0), j = 0;
+      for (; j < S.rot.length - 1; j++) { r -= w[j]; if (r <= 0) break; }
+      out.push(S.rot.splice(j, 1)[0]);
+    }
+    return out;
+  };
+  let chosen = take(n);
+  if (chosen.length < n) {
+    S.rot = CATS.map(c => c.id).filter(id => !chosen.includes(id));
+    chosen = chosen.concat(take(n - chosen.length));
+  }
+  if (!S.rot.length) S.rot = CATS.map(c => c.id);
+  return n >= 8 ? boostWeak(chosen) : shuffle(chosen);
+}
+// accuracy per topic from real answers (null when too few answers)
+function topicAcc(id) { const st = (S.stats || {})[id]; return st && st.ok + st.bad >= 4 ? st.ok / (st.ok + st.bad) : null; }
+// When there is a clear gap between weak and strong topics, a weak topic gets a second question
+// in place of a strong topic's question (the strong topic returns first in the next session).
+function boostWeak(chosen) {
+  const weak = chosen.filter(id => { const a = topicAcc(id); return a !== null && a < 0.6; }).sort((x, y) => topicAcc(x) - topicAcc(y));
+  const strong = chosen.filter(id => { const a = topicAcc(id); return a !== null && a >= 0.85; }).sort((x, y) => topicAcc(y) - topicAcc(x));
+  const k = Math.min(2, weak.length, strong.length);
+  let out = chosen.slice();
+  for (let i = 0; i < k; i++) {
+    if (topicAcc(strong[i]) - topicAcc(weak[i]) < 0.3) continue;
+    out[out.indexOf(strong[i])] = weak[i];
+    if (!S.rot.includes(strong[i])) S.rot.unshift(strong[i]);
+  }
+  for (let t = 0; t < 30; t++) { out = shuffle(out); if (!out.some((id, i) => i && id === out[i - 1])) break; }
+  return out;
+}
+const resumeKey = (kind, only) => kind === 'bonus' ? 'bonus' : (only || 'base');
+function startSession(kind, only) {
+  const rs = S.resume && S.resume[resumeKey(kind, only)];
+  if (rs && rs.done < rs.total && rs.done > 0 && (only || (rs.topics && rs.topics.length))) {
+    session = JSON.parse(JSON.stringify(rs));
+    toast('מַמְשִׁיכִים מֵאֵיפֹה שֶׁהִפְסַקְנוּ 👍');
+    nextQ();
+    return;
+  }
+  session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
+  if (!only) { session.topics = planTopics(session.total); save(); }
+  nextQ();
+}
+
+function nextQ() {
+  stopTimer();
+  if (session.done >= session.total) return endSession();
+  // avoid repeating a question (same text/numbers) seen recently, also across sessions
+  if (!Array.isArray(S.recent)) S.recent = [];
+  const sigOf = body => { let h = 0; for (let i = 0; i < body.length; i++) h = (h * 31 + body.charCodeAt(i)) | 0; return h; };
+  let cat, sig;
+  for (let tries = 0; tries < 60; tries++) {
+    cat = pickCat();
+    Q = cat.gen(mast(cat.id).tier);
+    sig = sigOf(Q.body + (Q.sig || ''));
+    if (!S.recent.includes(sig)) break;
+  }
+  S.recent.push(sig);
+  if (S.recent.length > 60) S.recent.shift();
+  Q.cat = cat.id; Q.note = ''; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
+  Q.parts.forEach(p => { if (p.type === 'order') p.v = []; if (p.type === 'draw') p.v = Q.drawInit; });
+  lastCat = cat.id;
+  showView('play');
+  renderPlay();
+  startTimer();
+}
+
+function answered(p) {
+  if (p.type === 'buttons') return p.v !== undefined;
+  if (p.type === 'num' || p.type === 'text') return String(p.v ?? '').trim() !== '';
+  if (p.type === 'order') return p.v.length === p.items.length;
+  if (p.type === 'draw') return true;
+  return false;
+}
+function correctPart(p) {
+  if (p.type === 'buttons') return p.v === p.ans;
+  if (p.type === 'num') return parseNum(p.v) === p.ans;
+  if (p.type === 'text') return p.check(p.v);
+  if (p.type === 'order') return p.v.length === p.ans.length && p.v.every((x, i) => x === p.ans[i]);
+  if (p.type === 'draw') return p.check(p.v);
+  return false;
+}
+
+function partHTML(p, i) {
+  const locked = Q.result !== undefined;
+  if (p.type === 'buttons') {
+    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
+      let cls = p.v === o ? 'sel' : '';
+      if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
+      return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${p.ltr ? `<span class="ltr">${esc(o)}</span>` : esc(o)}</button>`;
+    }).join('')}</div>`;
+  }
+  if (p.type === 'num' || p.type === 'text') {
+    const cls = p.type === 'num' ? 'num' : 'text';
+    const ph = p.placeholder ? ` placeholder="${esc(p.placeholder)}"` : '';
+    let mark = '', extra = '', st = '';
+    if (locked && p.type === 'num') {
+      const ok = correctPart(p);
+      st = ok ? ' good' : ' bad';
+      mark = ok ? ' ✅' : ' ❌';
+      extra = ok ? '<span class="part-fix ok">נָכוֹן!</span>' : `<span class="part-fix no">הַתְּשׁוּבָה הַנְּכוֹנָה: <span class="ltr">${fmt(p.ans)}</span></span>`;
+    }
+    return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
+  }
+  if (p.type === 'order') {
+    const slots = p.items.map((_, k) => k < p.v.length ? `<span>${fmt(p.v[k])}</span>` : `<span class="empty">${k + 1}</span>`).join('');
+    const bank = p.items.map((x, j) => `<button type="button" class="opt${p.v.includes(x) ? ' used' : ''}" data-p="${i}" data-o="${j}"${p.v.includes(x) ? ' tabindex="-1" aria-hidden="true"' : ''}>${fmt(x)}</button>`).join('');
+    return `<div class="ordwrap"><div class="ord-label">הַסֵּדֶר שֶׁבָּחַרְתָּ, מֵהַקָּטָן לַגָּדוֹל:</div><div class="seq">${slots}</div><div class="ord-label">הַמִּסְפָּרִים לִבְחִירָה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">לְהַתְחִיל מֵחָדָשׁ</button></div>`;
+  }
+  if (p.type === 'draw') {
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
+  }
+  return '';
+}
+
+function fitBoard() {
+  const bd = document.querySelector('#qcard .question-board');
+  if (!bd) return;
+  bd.querySelectorAll('.ltr').forEach(el => {
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    const max = bd.clientWidth - 28;
+    while (el.getBoundingClientRect().width > max && size > 12) { size -= 1; el.style.fontSize = size + 'px'; }
+  });
+}
+function fitFeedback() {
+  const f = document.querySelector('#qcard .feedback');
+  if (!f) return;
+  let size = parseFloat(getComputedStyle(f).fontSize);
+  while (f.scrollHeight > f.clientHeight + 1 && size > 11) { size -= 1; f.style.fontSize = size + 'px'; }
+}
+function renderPlay() {
+  const locked = Q.result !== undefined;
+  const pct = Math.round((session.done / session.total) * 100);
+  const qNum = Math.min(session.total, session.done + (locked ? 0 : 1));
+  const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
+  const showTimer = !locked && S.settings.timer === 'gentle';
+
+  $('#qcard').classList.remove('summary');
+  const nk = (S.profile && S.profile.nick) ? ' ' + esc(S.profile.nick) : '';
+  const praise = pick([`נָכוֹן מְאוֹד${nk}!`, `כָּל הַכָּבוֹד${nk}!`, `יָפֶה מְאוֹד${nk}!`, G('אַלּוּף', 'אַלּוּפָה', 'מְצוּיָּן') + nk + '!']);
+  const oops = pick(['לֹא בְּדִיּוּק', 'כִּמְעַט', 'לֹא נוֹרָא']) + nk + '. ';
+  const fbText = Q.result ? `${praise} ${Q.earned === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + Q.earned + ' מַטְבְּעוֹת ' + '🪙'.repeat(Q.earned)} ` : (Q.timedOut ? 'נִגְמַר הַזְּמַן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כִּמְעַט' + nk + '! חֵלֶק מֵהַתְּשׁוּבוֹת נָכוֹן 👏 ' : oops));
+  $('#qcard').innerHTML = `
+    <div class="card-leaf leaf-tl">🌿</div>
+    <div class="card-leaf leaf-tr">🌿</div>
+    <div class="qhead">
+      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}</div>
+      ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
+    </div>
+    <div class="bar"><span style="width:${pct}%"></span></div>
+    <div class="question-board">${Q.body}</div>
+    <div class="parts${Q.parts.length > 1 && Q.parts.every(p => p.type === 'num') ? ' multi' : ''}">${parts}</div>
+    <div class="fbslot">${locked ? `
+      <div class="feedback ${Q.result ? 'ok' : 'no'}">
+        <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
+        <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
+      </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
+    <div class="row qactions">
+      ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}
+      ${locked
+        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סִיּוּם 🎉' : 'לַשְּׁאֵלָה הַבָּאָה ←'}</button>`
+        : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בְּדִיקָה ✔️</button>`}
+    </div>`;
+
+  fitFeedback(); fitBoard();
+  const sv = document.querySelector('#qcard svg[data-draw]');
+  if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  tick();
+}
+
+/* ---------- timer ---------- */
+function startTimer() {
+  stopTimer();
+  if (S.settings.timer === 'none') return;
+  timerInt = setInterval(tick, 250);
+  tick();
+}
+function stopTimer() { clearInterval(timerInt); timerInt = null; }
+function tick() {
+  if (!Q || Q.result !== undefined) { stopTimer(); return; }
+  const elapsed = Date.now() - Q.startedAt;
+  if (S.settings.timer === 'challenge') {
+    const left = Math.max(0, CHALLENGE_MS - elapsed);
+    const btn = $('#checkBtn');
+    if (btn) {
+      btn.style.setProperty('--p', (left / CHALLENGE_MS * 100).toFixed(1) + '%');
+      btn.classList.toggle('urgent', left < 5000);
+    }
+    if (left === 0) timeUp();
+  } else {
+    const box = $('#timerBox');
+    if (box) box.textContent = `⏱ ${fmtTime(elapsed)}`;
+  }
+}
+function timeUp() {
+  stopTimer();
+  Q.timedOut = true; Q.result = false;
+  record(false);
+  renderPlay();
+}
+
+/* ---------- answers ---------- */
+function setupDraw(svg, p) {
+  const arm = svg.querySelector('#arm'), knob = svg.querySelector('#knob');
+  const cx = 160, cy = 170, L = 110;
+  const place = d => {
+    const r = d * Math.PI / 180;
+    const x = (cx + L * Math.cos(r)).toFixed(1), y = (cy - L * Math.sin(r)).toFixed(1);
+    arm.setAttribute('x2', x); arm.setAttribute('y2', y);
+    knob.setAttribute('cx', x); knob.setAttribute('cy', y);
+  };
+  place(p.v);
+  if (Q.result !== undefined) return;
+  let dragging = false;
+  const move = e => {
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const d = Math.round(Math.max(0, Math.min(180, Math.atan2(cy - q.y, q.x - cx) * 180 / Math.PI)));
+    p.v = d; place(d);
+  };
+  svg.addEventListener('pointerdown', e => { dragging = true; svg.setPointerCapture(e.pointerId); move(e); });
+  svg.addEventListener('pointermove', e => { if (dragging) move(e); });
+  svg.addEventListener('pointerup', () => { dragging = false; });
+  svg.addEventListener('pointercancel', () => { dragging = false; });
+}
+
+function record(ok) {
+  const m = mast(Q.cat);
+  session.done++;
+  session.tc = session.tc || {}; session.tc[Q.cat] = (session.tc[Q.cat] || 0) + 1;
+  if (!S.stats) S.stats = {};
+  const st = S.stats[Q.cat] || (S.stats[Q.cat] = { ok: 0, bad: 0, h: '' });
+  if (ok) st.ok++; else st.bad++;
+  st.h = (st.h + (ok ? '1' : '0')).slice(-12);
+  if (!S.resume) S.resume = {};
+  S.resume[resumeKey(session.kind, session.only)] = JSON.parse(JSON.stringify(session));
+  if (ok) {
+    const earn = session.kind === 'bonus' ? 2 : 1;
+    Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
+    m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עָלִית לְרָמַת ${TIERS[m.tier]} בַּנּוֹשֵׂא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
+  } else {
+    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
+    if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
+  }
+  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מֶדַלְיַית זָהָב הוּשְׂגָה!'); }
+  if (!m.trophy && m.score >= 70 && m.tier >= 3) {
+    m.trophy = true;
+    const nm = CATS.find(c => c.id === Q.cat).name;
+    (session.trophies = session.trophies || []).push(nm);
+    toast(`🏆 גָּבִיעַ! אַלּוּפִים בַּנּוֹשֵׂא: ${plain(nm)}`);
+  }
+  save(); updateWallet();
+}
+
+function check() {
+  if (!Q || Q.result !== undefined) return;
+  if (!Q.parts.every(answered)) { Q.note = 'יֵשׁ לְמַלֵּא אֶת כָּל הַתְּשׁוּבוֹת לִפְנֵי הַבְּדִיקָה.'; $('#hintBox').textContent = Q.note; return; }
+  stopTimer();
+  const ok = Q.parts.every(correctPart);
+  Q.result = ok;
+  record(ok);
+  renderPlay();
+}
+
+function clearFocus() {
+  teacherFocus = null;
+  if (user) setDoc(doc(db, 'users', user.uid), { focus: null }, { merge: true }).catch(() => {});
+}
+function endSession() {
+  stopTimer();
+  if (teacherFocus && (session.only === teacherFocus || (session.tc && session.tc[teacherFocus] >= 2))) clearFocus();
+  if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
+  if (!S.gear) S.gear = {};
+  const acc = session.total ? session.correct / session.total : 0;
+  const rr = Math.random();
+  const wantR = acc >= 0.875 ? (rr < 0.45 ? 2 : rr < 0.85 ? 1 : 0) : acc >= 0.6 ? (rr < 0.1 ? 2 : rr < 0.5 ? 1 : 0) : (rr < 0.03 ? 1 : 0);
+  const left = GEAR.filter(g => !S.gear[g.id]);
+  let gift = null, giftCoins = 0;
+  if (left.length) {
+    const pool = left.filter(g => g.r === wantR);
+    gift = pick(pool.length ? pool : left);
+    S.gear[gift.id] = true;
+  } else { giftCoins = 10; S.coins += giftCoins; session.coins += giftCoins; }
+  if (session.kind === 'base') {
+    const today = new Date().toDateString();
+    if (S.today.day !== today) S.today = { day: today, count: 0 };
+    S.today.count++; S.sessions++;
+  }
+  save(); updateWallet();
+  Q = null;
+  $('#qcard').classList.add('summary');
+  const canBonus = session.kind === 'base';
+  $('#qcard').innerHTML = `
+    <div class="sum-gift">🎁</div>
+    <div class="sum-title">${session.kind === 'bonus' ? 'מִשְׂחַק הַבּוֹנוּס הוּשְׁלַם!' : 'הָאִימּוּן הוּשְׁלַם בְּהַצְלָחָה!'}</div>
+    <div class="sum-box">
+      <p>${session.coins === 0 ? 'לֹא הִתְקַבְּלוּ מַטְבְּעוֹת הַפַּעַם' : session.coins === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + session.coins + ' מַטְבְּעוֹת 🪙'}</p>
+      ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זָכִיתָ בְּגָבִיעַ בַּנּוֹשֵׂא: ${session.trophies.join(', ')}!</p>` : ''}
+      ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כָּל הַכָּבוֹד אַלּוּף! 🏆', 'כָּל הַכָּבוֹד אַלּוּפָה! 🏆', 'כָּל הַכָּבוֹד! 🏆')}</p>` : ''}
+      <p>${gift ? `נִפְתְּחָה תֵּיבָה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) הִתְווַסֵּף לְצִיּוּד שֶׁלְּךָ!` : 'הָאוֹסֶף שֶׁלְּךָ מָלֵא! הַתֵּיבָה הֵכִילָה בּוֹנוּס שֶׁל ' + giftCoins + ' מַטְבְּעוֹת 🪙'}</p>
+    </div>
+    <div class="sum-actions">
+      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אִימּוּן בּוֹנוּס (מַטְבְּעוֹת כְּפוּלִים)</button>` : ''}
+      <button type="button" class="ghost-btn" id="homeBtn">חֲזָרָה לַמָּסָךְ הָרָאשִׁי</button>
+    </div>`;
+}
+
+function handlePlayClick(t) {
+  const b = t.closest('button');
+  if (!b) return;
+  if (b.id === 'bonusBtn') { startSession('bonus'); return; }
+  if (b.id === 'homeBtn') { showView('home'); return; }
+  if (!Q) return;
+  if (b.id === 'checkBtn') { check(); return; }
+  if (b.id === 'nextBtn') { nextQ(); return; }
+  if (b.id === 'hintBtn') { Q.note = Q.hint; $('#hintBox').textContent = Q.note; return; }
+  if (b.dataset.reset !== undefined && Q.result === undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
+  if (b.dataset.p !== undefined && b.dataset.o !== undefined && Q.result === undefined) {
+    const p = Q.parts[+b.dataset.p];
+    if (p.type === 'buttons') { p.v = p.opts[+b.dataset.o]; renderPlay(); }
+    else if (p.type === 'order') { const val = p.items[+b.dataset.o]; if (!p.v.includes(val)) p.v.push(val); renderPlay(); }
+  }
+}
+
+/* ---------- global events ---------- */
+document.addEventListener('input', e => { if (e.target && e.target.id === 'nickInput') { S.profile.nick = e.target.value.trim().slice(0, 20); save(); } });
+document.addEventListener('click', e => {
+  const t = e.target;
+  const nav = t.closest('.nav [data-go]');
+  if (nav) { showView(nav.dataset.go); return; }
+  const pr = t.closest('[data-practice]');
+  if (pr) { startSession('base', pr.dataset.practice); return; }
+  if (t.closest('#startBtn')) { startSession('base'); return; }
+  const act = t.closest('[data-act]');
+  if (act && act.dataset.act === 'logout') { doLogout(); return; }
+  if (act && act.dataset.act === 'usermenu') { $('#userMenu').classList.toggle('hidden'); return; }
+  if (!t.closest('#userChip')) { const m = $('#userMenu'); if (m) m.classList.add('hidden'); }
+  if (t.closest('#installBtn')) { doInstall(); return; }
+  const gd = t.closest('[data-gender]');
+  if (gd) { S.profile.gender = gd.dataset.gender; save(); renderSettings(); return; }
+  const tm = t.closest('[data-timer]');
+  if (tm) { S.settings.timer = tm.dataset.timer; save(); renderSettings(); return; }
+  const buy = t.closest('[data-buy]');
+  if (buy) { buyItem(buy.dataset.buy); return; }
+  if (t.closest('#resetBtn')) { handleReset(); return; }
+  if (t.closest('#qcard')) handlePlayClick(t);
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (!Q || el.tagName !== 'INPUT' || el.dataset.p === undefined) return;
+  Q.parts[+el.dataset.p].v = el.value;
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.closest('#qcard') && Q && Q.result === undefined) check();
+});
+
+/* ---------- auth state ---------- */
+onAuthStateChanged(auth, u => {
+  user = u; cloudReady = false;
+  updateWallet(); refreshCurrentView();
+  if (u) cloudLoad().then(() => { updateWallet(); refreshCurrentView(); });
+});
+
+/* ---------- start ---------- */
+updateWallet();
+showView('home');
+renderUserChip();
+</script>
+</body>
+</html>

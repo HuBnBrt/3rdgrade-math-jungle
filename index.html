@@ -320,10 +320,10 @@ function genCompare(t) {
   }
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
-    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L}</span> &nbsp; ? &nbsp; <span class="ltr">${Rt}</span></div>`,
+    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
     hint: 'יש לחשב את שני הצדדים, ואז להשוות את התוצאות.',
-    explain: `${fmt(lv)} ${sym} ${fmt(rv)}`
+    explain: `<span class="ltr">${fmt(lv)} ${sym==='<'?'&lt;':sym==='>'?'&gt;':'='} ${fmt(rv)}</span>`
   };
 }
 
@@ -346,10 +346,10 @@ function genNoCalc(t) {
   }
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
-    body: `<div class="prompt">יש לסמן ללא צורך בחישוב מדויק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L}</span> &nbsp; ? &nbsp; <span class="ltr">${Rt}</span></div>`,
+    body: `<div class="prompt">יש לסמן ללא צורך בחישוב מדויק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
     hint,
-    explain: `הסימן המתאים הוא ${sym}.`
+    explain: `הסימן המתאים הוא <span class="ltr">${sym==='<'?'&lt;':sym==='>'?'&gt;':'='}</span>.`
   };
 }
 
@@ -377,7 +377,7 @@ function genOrder(t) {
     body: `<div class="prompt">יש ללחוץ על המספרים מהקטן לגדול.</div>`,
     parts: [{ type: 'order', items: shuffle(nums), ans: sorted }],
     hint: 'מומלץ להשוות קודם את מספר הספרות, ואז את הספרות השמאליות ביותר.',
-    explain: `הסדר הנכון: ${sorted.map(fmt).join(' < ')}`
+    explain: `הסדר הנכון: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
   };
 }
 
@@ -786,7 +786,7 @@ function correctPart(p) {
 function partHTML(p, i) {
   const locked = Q.result !== undefined;
   if (p.type === 'buttons') {
-    return `<div class="opts">${p.opts.map((o, j) => {
+    return `<div class="opts"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
       let cls = p.v === o ? 'sel' : '';
       if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
       return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${esc(o)}</button>`;

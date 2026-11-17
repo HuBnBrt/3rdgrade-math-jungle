@@ -37,6 +37,8 @@ tr:hover td.name{text-decoration:underline}
 .focus{background:#fff6d8;border:1px solid #efd37a;border-radius:8px;padding:6px 10px;margin-top:8px}
 .up{color:#1f8f4e}.down{color:#c0392b}.flat{color:#7a867f}
 .hidden{display:none}
+td small{display:block;font-size:11px;color:#5b6b63;line-height:1}
+td.few{opacity:.6;font-style:italic}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 input[type=email]{font:inherit;padding:6px 10px;border:1px solid #b8c4be;border-radius:8px;min-width:240px;direction:ltr}
 .muted{color:#6b7b73;font-size:13px}
@@ -109,7 +111,8 @@ async function loadAll() {
   render();
 }
 
-const acc = t => (t && t.ok + t.bad >= MIN) ? t.ok / (t.ok + t.bad) : null;
+const acc = t => (t && t.ok + t.bad >= 1) ? t.ok / (t.ok + t.bad) : null;
+const few = t => !t || t.ok + t.bad < MIN;
 const cls = a => a === null ? 'c0' : a < .5 ? 'c1' : a < .7 ? 'c2' : a < .85 ? 'c3' : 'c4';
 const pct = a => a === null ? '–' : Math.round(a * 100) + '%';
 function trend(t) {
@@ -134,7 +137,7 @@ function render() {
   const sorted = kids.slice().sort((a, b) => (a.name || a.email || '').localeCompare(b.name || b.email || '', 'he'));
   const head = tp.map(([id, n]) => `<th class="t" title="${esc(n)}">${esc(n)}</th>`).join('');
   const rows = sorted.map(k => `<tr><td class="name" data-uid="${k.uid}">${esc(k.nick || k.name || k.email || 'ללא שם')}</td>
-      <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="${cls(a)}" title="${t ? t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}</td>`; }).join('')}
+      <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="${cls(a)}${a !== null && few(t) ? ' few' : ''}" title="${t ? t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}${a !== null ? `<small>${t.ok}/${t.ok + t.bad}</small>` : ''}</td>`; }).join('')}
       <td>${k.sessions || 0}</td><td>${when(k.lastSeen)}</td></tr>`).join('');
   const k = kids.find(x => x.uid === openUid);
   $('#main').innerHTML = `
@@ -146,7 +149,7 @@ function render() {
     <div class="weak">${classWeak.length ? classWeak.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין עדיין מספיק נתונים</span>'}</div></div>
   <div class="box"><div class="row"><h2 style="margin:0;flex:1">טבלת חום – אחוז הצלחה בכל נושא</h2><button id="csvBtn" class="sm">ייצוא לאקסל (CSV)</button></div>
     <div class="tablewrap"><table><thead><tr><th>ילד/ה</th><th>כללי</th>${head}<th>אימונים</th><th>כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
-    <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>פחות מ-${MIN} תשובות</span></div>
+    <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך שאלות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
     <p class="muted">מחושב לפי תשובות נכונות ושגויות בפועל. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
   <div id="card">${k ? kidCard(k) : ''}</div>
   <div class="box"><h2>מורשי ניהול</h2>
@@ -158,7 +161,8 @@ function kidCard(k) {
   const list = Object.entries(k.topics || {}).map(([id, t]) => ({ id, ...t, a: acc(t) }));
   const judged = list.filter(x => x.a !== null).sort((x, y) => x.a - y.a);
   const none = list.filter(x => x.a === null);
-  const weak3 = judged.filter(x => x.a < .85).slice(0, 3);
+  const solid = judged.filter(x => x.ok + x.bad >= MIN);
+  const weak3 = solid.filter(x => x.a < .85).slice(0, 3);
   const f = k.focus && k.focus.topic ? list.find(x => x.id === k.focus.topic) : null;
   const line = x => `<tr><td style="text-align:right">${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td><button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button></td></tr>`;
   return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>

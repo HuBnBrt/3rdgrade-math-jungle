@@ -512,6 +512,10 @@ header .chip{order:2;flex:none}
   #qcard .row label{font-size:16px !important}
   #qcard .question-board{overflow:visible;flex:none}
 }
+
+.cats .card{display:flex;flex-direction:column;justify-content:center}
+.cats .card .topic-content{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.cats .card .topic-title{overflow-wrap:anywhere;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
 </style>
 </head>
 <body>
@@ -543,7 +547,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v45';
+const APP_VERSION = 'v46';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1072,7 +1076,7 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, mastery: {}, settings: { timer: 'none' }, sessions: 0, today: { day: '', count: 0 } });
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, mastery: {}, settings: { timer: 'none' }, rot: [], sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
@@ -1239,9 +1243,14 @@ function fitTitles() {
   ts.forEach(t => { t.classList.remove('wrap'); t.style.fontSize = base + 'px'; });
   let size = base;
   ts.forEach(t => { if (t.scrollWidth > t.clientWidth) size = Math.min(size, Math.floor(base * t.clientWidth / t.scrollWidth)); });
-  const minSize = Math.min(14, base);
+  const minSize = Math.min(window.innerWidth < 700 ? 11 : 14, base);
   if (size < minSize) { size = minSize; ts.forEach(t => t.classList.add('wrap')); }
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
+  const cards = [...document.querySelectorAll('#view-home .cats .card')];
+  for (let i = 0; i < 10 && size > 10; i++) {
+    if (!cards.some(c => c.scrollHeight > c.clientHeight + 1)) break;
+    size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; });
+  }
 }
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
@@ -1308,6 +1317,7 @@ function handleReset() {
 /* ---------- session flow ---------- */
 function pickCat() {
   if (session && session.only) return CATS.find(c => c.id === session.only);
+  if (session && session.topics) return CATS.find(c => c.id === session.topics[session.done % session.topics.length]);
   const pool = CATS.filter(c => c.id !== lastCat);
   const w = pool.map(c => 110 - mast(c.id).score);
   let r = Math.random() * w.reduce((a, b) => a + b, 0);
@@ -1315,8 +1325,31 @@ function pickCat() {
   return pool[pool.length - 1];
 }
 
+function planTopics(n) {
+  if (!Array.isArray(S.rot)) S.rot = [];
+  const valid = new Set(CATS.map(c => c.id));
+  S.rot = S.rot.filter(id => valid.has(id));
+  const take = k => { // pick k topics from remaining, weaker topics more likely
+    const out = [];
+    for (let i = 0; i < k && S.rot.length; i++) {
+      const w = S.rot.map(id => 110 - mast(id).score);
+      let r = Math.random() * w.reduce((a, b) => a + b, 0), j = 0;
+      for (; j < S.rot.length - 1; j++) { r -= w[j]; if (r <= 0) break; }
+      out.push(S.rot.splice(j, 1)[0]);
+    }
+    return out;
+  };
+  let chosen = take(n);
+  if (chosen.length < n) {
+    S.rot = CATS.map(c => c.id).filter(id => !chosen.includes(id));
+    chosen = chosen.concat(take(n - chosen.length));
+  }
+  if (!S.rot.length) S.rot = CATS.map(c => c.id);
+  return shuffle(chosen);
+}
 function startSession(kind, only) {
   session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
+  if (!only) { session.topics = planTopics(session.total); save(); }
   nextQ();
 }
 

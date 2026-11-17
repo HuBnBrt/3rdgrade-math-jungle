@@ -521,7 +521,7 @@ header .chip{order:2;flex:none}
 </head>
 <body>
 <header>
-  <h1 class="display">🌴 ארץ הג'ונגל במתמטיקה</h1>
+  <h1 class="display"><a href="admin.html" tabindex="-1" aria-hidden="true" style="color:inherit;text-decoration:none;cursor:default;-webkit-tap-highlight-color:transparent">🌴</a> ארץ הג'ונגל במתמטיקה</h1>
   <div class="wallet">
     <span id="userChip" class="user-chip"></span>
     <span class="chip">🪙 <b id="coins">0</b></span>
@@ -548,7 +548,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v52';
+const APP_VERSION = 'v54';
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); if (currentView === 'home') renderHome(); });
 window.addEventListener('appinstalled', () => { installEvt = null; if (currentView === 'settings') renderSettings(); });
@@ -1118,8 +1118,13 @@ async function cloudSave() {
   try {
     const topics = {};
     CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: c.name, score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, focus: S.focus || null, version: APP_VERSION }, { merge: true });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
   } catch (e) { console.warn('profile', e); }
+}
+let teacherFocus = null;
+function focusBar() {
+  const c = teacherFocus && CATS.find(x => x.id === teacherFocus);
+  return c ? `<div class="install-bar"><span>⭐ מומלץ לתרגל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לתרגול</button></div>` : '';
 }
 async function cloudLoad() {
   const u0 = user;
@@ -1128,6 +1133,7 @@ async function cloudLoad() {
     if (snap.exists() && snap.data().state) { S = mergeState(snap.data().state); persistLocal(); }
     else { cloudReady = true; await cloudSave(); }
     if (user === u0) cloudReady = true;
+    try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() && pf.data().focus ? pf.data().focus.topic : null; if (currentView === 'home') renderHome(); } catch (e2) {}
   } catch (e) {
     console.warn(e);
     toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
@@ -1242,6 +1248,7 @@ function renderHome() {
 
   $('#view-home').innerHTML = `
     ${loginBlock()}
+    ${focusBar()}
     ${installBar()}
     <div class="home-top">
       <div class="hero-bubble">
@@ -1361,7 +1368,24 @@ function planTopics(n) {
     chosen = chosen.concat(take(n - chosen.length));
   }
   if (!S.rot.length) S.rot = CATS.map(c => c.id);
-  return shuffle(chosen);
+  return n >= 8 ? boostWeak(chosen) : shuffle(chosen);
+}
+// accuracy per topic from real answers (null when too few answers)
+function topicAcc(id) { const st = (S.stats || {})[id]; return st && st.ok + st.bad >= 4 ? st.ok / (st.ok + st.bad) : null; }
+// When there is a clear gap between weak and strong topics, a weak topic gets a second question
+// in place of a strong topic's question (the strong topic returns first in the next session).
+function boostWeak(chosen) {
+  const weak = chosen.filter(id => { const a = topicAcc(id); return a !== null && a < 0.6; }).sort((x, y) => topicAcc(x) - topicAcc(y));
+  const strong = chosen.filter(id => { const a = topicAcc(id); return a !== null && a >= 0.85; }).sort((x, y) => topicAcc(y) - topicAcc(x));
+  const k = Math.min(2, weak.length, strong.length);
+  let out = chosen.slice();
+  for (let i = 0; i < k; i++) {
+    if (topicAcc(strong[i]) - topicAcc(weak[i]) < 0.3) continue;
+    out[out.indexOf(strong[i])] = weak[i];
+    if (!S.rot.includes(strong[i])) S.rot.unshift(strong[i]);
+  }
+  for (let t = 0; t < 30; t++) { out = shuffle(out); if (!out.some((id, i) => i && id === out[i - 1])) break; }
+  return out;
 }
 const resumeKey = (kind, only) => kind === 'bonus' ? 'bonus' : (only || 'base');
 function startSession(kind, only) {

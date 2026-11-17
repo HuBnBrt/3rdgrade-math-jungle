@@ -234,7 +234,7 @@ header h1{font-size:20px}
 .chip{padding:2px 12px;font-size:15px}
 main{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;padding:12px 14px 12px;overflow:hidden}
 main>section{flex:1;min-height:0;display:flex;flex-direction:column}
-#view-camp,#view-settings{display:block;overflow-y:auto}
+#view-settings{display:block;overflow-y:auto}
 .spacer{display:none}
 .nav{position:static;flex:none;padding-bottom:env(safe-area-inset-bottom)}
 .nav button{padding:6px 4px 8px;gap:2px;font-size:14px}
@@ -273,6 +273,24 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 #qcard input.num,#qcard input.text{padding:clamp(6px,1.2vh,10px) 14px;font-size:clamp(18px,2.8vh,22px)}
 #qcard .action-btn{padding:clamp(8px,1.6vh,14px) 28px;font-size:clamp(16px,2.6vh,20px)}
 #qcard .bar{margin-top:6px}
+/* camp: shop + collection on one screen */
+.camp-title{margin:0 0 6px;font-size:18px;text-align:center;flex:none}
+.shop{flex:1;min-height:0;display:grid;gap:8px 10px;align-content:center;--cols:3;--rows:4;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,190px))}
+@media (min-width:700px){.shop{--cols:5;--rows:2}}
+@media (orientation:landscape) and (max-height:560px){.shop{--cols:5;--rows:2}}
+.shop .card{container-type:size;padding:6px;border-width:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:0;box-shadow:inset 0 0 10px rgba(0,0,0,.1),0 4px 0 #5c3a21}
+.shop .card .ic{font-size:clamp(26px,32cqh,52px);line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
+.shop .card .nm{font-size:clamp(13px,12cqh,19px)}
+.shop .card .chip{padding:0 10px;font-size:clamp(11px,9cqh,15px)}
+.shop .card .rank{font-size:clamp(10px,8cqh,13px)}
+.shop .card button{width:100%;padding:clamp(3px,3cqh,8px) 6px;font-size:clamp(11px,9cqh,16px);border-radius:12px;box-shadow:0 3px 0 #1b5e20}
+.shop .card .ghost-btn{box-shadow:0 3px 0 #8b5a2b}
+@container (max-height:120px){.shop .card .rank{display:none}}
+.camp-collection{flex:none;margin-top:8px}
+.camp-collection .collection-shelf{padding:6px 12px;gap:10px;border-bottom-width:6px;min-height:clamp(40px,7vh,64px);align-items:center}
+.camp-collection .owned-animal{font-size:clamp(24px,4.5vh,40px)}
+#view-settings .card{margin-top:12px !important;padding:12px}
+#view-settings h2{margin:0 0 8px;font-size:18px}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
 .action-btn.timed.urgent{background:linear-gradient(to right,#e0584a 0,#c94b3d var(--p),#d9a9a3 var(--p),#d9a9a3 100%)}
@@ -310,7 +328,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v15';
+const APP_VERSION = 'v16';
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -765,12 +783,12 @@ function renderCamp() {
     const canAfford = S.coins >= it.price;
     const owned = S.items[it.id] || 0;
     return `
-      <div class="card" style="padding:20px 10px;display:flex;flex-direction:column;align-items:center;gap:10px">
-        <div style="font-size:55px;filter:drop-shadow(0 4px 2px rgba(0,0,0,0.2))">${it.icon}</div>
-        <b class="big" style="font-size:20px">${it.name}</b>
+      <div class="card">
+        <div class="ic">${it.icon}</div>
+        <b class="big nm">${it.name}</b>
         <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
         <div class="rank">באוסף: ${owned}</div>
-        <button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'} style="width:100%;padding:10px">
+        <button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
           ${canAfford ? 'לקנייה' : 'אין מטבעות'}
         </button>
       </div>`;
@@ -782,10 +800,9 @@ function renderCamp() {
     : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם חיות לאוסף!</div>';
 
   $('#view-camp').innerHTML = `
-    <h2>חנות המחנה</h2>
-    <div class="grid">${shop}</div>
-    <h2 style="margin-top:40px">האוסף</h2>
-    <div class="collection-shelf">${collection}</div>`;
+    <h2 class="camp-title">🏕️ חנות המחנה</h2>
+    <div class="shop">${shop}</div>
+    <div class="camp-collection"><div class="collection-shelf">${collection}</div></div>`;
 }
 
 function renderSettings() {

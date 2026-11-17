@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ארץ הג'ונגל במתמטיקה</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canopy:#163b2a; --moss:#2f6b4f; --leaf:#4caf7a; --leaf-soft:#dcefd9;
+  --sand:#f9f4e8; --paper:#fffdf6; --amber:#f0a430; --clay:#b5532f; --bad:#c94b3d;
+  --ink:#3b220d; --muted:#5c3a21; --r:20px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--sand);
+  color:var(--ink);font-family:Heebo,system-ui,sans-serif;font-size:17px;line-height:1.55;
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(76,175,122,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(47,107,79,0.06) 0%, transparent 40%);
+}
+h1,h2,.display{font-family:Rubik,Heebo,sans-serif}
+h2{font-size:22px;margin:32px 0 16px;font-weight:900;color:var(--canopy);text-align:center}
+
+/* header */
+header{
+  position:sticky;top:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:14px 18px 22px;color:#fff;
+  background:linear-gradient(180deg,var(--moss),var(--canopy));
+  box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-10px;height:12px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M0 0 Q15 12 30 0 T60 0 T90 0 T120 0 V12 H0Z' fill='%23163b2a'/></svg>") repeat-x;
+  background-size:60px 12px;
+}
+header h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px;text-shadow:0 2px 4px rgba(0,0,0,0.4)}
+.wallet{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.2);padding:4px 14px;border-radius:99px;font-weight:900;font-size:16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2)}
+.chip b{font-family:Rubik,sans-serif;font-size:18px;color:var(--amber)}
+
+main{max-width:800px;margin:0 auto;padding:18px 16px 0}
+.spacer{height:92px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:32px 18px;padding-top:20px}
+.big{font-size:22px;font-weight:900;font-family:Rubik,sans-serif;color:var(--ink)}
+.rank{font-size:14px;color:var(--muted);font-weight:600}
+
+/* wooden cards */
+.card{
+  background:linear-gradient(180deg,#d8a675,#b47a46);
+  border-radius:var(--r);padding:18px 12px;
+  border:4px solid #6b421a;
+  box-shadow:inset 0 0 10px rgba(0,0,0,0.1),0 8px 0 #5c3a21,0 12px 15px rgba(0,0,0,0.15);
+  position:relative;z-index:10;
+  text-align:center;
+  transition:transform 0.2s;
+}
+.card:hover{transform:translateY(-4px)}
+.card::before{
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(to bottom,transparent,transparent 10px,rgba(107,66,26,0.05) 10px,rgba(107,66,26,0.05) 20px);
+  border-radius:14px;pointer-events:none;z-index:-1;
+}
+.card-leaf{position:absolute;font-size:26px;z-index:12;filter:drop-shadow(0 3px 2px rgba(0,0,0,0.3));pointer-events:none}
+.leaf-tl{top:-12px;left:-12px;transform:rotate(-45deg)}
+.leaf-br{bottom:-12px;right:-12px;transform:rotate(135deg)}
+.leaf-tr{top:-12px;right:-12px;transform:rotate(45deg)}
+
+/* peeking animals (behind the card) */
+.peek-animal{
+  position:absolute;z-index:-2;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.peek-animal.top-left{top:-35px;left:-25px;font-size:55px;transform:rotate(-15deg)}
+.peek-animal.bottom-left{bottom:0;left:-35px;font-size:45px;transform:rotate(-25deg)}
+.peek-animal.top-center{top:-45px;left:50%;transform:translateX(-50%);font-size:60px}
+.peek-animal.bottom-center{bottom:-30px;left:50%;transform:translateX(-50%);font-size:40px}
+.peek-animal.top-right{top:-35px;right:-25px;font-size:55px;transform:rotate(15deg)}
+.peek-animal.bottom-right{bottom:0;right:-35px;font-size:45px;transform:rotate(25deg)}
+.card:hover .peek-animal.top-left{transform:rotate(-5deg) translateY(-12px)}
+.card:hover .peek-animal.bottom-left{transform:rotate(-15deg) translateX(-10px) translateY(-5px)}
+.card:hover .peek-animal.top-center{transform:translateX(-50%) translateY(-12px)}
+.card:hover .peek-animal.bottom-center{transform:translateX(-50%) translateY(-6px)}
+.card:hover .peek-animal.top-right{transform:rotate(5deg) translateY(-12px)}
+.card:hover .peek-animal.bottom-right{transform:rotate(15deg) translateX(10px) translateY(-5px)}
+
+.topic .big{white-space:nowrap;text-shadow:1px 1px 0 rgba(255,255,255,0.4);margin-bottom:4px}
+
+.wood-btn-small{
+  background:linear-gradient(180deg,#b97a44,#8b5a2b);
+  border:2px solid #5c3a21;color:#fff;border-radius:8px;
+  padding:6px 18px;font-weight:900;box-shadow:0 4px 0 #4a2810;
+  font-size:15px;margin-top:12px;font-family:Rubik,sans-serif;cursor:pointer;
+  text-shadow:0 1px 2px rgba(0,0,0,0.5);
+}
+.bar{height:12px;background:#8b5a2b;border-radius:99px;overflow:hidden;margin-top:14px;border:2px solid #5c3a21;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3)}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#8bc34a,#4caf50);border-radius:99px;transition:width .4s}
+
+/* hero */
+.hero-banner{text-align:center;margin:30px auto 40px;position:relative;max-width:450px}
+.hero-monkey{font-size:80px;position:absolute;top:-65px;left:50%;transform:translateX(-50%);z-index:1;filter:drop-shadow(0 5px 5px rgba(0,0,0,0.3))}
+.hero-bubble{
+  background:#fff;border-radius:16px;padding:12px 20px;display:inline-block;position:relative;margin-bottom:16px;
+  font-weight:900;color:#163b2a;box-shadow:0 4px 0 rgba(0,0,0,0.1);border:2px solid #e0e0e0;z-index:5;
+}
+.hero-board{
+  background:linear-gradient(180deg,#966030,#6c421e);padding:16px;border-radius:20px;border:4px solid #4a2810;
+  position:relative;z-index:10;box-shadow:inset 0 0 10px rgba(0,0,0,0.2),0 8px 0 #3b220d,0 15px 20px rgba(0,0,0,0.3);width:100%;
+}
+.big-green-btn{
+  width:100%;font-size:26px;padding:18px;border-radius:12px;
+  background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;border:3px solid #a5d6a7;
+  box-shadow:0 6px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3);text-shadow:0 2px 3px rgba(0,0,0,0.4);
+  font-family:Rubik,sans-serif;font-weight:900;cursor:pointer;transition:transform 0.1s,box-shadow 0.1s;
+}
+.big-green-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3)}
+
+/* banner (login / info) */
+.banner{
+  background:var(--paper);border:3px dashed #b47a46;border-radius:16px;padding:12px 16px;margin:16px 0;
+  color:#4a2810;font-weight:800;text-align:center;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;
+}
+
+/* play */
+.question-board{
+  padding:24px;background:var(--paper);border:3px dashed #b47a46;border-radius:20px;margin:16px 0 24px;
+  font-size:22px;font-weight:800;text-align:center;color:#4a2810;box-shadow:inset 0 0 20px rgba(180,122,70,0.1);
+}
+.opts{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0;justify-content:center}
+.opt{
+  background:linear-gradient(180deg,#e0e0e0,#bdbdbd);color:#333;border:3px solid #9e9e9e;border-radius:16px;
+  min-width:80px;font-size:22px;direction:ltr;
+  box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #757575;
+  font-family:Rubik,sans-serif;font-weight:900;padding:12px 20px;cursor:pointer;
+  transition:transform 0.1s,box-shadow 0.1s,background 0.2s;
+}
+.opt:active{transform:translateY(6px);box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 0 0 #757575}
+.opt.sel{background:linear-gradient(180deg,#fff9c4,#fff59d);border-color:#fbc02d;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #f57f17;color:#f57f17}
+.opt.good{background:linear-gradient(180deg,#c8e6c9,#a5d6a7);border-color:#4caf50;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #2e7d32;color:#1b5e20;transform:scale(1.05)}
+.opt.bad{background:linear-gradient(180deg,#ffcdd2,#ef9a9a);border-color:#f44336;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #c62828;color:#b71c1c;animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+input.num,input.text{font:inherit;font-size:22px;padding:12px 16px;border:3px solid #b47a46;border-radius:14px;width:180px;text-align:center;direction:ltr;background:var(--paper);font-family:Rubik,sans-serif;font-weight:900;color:#4a2810}
+input.text{width:100%;direction:rtl;text-align:right}
+.locked{pointer-events:none}
+.prompt{font-size:22px;font-weight:800;margin:6px 0 12px;line-height:1.85}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Rubik,sans-serif}
+.seq{min-height:60px;display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:rgba(255,255,255,0.5);border-radius:16px;direction:ltr;margin-bottom:12px;border:2px dashed #b47a46}
+.seq span{background:#6b421a;color:#fff;padding:8px 16px;border-radius:12px;font-weight:900;font-family:Rubik,sans-serif}
+.timer{display:inline-block;margin:4px auto 12px;padding:6px 16px;border-radius:99px;background:var(--moss);color:#fff;font-weight:900;font-family:Rubik,sans-serif;font-size:18px;box-shadow:0 3px 0 var(--canopy)}
+.timer.urgent{background:var(--bad);animation:shake .4s infinite}
+.timer-wrap{text-align:center}
+svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;touch-action:none;background:rgba(255,255,255,0.5);border-radius:16px;border:3px dashed #b47a46}
+
+/* action buttons */
+.action-btn{
+  font:inherit;font-weight:900;cursor:pointer;border-radius:16px;padding:14px 28px;font-size:18px;
+  background:linear-gradient(180deg,var(--leaf),var(--moss));color:#fff;border:2px solid #81c784;
+  box-shadow:0 6px 0 #1b5e20;transition:transform .1s,box-shadow .1s;
+}
+.action-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20}
+.ghost-btn{
+  background:var(--paper);color:var(--muted);border:3px solid #b47a46;box-shadow:0 6px 0 #8b5a2b;
+  font-weight:900;border-radius:16px;padding:14px 24px;cursor:pointer;transition:transform 0.1s;font-size:18px;font-family:Rubik,sans-serif;
+}
+.ghost-btn:active{transform:translateY(6px);box-shadow:0 0 0 #8b5a2b}
+.ghost-btn:disabled{opacity:.5;cursor:not-allowed}
+.ghost-btn.on{background:#4caf50;color:#fff;border-color:#2e7d32;box-shadow:0 6px 0 #1b5e20}
+
+/* feedback */
+.feedback{display:flex;gap:16px;align-items:center;padding:18px;border-radius:20px;margin-top:16px;font-weight:800;font-size:18px}
+.feedback .mascot{font-size:45px;flex:0 0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.2))}
+.feedback.ok{background:#e8f5e9;color:#2e7d32;border:2px solid #a5d6a7}
+.feedback.no{background:#ffebee;color:#c62828;border:2px solid #ef9a9a}
+
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:16px}
+.seg{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.seg .ghost-btn{font-size:16px;padding:10px 16px;box-shadow:0 4px 0 #8b5a2b}
+
+/* bottom nav */
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--paper);border-top:3px solid #e0e0e0;box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;background:transparent;color:#8d6e63;border:none;border-radius:0;padding:12px 4px 14px;font-weight:900;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:Rubik,sans-serif;cursor:pointer}
+.nav button .e{font-size:24px;filter:grayscale(1) opacity(0.6);transition:0.2s}
+.nav button[aria-current="page"]{color:#4caf50;background:linear-gradient(180deg,transparent,rgba(76,175,80,0.1));border-top:3px solid #4caf50;margin-top:-3px}
+.nav button[aria-current="page"] .e{filter:none;transform:scale(1.15)}
+
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--canopy);color:#fff;padding:14px 24px;border-radius:16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:900;font-weight:900;white-space:nowrap;box-shadow:0 10px 20px rgba(0,0,0,0.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-10px)}
+.hidden{display:none !important}
+
+/* shop & collection */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:20px;margin-top:14px}
+.collection-shelf{background:linear-gradient(180deg,#81c784,#4caf50);border-radius:20px;padding:20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;border:4px solid #388e3c;border-bottom-width:10px;box-shadow:inset 0 4px 0 rgba(255,255,255,0.3)}
+.owned-animal{font-size:50px;filter:drop-shadow(0 4px 2px rgba(0,0,0,0.2));animation:float 3s ease-in-out infinite alternate}
+@keyframes float{0%{transform:translateY(0)}100%{transform:translateY(-8px)}}
+</style>
+</head>
+<body>
+<header>
+  <h1 class="display">🌴 ארץ הג'ונגל במתמטיקה</h1>
+  <div class="wallet">
+    <span class="chip">🪙 <b id="coins">0</b></span>
+    <span class="chip">🏅 <b id="medals">0</b></span>
+  </div>
+</header>
+
+<main>
+  <section id="view-home"></section>
+  <section id="view-play" class="hidden"><div class="card" id="qcard" style="max-width:600px;margin:0 auto;padding:24px"></div></section>
+  <section id="view-camp" class="hidden"></section>
+  <section id="view-settings" class="hidden"></section>
+  <div class="spacer"></div>
+</main>
+
+<nav class="nav" aria-label="ניווט">
+  <button type="button" data-go="home" aria-current="page"><span class="e">🏠</span>בית</button>
+  <button type="button" data-go="camp"><span class="e">🏕️</span>המחנה</button>
+  <button type="button" data-go="settings"><span class="e">⚙️</span>הגדרות</button>
+</nav>
+<div id="toast" class="toast" role="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ---------- Firebase ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
+  authDomain: "jungle-math-kids.firebaseapp.com",
+  projectId: "jungle-math-kids",
+  storageBucket: "jungle-math-kids.firebasestorage.app",
+  messagingSenderId: "984154992852",
+  appId: "1:984154992852:web:49dcb9957f8baa4e108b41"
+};
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const provider = new GoogleAuthProvider();
+let user = null;
+
+/* ---------- helpers ---------- */
+const KEY = 'jungle-math-v4';
+const OLD_KEY = 'jungle-math-v3';
+const CHALLENGE_MS = 25000;
+const $ = s => document.querySelector(s);
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = rnd(0, i); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const parseNum = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^-?\d+$/.test(s) ? Number(s) : NaN; };
+const perms = a => a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
+const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
+const PLACE = { 1: 'היחידות', 10: 'העשרות', 100: 'המאות', 1000: 'האלפים' };
+const angleClass = d => d < 90 ? 'חדה' : d === 90 ? 'ישרה' : d < 180 ? 'קהה' : 'שטוחה';
+const rank = s => s >= 70 ? 'זהב' : s >= 40 ? 'כסף' : 'ארד';
+
+const ITEMS = [
+  { id: 'lion', name: 'אריה', icon: '🦁', price: 15 },
+  { id: 'elephant', name: 'פיל', icon: '🐘', price: 15 },
+  { id: 'leopard', name: 'נמר', icon: '🐆', price: 20 },
+  { id: 'giraffe', name: 'ג\'ירפה', icon: '🦒', price: 25 },
+  { id: 'monkey', name: 'קוף', icon: '🐒', price: 10 },
+  { id: 'parrot', name: 'תוכי', icon: '🦜', price: 10 },
+  { id: 'zebra', name: 'זברה', icon: '🦓', price: 10 },
+  { id: 'koala', name: 'קואלה', icon: '🐨', price: 20 },
+  { id: 'frog', name: 'צפרדע', icon: '🐸', price: 8 },
+  { id: 'croc', name: 'תנין', icon: '🐊', price: 20 }
+];
+
+/* ---------- question generators ---------- */
+function genDigit(t) {
+  const len = t === 1 ? 3 : 4;
+  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
+  const s = String(n);
+  let i, old, e;
+  do { i = rnd(0, len - 1); old = Number(s[i]); e = rnd(0, 9); }
+  while (e === old || (i === 0 && e === 0) || s.split(String(old)).length !== 2);
+  const pv = 10 ** (len - 1 - i);
+  const diff = (e - old) * pv;
+  const amount = Math.abs(diff), grows = diff > 0;
+  return {
+    body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שונתה הספרה ${old} ל-${e}. האם המספר החדש גדל או קטן, ובכמה?</div>`,
+    parts: [
+      { type: 'buttons', opts: ['גדל', 'קטן'], ans: grows ? 'גדל' : 'קטן' },
+      { type: 'num', label: 'ב-', ans: amount }
+    ],
+    hint: 'כדאי לשים לב לאיזה מקום שייכת הספרה. ההפרש מוכפל בערך המקום.',
+    explain: `הספרה ${old} נמצאת במקום ${PLACE[pv]}. לכן המספר ${grows ? 'גדל' : 'קטן'} ב-${fmt(amount)}.`
+  };
+}
+
+function genCompare(t) {
+  const R = t === 1 ? 60 : t === 2 ? 500 : 5000;
+  let L, Rt, lv, rv;
+  if (Math.random() < .5) {
+    const a = rnd(1, R), b = rnd(1, R), c = rnd(1, R), d = rnd(1, R);
+    L = `${fmt(a)} + ${fmt(b)}`; Rt = `${fmt(c)} + ${fmt(d)}`; lv = a + b; rv = c + d;
+  } else {
+    const b = rnd(1, R), a = b + rnd(0, R), c = rnd(1, R), d = c + rnd(0, R);
+    L = `${fmt(a)} − ${fmt(b)}`; Rt = `${fmt(d)} − ${fmt(c)}`; lv = a - b; rv = d - c;
+  }
+  const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
+  return {
+    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L}</span> &nbsp; ? &nbsp; <span class="ltr">${Rt}</span></div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint: 'יש לחשב את שני הצדדים, ואז להשוות את התוצאות.',
+    explain: `${fmt(lv)} ${sym} ${fmt(rv)}`
+  };
+}
+
+function genNoCalc(t) {
+  const R = t === 1 ? 90 : t === 2 ? 900 : 9000;
+  const kind = pick(['sameA', 'sameB', 'addSame']);
+  let L, Rt, lv, rv, hint;
+  if (kind === 'sameA') {
+    const b = rnd(1, R), c = rnd(1, R), A = Math.max(b, c) + rnd(0, R);
+    L = `${fmt(A)} − ${fmt(b)}`; Rt = `${fmt(A)} − ${fmt(c)}`; lv = A - b; rv = A - c;
+    hint = 'המספר הראשון זהה. כשמחסירים מספר גדול יותר, מתקבלת תוצאה קטנה יותר.';
+  } else if (kind === 'sameB') {
+    const B = rnd(1, R), A = B + rnd(0, R), C = B + rnd(0, R);
+    L = `${fmt(A)} − ${fmt(B)}`; Rt = `${fmt(C)} − ${fmt(B)}`; lv = A - B; rv = C - B;
+    hint = 'המספר שמחסירים זהה. ככל שהמספר הראשון גדול יותר, התוצאה גדולה יותר.';
+  } else {
+    const A = rnd(1, R), b = rnd(1, R), c = rnd(1, R);
+    L = `${fmt(A)} + ${fmt(b)}`; Rt = `${fmt(A)} + ${fmt(c)}`; lv = A + b; rv = A + c;
+    hint = 'המספר הראשון זהה. ככל שמוסיפים מספר גדול יותר, התוצאה גדולה יותר.';
+  }
+  const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
+  return {
+    body: `<div class="prompt">יש לסמן ללא צורך בחישוב מדויק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L}</span> &nbsp; ? &nbsp; <span class="ltr">${Rt}</span></div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    hint,
+    explain: `הסימן המתאים הוא ${sym}.`
+  };
+}
+
+function genDecomp(t) {
+  const len = t === 1 ? 3 : 4;
+  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
+  const comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i));
+  const m = rnd(0, len - 1);
+  const shown = comps.map((c, j) => j === m ? '___' : fmt(c)).join(' + ');
+  return {
+    body: `<div class="prompt">יש להשלים את הפירוק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
+    parts: [{ type: 'num', ans: comps[m] }],
+    hint: 'כל ספרה שווה לערך שלה לפי המקום.',
+    explain: `החלק החסר הוא ${fmt(comps[m])}.`
+  };
+}
+
+function genOrder(t) {
+  const R = t === 1 ? 999 : t === 2 ? 3000 : 9999;
+  const set = new Set();
+  while (set.size < 5) set.add(rnd(10, R));
+  const nums = [...set];
+  const sorted = [...nums].sort((x, y) => x - y);
+  return {
+    body: `<div class="prompt">יש ללחוץ על המספרים מהקטן לגדול.</div>`,
+    parts: [{ type: 'order', items: shuffle(nums), ans: sorted }],
+    hint: 'מומלץ להשוות קודם את מספר הספרות, ואז את הספרות השמאליות ביותר.',
+    explain: `הסדר הנכון: ${sorted.map(fmt).join(' < ')}`
+  };
+}
+
+function genNumLine(t) {
+  const base = t === 1 ? 100 : t === 2 ? 1000 : 3000;
+  const a = rnd(base / 10, base / 10 + 80) * 10;
+  const b = a + 100;
+  const inside = a + rnd(1, 99);
+  const outs = new Set();
+  while (outs.size < 3) { const x = Math.random() < .5 ? a - rnd(5, 70) : b + rnd(5, 70); if (x > 0) outs.add(x); }
+  const opts = shuffle([inside, ...outs]).map(fmt);
+  return {
+    body: `<div class="prompt">המספרים <span class="ltr">${fmt(a)}</span> ו-<span class="ltr">${fmt(b)}</span> הם קצוות הקטע. איזה מספר נמצא בתוך הקטע?</div>`,
+    parts: [{ type: 'buttons', opts, ans: fmt(inside) }],
+    hint: 'המספר צריך להיות גדול מהמספר הקטן וקטן מהמספר הגדול.',
+    explain: `${fmt(inside)} נמצא בין ${fmt(a)} ל-${fmt(b)}.`
+  };
+}
+
+function genSeq(t) {
+  const k = pick([[1, 2, 5, 10], [10, 20, 50, 100], [100, 200, 500, 1000]][t - 1]);
+  const desc = Math.random() < .3;
+  const s = desc
+    ? k * rnd(7, Math.max(7, Math.min(60, Math.floor(9999 / k))))
+    : k * rnd(2, Math.max(2, Math.min(60, Math.floor(9000 / k) - 6)));
+  const terms = [0, 1, 2, 3, 4, 5].map(i => s + (desc ? -i : i) * k);
+  const blanks = pick([[1, 3], [2, 4], [1, 4]]);
+  const shown = terms.map((v, i) => blanks.includes(i) ? '___' : fmt(v)).join(', ');
+  return {
+    body: `<div class="prompt">יש להשלים את הסדרה, שממשיכה בקפיצות של ${fmt(k)}:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
+    parts: blanks.map((bi, j) => ({ type: 'num', label: j === 0 ? 'חסר 1: ' : 'חסר 2: ', ans: terms[bi] })),
+    hint: `בכל שלב יש קפיצה קבועה של ${fmt(k)}.`,
+    explain: `הסדרה המלאה: ${terms.map(fmt).join(', ')}`
+  };
+}
+
+function genSeqMember(t) {
+  const k = pick([[2, 5, 10], [10, 20, 50], [100, 200, 500]][t - 1]);
+  const s = k * rnd(2, Math.max(2, Math.min(60, Math.floor(9000 / k) - 10)));
+  const shown = [0, 1, 2, 3].map(i => fmt(s + i * k)).join(', ');
+  const m = rnd(6, 30);
+  const yes = Math.random() < .5;
+  const X = yes ? s + m * k : s + m * k + rnd(1, k - 1);
+  const isIn = (X - s) % k === 0;
+  return {
+    body: `<div class="prompt">סדרה: <span class="ltr">${shown}, ...</span><br><br>האם המספר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יופיע בהמשך הסדרה?</div>`,
+    parts: [{ type: 'buttons', opts: ['כן', 'לא'], ans: isIn ? 'כן' : 'לא' }],
+    hint: 'יש לבדוק אם ההפרש בין המספר המבוקש למספר הראשון מתחלק בקפיצה.',
+    explain: `המספר ${isIn ? 'אכן יופיע' : 'לא יופיע'} כי הוא ${isIn ? 'מתחלק' : 'לא מתחלק'} בקפיצות של ${fmt(k)}.`
+  };
+}
+
+function genSameDigits(t) {
+  const len = t === 1 ? 3 : 4;
+  let n, valid = [];
+  for (;;) {
+    n = len === 3 ? rnd(200, 999) : rnd(2000, 9999);
+    const d = String(n).split('');
+    if (new Set(d).size !== len) continue;
+    valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => v < n && v % 2 === 1))];
+    if (valid.length) break;
+  }
+  const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
+  return {
+    body: `<div class="prompt">יש לכתוב מספר אי-זוגי, הקטן מ-<span class="ltr">${fmt(n)}</span>, המורכב מאותן ספרות.</div>`,
+    parts: [{ type: 'text', check, placeholder: 'המספר:' }],
+    hint: 'מספר אי-זוגי מסתיים בספרות 1, 3, 5, 7 או 9.',
+    explain: `למשל: ${fmt(valid[0])}.`
+  };
+}
+
+function genColumn(t) {
+  const [lo, hi] = t === 1 ? [10, 99] : t === 2 ? [100, 499] : [1000, 4999];
+  const op = pick(['+', '−']);
+  let a = rnd(lo, hi), b = rnd(lo, hi);
+  if (op === '−' && a < b) [a, b] = [b, a];
+  const ans = op === '+' ? a + b : a - b;
+  return {
+    body: `<div class="prompt" style="font-size:36px"><span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ?</span></div>`,
+    parts: [{ type: 'num', ans }],
+    hint: 'ניתן לפתור במאונך: יחידות מתחת ליחידות, עשרות מתחת לעשרות.',
+    explain: `התשובה היא ${fmt(ans)}`
+  };
+}
+
+function genAngleId() {
+  const deg = pick([40, 70, 85, 90, 120, 150, 180]);
+  const cx = 160, cy = 170, L = 110;
+  const rad = deg * Math.PI / 180;
+  const x2 = (cx + L * Math.cos(rad)).toFixed(1), y2 = (cy - L * Math.sin(rad)).toFixed(1);
+  const svg = `<svg class="angle" viewBox="0 0 320 220" role="img" aria-label="זווית"><line x1="${cx}" y1="${cy}" x2="${cx + L}" y2="${cy}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
+  return {
+    body: `${svg}<div class="prompt">איזה סוג זווית מוצג?</div>`,
+    parts: [{ type: 'buttons', opts: ['חדה', 'ישרה', 'קהה', 'שטוחה'], ans: angleClass(deg) }],
+    hint: 'זווית ישרה נראית כמו פינה של מרובע. חדה קטנה ממנה, קהה גדולה ממנה.',
+    explain: `הזווית היא ${angleClass(deg)}.`
+  };
+}
+
+function genAngleDraw() {
+  const target = pick(['חדה', 'ישרה', 'קהה']);
+  const text = { 'חדה': 'יש לסרטט זווית חדה', 'ישרה': 'יש לסרטט זווית ישרה', 'קהה': 'יש לסרטט זווית קהה' }[target];
+  const check = v => {
+    if (typeof v !== 'number') return false;
+    if (target === 'חדה') return v > 5 && v < 85;
+    if (target === 'ישרה') return v >= 85 && v <= 95;
+    return v > 95 && v < 175;
+  };
+  return {
+    body: `<div class="prompt">${text}</div>`,
+    drawInit: rnd(20, 160),
+    parts: [{ type: 'draw', check }],
+    hint: 'יש לגרור את הקצה הצהוב למיקום המתאים.',
+    explain: `שורטטה זווית בערך של ${target}.`
+  };
+}
+
+const CATS = [
+  { id: 'digit', name: 'שינוי ספרה', animals: [{ icon: '🦁', pos: 'top-left' }, { icon: '🐒', pos: 'bottom-left' }], gen: genDigit },
+  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animals: [{ icon: '🦉', pos: 'top-center' }], gen: genCompare },
+  { id: 'nocalc', name: 'השוואה בלי חישוב', animals: [{ icon: '🐢', pos: 'bottom-center' }], gen: genNoCalc },
+  { id: 'decomp', name: 'פירוק מספר', animals: [{ icon: '🐨', pos: 'top-center' }], gen: genDecomp },
+  { id: 'order', name: 'סידור מספרים', animals: [{ icon: '🦓', pos: 'top-right' }, { icon: '🐒', pos: 'bottom-right' }], gen: genOrder },
+  { id: 'numline', name: 'ישר מספרים', animals: [{ icon: '🦒', pos: 'bottom-right' }], gen: genNumLine },
+  { id: 'seq', name: 'סדרות', animals: [{ icon: '🐸', pos: 'bottom-left' }], gen: genSeq },
+  { id: 'seqmember', name: 'המשך הסדרה', animals: [{ icon: '🦜', pos: 'top-right' }], gen: genSeqMember },
+  { id: 'samedigits', name: 'אותן ספרות', animals: [{ icon: '🦋', pos: 'top-left' }], gen: genSameDigits },
+  { id: 'column', name: 'חיבור וחיסור', animals: [{ icon: '🐜', pos: 'bottom-center' }], gen: genColumn },
+  { id: 'angleid', name: 'סוגי זוויות', animals: [{ icon: '🦅', pos: 'top-center' }], gen: genAngleId },
+  { id: 'angledraw', name: 'שרטוט זווית', animals: [{ icon: '🐍', pos: 'bottom-right' }], gen: genAngleDraw }
+];
+
+/* ---------- state ---------- */
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, mastery: {}, settings: { timer: 'none' }, sessions: 0, today: { day: '', count: 0 } });
+const mergeState = x => ({
+  ...DEFAULT(), ...x,
+  settings: { ...DEFAULT().settings, ...(x.settings || {}) },
+  today: { ...DEFAULT().today, ...(x.today || {}) }
+});
+let S = DEFAULT();
+try {
+  const raw = localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY);
+  if (raw) S = mergeState(JSON.parse(raw));
+} catch (e) {}
+
+function persistLocal() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const progressRef = uid => doc(db, 'users', uid, 'data', 'progress');
+let saveTimer = null;
+function save() {
+  persistLocal();
+  if (user) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
+}
+async function cloudSave() {
+  if (!user) return;
+  try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
+  catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); }
+}
+async function cloudLoad() {
+  try {
+    const snap = await getDoc(progressRef(user.uid));
+    if (snap.exists() && snap.data().state) { S = mergeState(snap.data().state); persistLocal(); }
+    else { await cloudSave(); }
+  } catch (e) {
+    console.warn(e);
+    toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
+  }
+}
+function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false }; return S.mastery[id]; }
+
+/* ---------- session / view state ---------- */
+let Q = null, session = null, lastCat = null, currentView = 'home';
+let timerInt = null, toastTimer = null, resetArmed = false;
+
+function updateWallet() { $('#coins').textContent = S.coins; $('#medals').textContent = S.medals.length; }
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ---------- auth UI ---------- */
+function loginBlock() {
+  if (user) {
+    return `<div class="banner"><span>מחובר/ת כ-${esc(user.displayName || user.email || '')} · ההתקדמות נשמרת בענן</span>
+      <button type="button" class="ghost-btn" id="logoutBtn">התנתקות</button></div>`;
+  }
+  return `<div class="banner"><span>התחברו עם Google כדי לשמור את ההתקדמות ולהמשיך מכל מכשיר.</span>
+    <button type="button" class="action-btn" id="loginBtn">התחברות עם Google</button></div>`;
+}
+async function login() {
+  try { await signInWithPopup(auth, provider); }
+  catch (e) {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+      await signInWithRedirect(auth, provider);
+    } else if (e.code !== 'auth/popup-closed-by-user') {
+      console.warn(e); toast('ההתחברות לא הושלמה');
+    }
+  }
+}
+
+/* ---------- views ---------- */
+function showView(name) {
+  currentView = name;
+  ['home', 'play', 'camp', 'settings'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== name));
+  document.querySelectorAll('.nav button').forEach(b => b.toggleAttribute('aria-current', b.dataset.go === name));
+  window.scrollTo(0, 0);
+  if (name === 'home') renderHome();
+  if (name === 'camp') renderCamp();
+  if (name === 'settings') renderSettings();
+}
+function refreshCurrentView() {
+  if (currentView === 'home') renderHome();
+  if (currentView === 'camp') renderCamp();
+  if (currentView === 'settings') renderSettings();
+}
+
+function renderHome() {
+  const today = new Date().toDateString();
+  const doneToday = S.today.day === today ? S.today.count : 0;
+  const cards = CATS.map(c => {
+    const m = mast(c.id);
+    const animalsHTML = (c.animals || []).map(a => `<div class="peek-animal ${a.pos}">${a.icon}</div>`).join('');
+    return `
+      <div class="card ${c.id}">
+        ${animalsHTML}
+        <div class="card-leaf leaf-tl">🌿</div>
+        <div class="card-leaf leaf-tr">🌿</div>
+        <div class="card-leaf leaf-br">🌿</div>
+        <div class="topic-content" style="position:relative;z-index:2">
+          <div class="big">${c.name}</div>
+          <div class="rank" style="margin-top:6px">רמה: ${TIERS[m.tier]}</div>
+          <button type="button" class="wood-btn-small" style="pointer-events:none">${rank(m.score)} ${m.medal ? '🏅' : ''}</button>
+        </div>
+        <div class="bar" style="position:relative;z-index:2"><span style="width:${m.score}%"></span></div>
+      </div>`;
+  }).join('');
+
+  $('#view-home').innerHTML = `
+    ${loginBlock()}
+    <div class="hero-banner">
+      <div class="hero-monkey">🐵</div>
+      <div class="hero-bubble">
+        ברוכים הבאים לג'ונגל!
+        <div style="font-size:14px;color:#5c3a21;font-weight:600;margin-top:4px">
+          אימונים שהושלמו היום: ${doneToday}.<br>אימון רגיל: כ-5 דקות.
+        </div>
+      </div>
+      <div class="hero-board">
+        <button type="button" class="big-green-btn" id="startBtn">❯ התחלת אימון ❮</button>
+      </div>
+    </div>
+    <h2>אזור האימונים</h2>
+    <div class="grid">${cards}</div>`;
+}
+
+function renderCamp() {
+  const shop = ITEMS.map(it => {
+    const canAfford = S.coins >= it.price;
+    const owned = S.items[it.id] || 0;
+    return `
+      <div class="card" style="padding:20px 10px;display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div style="font-size:55px;filter:drop-shadow(0 4px 2px rgba(0,0,0,0.2))">${it.icon}</div>
+        <b class="big" style="font-size:20px">${it.name}</b>
+        <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
+        <div class="rank">באוסף: ${owned}</div>
+        <button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'} style="width:100%;padding:10px">
+          ${canAfford ? 'לקנייה' : 'אין מטבעות'}
+        </button>
+      </div>`;
+  }).join('');
+
+  const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
+  const collection = ownedItems.length
+    ? ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+    : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם חיות לאוסף!</div>';
+
+  $('#view-camp').innerHTML = `
+    <h2>חנות המחנה</h2>
+    <div class="grid">${shop}</div>
+    <h2 style="margin-top:40px">האוסף</h2>
+    <div class="collection-shelf">${collection}</div>`;
+}
+
+function renderSettings() {
+  const opts = [['none', 'ללא הגבלת זמן'], ['gentle', 'רגוע: מראה את הזמן'], ['challenge', 'אתגר: 25 שניות לשאלה']];
+  $('#view-settings').innerHTML = `
+    ${loginBlock()}
+    <div class="card" style="margin-top:20px">
+      <h2 style="margin-top:8px">מצב זמן</h2>
+      <div class="seg">${opts.map(([v, l]) => `<button type="button" class="ghost-btn ${S.settings.timer === v ? 'on' : ''}" data-timer="${v}" aria-pressed="${S.settings.timer === v}">${l}</button>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:28px">
+      <h2 style="margin-top:8px">איפוס</h2>
+      <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">איפוס נתונים</button>
+    </div>`;
+}
+
+/* ---------- shop & settings actions ---------- */
+function buyItem(id) {
+  const it = ITEMS.find(x => x.id === id);
+  if (!it || S.coins < it.price) return;
+  S.coins -= it.price;
+  S.items[it.id] = (S.items[it.id] || 0) + 1;
+  save(); updateWallet(); renderCamp();
+  toast(`התקבל ${it.name} חדש לאוסף!`);
+}
+function handleReset() {
+  const b = $('#resetBtn');
+  if (!resetArmed) { resetArmed = true; b.textContent = 'לחצו שוב לאישור'; return; }
+  S = DEFAULT(); save(); updateWallet(); resetArmed = false; renderSettings(); toast('הנתונים אופסו');
+}
+
+/* ---------- session flow ---------- */
+function pickCat() {
+  const pool = CATS.filter(c => c.id !== lastCat);
+  const w = pool.map(c => 110 - mast(c.id).score);
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+
+function startSession(kind) {
+  session = { kind, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
+  nextQ();
+}
+
+function nextQ() {
+  stopTimer();
+  if (session.done >= session.total) return endSession();
+  const cat = pickCat();
+  Q = cat.gen(mast(cat.id).tier);
+  Q.cat = cat.id; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
+  Q.parts.forEach(p => { if (p.type === 'order') p.v = []; if (p.type === 'draw') p.v = Q.drawInit; });
+  lastCat = cat.id;
+  showView('play');
+  renderPlay();
+  startTimer();
+}
+
+function answered(p) {
+  if (p.type === 'buttons') return p.v !== undefined;
+  if (p.type === 'num' || p.type === 'text') return String(p.v ?? '').trim() !== '';
+  if (p.type === 'order') return p.v.length === p.items.length;
+  if (p.type === 'draw') return true;
+  return false;
+}
+function correctPart(p) {
+  if (p.type === 'buttons') return p.v === p.ans;
+  if (p.type === 'num') return parseNum(p.v) === p.ans;
+  if (p.type === 'text') return p.check(p.v);
+  if (p.type === 'order') return p.v.length === p.ans.length && p.v.every((x, i) => x === p.ans[i]);
+  if (p.type === 'draw') return p.check(p.v);
+  return false;
+}
+
+function partHTML(p, i) {
+  const locked = Q.result !== undefined;
+  if (p.type === 'buttons') {
+    return `<div class="opts">${p.opts.map((o, j) => {
+      let cls = p.v === o ? 'sel' : '';
+      if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
+      return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${esc(o)}</button>`;
+    }).join('')}</div>`;
+  }
+  if (p.type === 'num' || p.type === 'text') {
+    const cls = p.type === 'num' ? 'num' : 'text';
+    const ph = p.placeholder ? ` placeholder="${esc(p.placeholder)}"` : '';
+    return `<div class="row"><label style="font-weight:900;font-size:20px">${p.label ? esc(p.label) : ''}<input class="${cls}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}></label></div>`;
+  }
+  if (p.type === 'order') {
+    const left = p.items.map((x, j) => ({ x, j })).filter(o => !p.v.includes(o.x));
+    const chosen = p.v.length ? p.v.map(x => `<span>${fmt(x)}</span>`).join('') : '<span class="rank" style="margin:auto">טרם נבחרו מספרים</span>';
+    return `<div class="seq">${chosen}</div><div class="opts">${left.map(o => `<button type="button" class="opt" data-p="${i}" data-o="${o.j}">${fmt(o.x)}</button>`).join('')}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button>`;
+  }
+  if (p.type === 'draw') {
+    return `<svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="rank">יש לגרור את הקצה הצהוב.</div>`;
+  }
+  return '';
+}
+
+function renderPlay() {
+  const locked = Q.result !== undefined;
+  const pct = Math.round((session.done / session.total) * 100);
+  const qNum = Math.min(session.total, session.done + (locked ? 0 : 1));
+  const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
+  const showTimer = !locked && S.settings.timer !== 'none';
+
+  $('#qcard').classList.toggle('locked', locked);
+  $('#qcard').innerHTML = `
+    <div class="card-leaf leaf-tl">🌿</div>
+    <div class="card-leaf leaf-tr">🌿</div>
+    <div class="row" style="margin-top:0">
+      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? 'משחק בונוס 🪙' : 'אימון מתמטיקה'} · שאלה ${qNum} מתוך ${session.total}</div>
+    </div>
+    <div class="bar" style="margin-bottom:20px"><span style="width:${pct}%"></span></div>
+    ${showTimer ? '<div class="timer-wrap"><span id="timerBox" class="timer"></span></div>' : ''}
+    <div class="question-board">${Q.body}</div>
+    <div>${parts}</div>
+    ${locked ? `
+      <div class="feedback ${Q.result ? 'ok' : 'no'}">
+        <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
+        <span>${Q.result ? `תשובה נכונה! התקבלו ${Q.earned} 🪙. ` : (Q.timedOut ? 'נגמר הזמן. ' : 'לא בדיוק. ')}${Q.explain}</span>
+      </div>` : ''}
+    <div class="row" style="margin-top:24px;padding-top:16px;border-top:2px dashed rgba(0,0,0,0.1)">
+      ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רמז 💡</button>`}
+      ${locked
+        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה ❯'}</button>`
+        : `<button type="button" class="action-btn" id="checkBtn">בדיקה ✔️</button>`}
+    </div>
+    <div id="hintBox" class="rank" style="margin-top:12px;color:#fffdf6;font-weight:800;font-size:16px"></div>`;
+
+  const sv = document.querySelector('#qcard svg[data-draw]');
+  if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  tick();
+}
+
+/* ---------- timer ---------- */
+function startTimer() {
+  stopTimer();
+  if (S.settings.timer === 'none') return;
+  timerInt = setInterval(tick, 250);
+  tick();
+}
+function stopTimer() { clearInterval(timerInt); timerInt = null; }
+function tick() {
+  if (!Q || Q.result !== undefined) { stopTimer(); return; }
+  const box = $('#timerBox');
+  if (!box) return;
+  const elapsed = Date.now() - Q.startedAt;
+  if (S.settings.timer === 'challenge') {
+    const left = Math.max(0, CHALLENGE_MS - elapsed);
+    box.textContent = `⏱ נשארו ${Math.ceil(left / 1000)} שניות`;
+    box.classList.toggle('urgent', left < 5000);
+    if (left === 0) timeUp();
+  } else {
+    box.textContent = `⏱ ${fmtTime(elapsed)}`;
+  }
+}
+function timeUp() {
+  stopTimer();
+  Q.timedOut = true; Q.result = false;
+  record(false);
+  renderPlay();
+}
+
+/* ---------- answers ---------- */
+function setupDraw(svg, p) {
+  const arm = svg.querySelector('#arm'), knob = svg.querySelector('#knob');
+  const cx = 160, cy = 170, L = 110;
+  const place = d => {
+    const r = d * Math.PI / 180;
+    const x = (cx + L * Math.cos(r)).toFixed(1), y = (cy - L * Math.sin(r)).toFixed(1);
+    arm.setAttribute('x2', x); arm.setAttribute('y2', y);
+    knob.setAttribute('cx', x); knob.setAttribute('cy', y);
+  };
+  place(p.v);
+  if (Q.result !== undefined) return;
+  let dragging = false;
+  const move = e => {
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const d = Math.round(Math.max(0, Math.min(180, Math.atan2(cy - q.y, q.x - cx) * 180 / Math.PI)));
+    p.v = d; place(d);
+  };
+  svg.addEventListener('pointerdown', e => { dragging = true; svg.setPointerCapture(e.pointerId); move(e); });
+  svg.addEventListener('pointermove', e => { if (dragging) move(e); });
+  svg.addEventListener('pointerup', () => { dragging = false; });
+  svg.addEventListener('pointercancel', () => { dragging = false; });
+}
+
+function record(ok) {
+  const m = mast(Q.cat);
+  session.done++;
+  if (ok) {
+    const earn = session.kind === 'bonus' ? 2 : 1;
+    Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
+    m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עלייה לרמה ${TIERS[m.tier]}!`); }
+  } else {
+    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
+    if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
+  }
+  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מדליית זהב הושגה!'); }
+  save(); updateWallet();
+}
+
+function check() {
+  if (!Q || Q.result !== undefined) return;
+  if (!Q.parts.every(answered)) { $('#hintBox').textContent = 'יש למלא את כל התשובות לפני הבדיקה.'; return; }
+  stopTimer();
+  const ok = Q.parts.every(correctPart);
+  Q.result = ok;
+  record(ok);
+  renderPlay();
+}
+
+function endSession() {
+  stopTimer();
+  const item = pick(ITEMS);
+  S.items[item.id] = (S.items[item.id] || 0) + 1;
+  if (session.kind === 'base') {
+    const today = new Date().toDateString();
+    if (S.today.day !== today) S.today = { day: today, count: 0 };
+    S.today.count++; S.sessions++;
+  }
+  save(); updateWallet();
+  Q = null;
+  const canBonus = session.kind === 'base';
+  $('#qcard').classList.remove('locked');
+  $('#qcard').innerHTML = `
+    <div style="font-size:80px;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3))">🎁</div>
+    <div class="big" style="text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,0.5);font-size:32px">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
+    <div style="text-align:center;background:rgba(255,255,255,0.8);padding:16px;border-radius:16px;margin:20px 0;border:3px dashed #8b5a2b">
+      <p style="margin:0 0 10px;font-weight:800;font-size:20px">התקבלו ${session.coins} מטבעות 🪙</p>
+      <p style="margin:0;font-weight:800;font-size:18px">נפתחה תיבה: <span style="font-size:30px;vertical-align:middle">${item.icon}</span> ${item.name} התווסף לאוסף!</p>
+    </div>
+    <div class="row" style="flex-direction:column;gap:16px">
+      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 6px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}
+      <button type="button" class="ghost-btn" id="homeBtn" style="width:100%;background:#fff;padding:18px">חזרה למסך הראשי</button>
+    </div>`;
+}
+
+function handlePlayClick(t) {
+  const b = t.closest('button');
+  if (!b) return;
+  if (b.id === 'bonusBtn') { startSession('bonus'); return; }
+  if (b.id === 'homeBtn') { showView('home'); return; }
+  if (!Q) return;
+  if (b.id === 'checkBtn') { check(); return; }
+  if (b.id === 'nextBtn') { nextQ(); return; }
+  if (b.id === 'hintBtn') { $('#hintBox').textContent = Q.hint; return; }
+  if (b.dataset.reset !== undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
+  if (b.dataset.p !== undefined && b.dataset.o !== undefined && Q.result === undefined) {
+    const p = Q.parts[+b.dataset.p];
+    if (p.type === 'buttons') { p.v = p.opts[+b.dataset.o]; renderPlay(); }
+    else if (p.type === 'order') { const val = p.items[+b.dataset.o]; if (!p.v.includes(val)) p.v.push(val); renderPlay(); }
+  }
+}
+
+/* ---------- global events ---------- */
+document.addEventListener('click', e => {
+  const t = e.target;
+  const nav = t.closest('.nav [data-go]');
+  if (nav) { showView(nav.dataset.go); return; }
+  if (t.closest('#startBtn')) { startSession('base'); return; }
+  if (t.closest('#loginBtn')) { login(); return; }
+  if (t.closest('#logoutBtn')) { signOut(auth).then(() => toast('התנתקת')); return; }
+  const tm = t.closest('[data-timer]');
+  if (tm) { S.settings.timer = tm.dataset.timer; save(); renderSettings(); return; }
+  const buy = t.closest('[data-buy]');
+  if (buy) { buyItem(buy.dataset.buy); return; }
+  if (t.closest('#resetBtn')) { handleReset(); return; }
+  if (t.closest('#qcard')) handlePlayClick(t);
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (!Q || el.tagName !== 'INPUT' || el.dataset.p === undefined) return;
+  Q.parts[+el.dataset.p].v = el.value;
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.closest('#qcard') && Q && Q.result === undefined) check();
+});
+
+/* ---------- auth state ---------- */
+getRedirectResult(auth).catch(e => console.warn(e));
+onAuthStateChanged(auth, async u => {
+  user = u;
+  if (u) await cloudLoad();
+  updateWallet();
+  refreshCurrentView();
+});
+
+/* ---------- start ---------- */
+updateWallet();
+showView('home');
+</script>
+</body>
+</html>

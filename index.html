@@ -380,7 +380,12 @@ function genDecomp(t) {
     body: `<div class="prompt">יש להשלים את הפירוק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
     parts: [{ type: 'num', ans: comps[m] }],
     hint: 'כל ספרה שווה לערך שלה לפי המקום.',
-    explain: `החלק החסר הוא ${fmt(comps[m])}.`
+    explain: (() => {
+      const given = comps.filter((c, j) => j !== m).map(fmt);
+      const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' ו-' + given[given.length - 1] : given[0];
+      const place = 10 ** (len - 1 - m), digit = comps[m] / place;
+      return `כבר יש ${givenTxt}, ולכן החסר הוא ${fmt(comps[m])}: הספרה ${digit} נמצאת במקום ${PLACE[place]} ושווה ${fmt(comps[m])}. הפירוק המלא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
+    })()
   };
 }
 

@@ -402,11 +402,8 @@ header .chip{order:2;flex:none}
 .cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
 .bar.prog{position:relative}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
-@container (max-height:160px){.cats .card .stars .lvl{display:none}}
-@container (max-height:160px){.cats .card .rankbadge{display:none}}
 .cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
 .cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
-@container (max-height:80px){.cats .card .stars{display:none}.cats .card .practice-btn{height:17px;font-size:10px;padding:0 10px;margin-top:2px}}
 .vert{border-collapse:collapse;margin:6px auto;font:900 clamp(26px,5vh,40px)/1.15 Rubik,sans-serif;color:#163b2a;background:#fff9;border-radius:12px;padding:4px 14px}
 .vert td{min-width:1.1em;text-align:center;padding:0 3px}
 .vert td.vs{min-width:1.1em;color:#d84a2b}
@@ -414,11 +411,6 @@ header .chip{order:2;flex:none}
 .vert td.vq{color:#d84a2b;letter-spacing:.2em}
 .cats .card .trophy-mark{position:absolute;top:-14px;inset-inline-start:-8px;z-index:6;font-size:clamp(22px,40cqh,34px);filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));animation:float 3s ease-in-out infinite alternate}
 .trophy-line{background:rgba(255,255,255,.85);border:3px dashed #d4a017;border-radius:14px;padding:8px;margin:8px 0;font-weight:800;font-size:18px;text-align:center}
-@container (max-width:118px){.cats .card .stars .lvl{display:none}}
-@media (min-width:1000px){.cats .card .stars{font-size:min(clamp(11px,11cqh,36px),8.5cqw)}
-.cats .card .rankbadge{font-size:clamp(10px,8cqh,26px);padding:1px clamp(10px,6cqw,24px)}
-.cats .card .practice-btn{height:clamp(18px,12cqh,46px);font-size:clamp(10px,6.5cqh,22px);padding:0 clamp(12px,8cqw,30px)}
-.cats .card .bar.prog{height:clamp(8px,3.5cqh,16px)}}
 @media (min-width:1000px){main{max-width:2200px}.grid.cats{grid-template-rows:repeat(var(--rows),minmax(0,360px));gap:12px 18px;--an:clamp(30px,6.5vh,64px)}}
 /* challenge timer: the check button empties from right to left */
 .action-btn.timed{--p:100%;background:linear-gradient(to right,#3f9a64 0,#2f7a50 var(--p),#9aa89f var(--p),#9aa89f 100%);text-shadow:0 1px 3px rgba(0,0,0,.55);transition:none}
@@ -448,16 +440,6 @@ header .chip{order:2;flex:none}
 .sum-actions{display:flex;flex-direction:column;gap:clamp(6px,1.4vh,12px)}
 .sum-actions .big-green-btn{padding:clamp(8px,1.6vh,14px) 10px;font-size:clamp(17px,3vh,24px)}
 .sum-actions .ghost-btn{width:100%;background:#fff;padding:clamp(8px,1.6vh,14px)}
-/* home cards on phones */
-@media (max-width:699px){
-  .cats .card-leaf{display:none}
-  .cats .card .rankbadge{display:none}
-  .cats .card .stars{display:block;font-size:11px;margin:2px 0 0;text-align:center}
-  .cats .card .stars .lvl{display:none}
-  .cats .card .practice-btn{display:block;width:calc(100% - 2px);padding:0;height:19px;font-size:clamp(9px,11cqw,12px);margin-top:3px}
-  .cats .card{padding:4px 4px 5px}
-  .cats .card .topic-title{line-height:1.05}
-}
 /* phone held sideways */
 @media (orientation:landscape) and (max-height:560px){
   header{padding:3px 12px 8px}
@@ -465,9 +447,6 @@ header .chip{order:2;flex:none}
   .home-top{margin:0 0 4px}
   .home-top .hero-board{flex:0 1 340px;padding:3px}
   .home-top .big-green-btn{font-size:16px;padding:3px 10px}
-  .cats .card-leaf{display:none}
-  .cats .card .rankbadge,.cats .card .stars{display:none}
-  .cats .card .practice-btn{display:block;width:calc(100% - 2px);height:20px;font-size:12px;padding:0;margin-top:3px}
   .cats .card .topic-title{line-height:1.05}
   .grid.cats{gap:6px 8px;--cols:8;--rows:2}
 }
@@ -527,6 +506,64 @@ header .chip{order:2;flex:none}
 .modal .m-ic{font-size:48px}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
 .modal .m-act{display:flex;flex-direction:column;gap:10px}
 .cats .card .topic-title{overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;max-width:100%;box-sizing:border-box;text-align:center}
+
+/* ===== v62: one harmonic scale for everything ===== */
+:root{--s:clamp(12px,min(2.1vh,3.7vw),22px)}
+header h1{font-size:calc(var(--s)*1.15)}
+.chip{font-size:var(--s)}.chip b{font-size:1.15em}
+#userChip .user-btn{font-size:calc(var(--s)*.85)}
+.nav button{font-size:calc(var(--s)*.95)}.nav button .e{font-size:calc(var(--s)*1.4)}
+.home-top .hero-bubble{font-size:calc(var(--s)*1.1)}.home-top .hero-bubble small{font-size:.78em}
+.home-top .big-green-btn{font-size:calc(var(--s)*1.5)}
+.home-top .hero-board{flex:0 1 calc(var(--s)*26)}
+.camp-title{font-size:calc(var(--s)*1.25)}
+.toast{font-size:calc(var(--s)*1.05);max-width:92vw;white-space:normal;text-align:center}
+/* home grid: 4x4 on tall screens, 8x2 on wide ones */
+.grid.cats{--cols:4;--rows:4;grid-template-rows:repeat(var(--rows),minmax(0,380px));gap:clamp(6px,1.2vh,14px) clamp(6px,1.2vw,18px);--an:clamp(24px,min(5.6vh,9vw),64px)}
+@media (min-aspect-ratio:3/2){.grid.cats{--cols:8;--rows:2}}
+/* everything inside a topic card is a fraction of the card itself */
+.cats .card{--u:min(1.25cqh,2.1cqw);padding:clamp(4px,.9vh,10px) clamp(4px,.6vw,10px)}
+.cats .card .stars{display:block;font-size:max(10px,calc(var(--u)*6.5));margin-top:calc(var(--u)*1.5);text-align:center}
+.cats .card .stars .lvl{font-size:.8em}
+.cats .card .rankbadge{font-size:max(10px,calc(var(--u)*6.5));padding:.05em 1em;margin-top:calc(var(--u)*2)}
+.cats .card .bar.prog{height:max(6px,calc(var(--u)*3.5));margin-top:max(3px,calc(var(--u)*3))}
+.cats .card .practice-btn{display:block;height:max(18px,calc(var(--u)*13));font-size:max(9px,calc(var(--u)*5.8));padding:0 .6em;margin-top:max(3px,calc(var(--u)*3));max-width:100%}
+.cats .card .trophy-mark{font-size:max(20px,calc(var(--u)*14))}
+.cats .card .rec-badge{font-size:max(8px,calc(var(--u)*5.5))}
+.cats .card .card-leaf{font-size:max(14px,calc(var(--u)*8))}
+.cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.1;margin-bottom:0;min-height:0}
+@container (max-height:150px){.cats .card .rankbadge{display:none}}
+@container (max-height:115px){.cats .card .stars .lvl{display:none}}
+@container (max-width:125px){.cats .card .stars .lvl,.cats .card .card-leaf{display:none}.cats .card .practice-btn{width:100%;padding:0}}
+@container (min-aspect-ratio:8/5){.cats .card .practice-btn{height:max(18px,22cqh);font-size:max(10px,11cqh)}.cats .card .stars{font-size:max(10px,11cqh)}}
+@container (max-height:68px){.cats .card .stars{display:none}}
+/* play screen: all text sizes derive from one unit */
+#qcard{--q:clamp(12.5px,min(2.5vh,4.2vw),26px)}
+#qcard .qhead .rank{font-size:var(--q) !important}
+#qcard .prompt{font-size:calc(var(--q)*1.35)}
+#qcard .prompt.compact{font-size:calc(var(--q)*1.25)}
+#qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:min(5.6vw,calc(var(--q)*2)) !important}
+#qcard .opt{font-size:calc(var(--q)*1.3)}
+#qcard .opts.ord .opt,#qcard .seq span{font-size:min(4.6vw,calc(var(--q)*1.3))}
+#qcard input.num,#qcard input.text{font-size:calc(var(--q)*1.4)}
+#qcard .action-btn{font-size:calc(var(--q)*1.2)}
+#qcard .ghost-btn{font-size:var(--q)}
+#qcard .feedback{font-size:var(--q)}
+#qcard .feedback .mascot{font-size:calc(var(--q)*2)}
+#qcard .fbslot{height:calc(var(--q)*5.6)}
+#qcard .hintbox,.draw-help{font-size:var(--q)}
+#qcard .part-fix,#qcard .parts.multi .part-fix{font-size:calc(var(--q)*.9)}
+#qcard .parts.multi label,#qcard .row label{font-size:var(--q) !important}
+#qcard .vert{font-size:calc(var(--q)*2)}
+#qcard .opts:not(.ord):has(.opt:nth-child(4)):not(:has(.opt:nth-child(5))){width:min(100%,calc(var(--q)*24))}
+.sum-title{font-size:calc(var(--q)*1.6)}.sum-box p{font-size:calc(var(--q)*1.05)}.sum-gift{font-size:calc(var(--q)*4)}
+.sum-actions .big-green-btn{font-size:calc(var(--q)*1.25)}
+@media (orientation:landscape) and (max-height:480px){#qcard .fbslot{height:calc(var(--q)*4.3)}.sum-gift{display:none}}
+.modal h2{font-size:calc(var(--s)*1.5)}.modal p{font-size:calc(var(--s)*1.1)}.modal .big-green-btn{font-size:calc(var(--s)*1.4);padding:.5em}
+/* the drawing is the question: make it the biggest thing */
+#qcard .question-board svg.angle{height:min(30vh,52vw,calc(var(--q)*14));max-height:none;width:auto;aspect-ratio:320/220;max-width:100%;flex:0 1 auto;min-height:70px;margin:0 auto calc(var(--q)*.4)}
+#qcard .question-board:has(svg.angle) .prompt{font-size:calc(var(--q)*1.15);margin:0;flex:none}
+#qcard .question-board:has(svg.angle){padding:calc(var(--q)*.5) 14px;flex:0 1 auto;min-height:0;overflow:hidden}
 </style>
 </head>
 <body>
@@ -558,7 +595,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v61';
+const APP_VERSION = 'v62';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1314,7 +1351,7 @@ function fitTitles() {
   const ts = [...document.querySelectorAll('#view-home .topic-title')];
   if (!ts.length) return;
   const card = document.querySelector('#view-home .cats .card');
-  const base = card ? Math.max(11, Math.min(44, Math.floor(card.clientHeight * 0.17), Math.floor(card.clientWidth * 0.22))) : 22;
+  const base = card ? Math.max(11, Math.min(64, Math.floor(card.clientHeight * (card.clientWidth / card.clientHeight > 1.6 ? 0.24 : 0.17)), Math.floor(card.clientWidth * 0.2))) : 22;
   const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
   ts.forEach(t => t.classList.add('wrap'));
   const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1) || conts.some(c => c.scrollHeight > c.clientHeight + 1);

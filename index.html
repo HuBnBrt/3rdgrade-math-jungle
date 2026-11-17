@@ -641,6 +641,15 @@ header h1{font-size:calc(var(--s)*1.15)}
 @media (min-width:600px){#view-settings{position:relative}#view-settings .s-ver{position:absolute;bottom:0;left:6px;margin:0 !important}
   #view-settings .s-signs .rank{display:flex;flex-direction:column;gap:.6em}}
 @container (min-height:97px){.cats .card .topic-content{justify-content:flex-start;padding-top:calc(var(--u)*3);gap:calc(var(--u)*2.5)}}
+/* squarish cards (upright tablets): stars and rank side by side, so everything can be bigger */
+@container (min-aspect-ratio:1/1) and (max-aspect-ratio:8/5){
+  .cats .card *{--u:min(1.75cqh,2.3cqw)}
+  .cats .card .topic-content{flex-direction:row;flex-wrap:wrap;align-content:center;justify-content:center;column-gap:calc(var(--u)*3);row-gap:calc(var(--u)*1.5);padding-top:0}
+  .cats .card .topic-title{flex:0 0 100%}
+  .cats .card .stars .lvl{display:none}
+  .cats .card .stars,.cats .card .rankbadge{margin-top:0}
+  .cats .card .rankbadge{display:inline-block}
+}
 </style>
 </head>
 <body>
@@ -672,7 +681,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v72';
+const APP_VERSION = 'v73';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1237,7 +1246,7 @@ const CATS = [
   { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐯', gen: genNoCalc },
   { id: 'decomp', name: 'פירוק מספר', animal: '🐨', gen: genDecomp },
   { id: 'order', name: 'סידור מספרים', animal: '🦓', gen: genOrder },
-  { id: 'numline', name: 'ישר מספרים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
+  { id: 'numline', name: 'ישר המספרים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
   { id: 'seq', name: 'סדרות', animal: '🐸', gen: t => Math.random() < .4 ? genSeqMember(t) : genSeq(t) },
   { id: 'samedigits', name: 'אותן ספרות', animal: '🦥', gen: genSameDigits },
   { id: 'column', name: 'חיבור וחיסור', animal: '🐒', gen: genColumn },

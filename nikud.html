@@ -735,7 +735,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v85';
+const APP_VERSION = 'v86';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -955,7 +955,7 @@ function genOrder(t) {
   const nums = [...set];
   const sorted = [...nums].sort((x, y) => x - y);
   return {
-    body: `<div class="prompt">יֵשׁ לִלְחוֹץ עַל הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ אוֹ לִגְרוֹר אֶת הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
     parts: [{ type: 'order', items: shuffle(nums), ans: sorted }],
     hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
     explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
@@ -1382,7 +1382,7 @@ function qSame(n, odd, smaller) {
 function qOrder(nums) {
   const sorted = [...nums].sort((x, y) => x - y);
   return {
-    body: `<div class="prompt">יֵשׁ לִלְחוֹץ עַל הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ אוֹ לִגְרוֹר אֶת הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
     parts: [{ type: 'order', items: [...nums], ans: sorted }],
     hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
     explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
@@ -1652,15 +1652,44 @@ function mergeProgress(L, C) {
   if (L.profile && (L.profile.nick || L.profile.gender) && !(C.profile && (C.profile.nick || C.profile.gender))) out.profile = L.profile;
   return out;
 }
+// progress earned as a guest (not signed in) is ADDED to the account once, then the device keeps only the account's copy
+function addProgress(G, C) {
+  const out = mergeState(C);
+  const n = x => x || 0;
+  out.coins = n(C.coins) + n(G.coins);
+  out.sessions = n(C.sessions) + n(G.sessions);
+  out.medals = [...new Set([...(C.medals || []), ...(G.medals || [])])];
+  out.items = { ...(G.items || {}), ...(C.items || {}) };
+  out.gear = { ...(G.gear || {}), ...(C.gear || {}) };
+  out.sheetOk = { ...(G.sheetOk || {}), ...(C.sheetOk || {}) };
+  out.mastery = { ...(C.mastery || {}) };
+  Object.entries(G.mastery || {}).forEach(([id, m]) => {
+    const c = out.mastery[id];
+    if (!c) { out.mastery[id] = m; return; }
+    const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    out.mastery[id] = best;
+  });
+  out.stats = { ...(C.stats || {}) };
+  Object.entries(G.stats || {}).forEach(([id, g]) => {
+    const c = out.stats[id] || { ok: 0, bad: 0, h: '' };
+    out.stats[id] = { ok: c.ok + g.ok, bad: c.bad + g.bad, h: (c.h + g.h).slice(-12) };
+  });
+  if (G.today && C.today && G.today.day === C.today.day) out.today = { day: C.today.day, count: n(C.today.count) + n(G.today.count) };
+  else if (G.today && G.today.count && (!C.today || G.today.day > C.today.day)) out.today = G.today;
+  if (G.profile && (G.profile.nick || G.profile.gender) && !(C.profile && (C.profile.nick || C.profile.gender))) out.profile = G.profile;
+  return out;
+}
 async function cloudLoad() {
   const u0 = user;
   try {
     const snap = await getDoc(progressRef(user.uid));
     if (snap.exists() && snap.data().state) {
       const C = snap.data().state;
-      const localIsMine = !S.owner || S.owner === u0.uid;
-      if (S.owner === u0.uid && (S.resetAt || 0) > (C.resetAt || 0)) { /* reset on this device wins */ }
-      else S = localIsMine ? mergeProgress(S, C) : mergeState(C);
+      if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
+      else if (S.owner !== u0.uid) S = mergeState(C);
+      else if ((S.resetAt || 0) > (C.resetAt || 0)) { /* signed-in reset on this device wins */ }
+      else S = mergeProgress(S, C); // same account: keep anything saved here while offline
       S.owner = u0.uid; persistLocal(); cloudReady = true; await cloudSave();
       if (currentView === 'home') renderHome(); updateWallet();
     }
@@ -1733,7 +1762,13 @@ async function onGoogleCredential(resp) {
   }
 }
 async function doLogout() {
-  try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); await signOut(auth); toast('הִתְנַתַּקְתָּ'); }
+  try {
+    if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+    await signOut(auth);
+    // the account's progress stays in the cloud; this device starts a fresh guest count, so nothing is added twice
+    S = DEFAULT(); persistLocal(); updateWallet(); refreshCurrentView();
+    toast('הִתְנַתַּקְתָּ. הַהִתְקַדְּמוּת שְׁמוּרָה בַּחֶשְׁבּוֹן');
+  }
   catch (e) { console.warn(e); }
 }
 
@@ -1882,7 +1917,7 @@ function handleReset() {
     clearTimeout(window.__rt); window.__rt = setTimeout(() => { if (resetArmed) { resetArmed = false; renderSettings(); } }, 6000);
     return;
   }
-  S = DEFAULT(); S.resetAt = Date.now(); if (user) S.owner = user.uid; save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
+  S = DEFAULT(); if (user) { S.resetAt = Date.now(); S.owner = user.uid; } save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
 }
 
 /* ---------- session flow ---------- */
@@ -2093,7 +2128,7 @@ function renderPlay() {
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
     <div class="qhead">
-      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}${Q.sheetId ? ' · 📄' : ''}</div>
+      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}</div>
       ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
     </div>
     <div class="bar"><span style="width:${pct}%"></span></div>
@@ -2353,7 +2388,12 @@ document.addEventListener('input', e => {
   Q.parts[+el.dataset.p].v = el.value;
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.closest('#qcard') && Q && Q.result === undefined) check();
+  // Enter checks the answer; a second Enter moves to the next question (held-down Enter is ignored)
+  if (e.key !== 'Enter' || e.repeat || currentView !== 'play' || !Q || modalOpen || !session) return;
+  if (e.target.tagName === 'TEXTAREA') return;
+  e.preventDefault();
+  if (Q.result === undefined) check();
+  else if ($('#nextBtn')) nextQ();
 });
 
 /* ---------- auth state ---------- */

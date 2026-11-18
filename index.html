@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-ארץ הג'ונגל במתמטיקה – אפליקציית תרגול לכיתה ג'
+הג'ונגל של המתמטיקה – אפליקציית תרגול לכיתה ג'
 רעיון, אפיון ועיצוב: חן בן-ברית (BenBrit), לבנו אדיר ולתלמידות ולתלמידי כיתה ג'4
 פיתוח: חן בן-ברית יחד עם קלוד, שותף לבנייה
 נובמבר 2026
@@ -32,10 +32,10 @@
 <meta property="og:url" content="https://hubnbrt.github.io/3rdgrade-math-jungle/">
 <meta property="og:locale" content="he_IL">
 <meta name="twitter:card" content="summary_large_image">
-<title>ארץ הג'ונגל במתמטיקה</title>
+<title>הג'ונגל של המתמטיקה</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --canopy:#163b2a; --moss:#2f6b4f; --leaf:#4caf7a; --leaf-soft:#dcefd9;
@@ -47,12 +47,12 @@
 html,body{margin:0;min-height:100%}
 body{
   background:var(--sand);
-  color:var(--ink);font-family:Heebo,system-ui,sans-serif;font-size:17px;line-height:1.55;
+  color:var(--ink);font-family:'Noto Sans Hebrew',system-ui,sans-serif;font-size:17px;line-height:1.55;
   background-image:
     radial-gradient(circle at 10% 10%, rgba(76,175,122,0.06) 0%, transparent 40%),
     radial-gradient(circle at 90% 90%, rgba(47,107,79,0.06) 0%, transparent 40%);
 }
-h1,h2,.display{font-family:Rubik,Heebo,sans-serif}
+h1,h2,.display{font-family:'Noto Sans Hebrew','Noto Sans Hebrew',sans-serif}
 h2{font-size:22px;margin:32px 0 16px;font-weight:900;color:var(--canopy);text-align:center}
 
 /* header */
@@ -71,13 +71,13 @@ header::after{
 header h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px;text-shadow:0 2px 4px rgba(0,0,0,0.4)}
 .wallet{display:flex;gap:8px;flex-wrap:wrap}
 .chip{background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.2);padding:4px 14px;border-radius:99px;font-weight:900;font-size:16px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2)}
-.chip b{font-family:Rubik,sans-serif;font-size:18px;color:var(--amber)}
+.chip b{font-family:'Noto Sans Hebrew',sans-serif;font-size:18px;color:var(--amber)}
 
 main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
 .spacer{height:92px}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:64px 18px;padding-top:48px}
-.big{font-size:22px;font-weight:900;font-family:Rubik,sans-serif;color:var(--ink)}
+.big{font-size:22px;font-weight:900;font-family:'Noto Sans Hebrew',sans-serif;color:var(--ink)}
 .rank{font-size:14px;color:var(--muted);font-weight:600}
 
 /* wooden cards */
@@ -124,7 +124,7 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
   background:linear-gradient(180deg,#b97a44,#8b5a2b);
   border:2px solid #5c3a21;color:#fff;border-radius:8px;
   padding:6px 18px;font-weight:900;box-shadow:0 4px 0 #4a2810;
-  font-size:15px;margin-top:12px;font-family:Rubik,sans-serif;cursor:pointer;
+  font-size:15px;margin-top:12px;font-family:'Noto Sans Hebrew',sans-serif;cursor:pointer;
   text-shadow:0 1px 2px rgba(0,0,0,0.5);
 }
 .bar{height:12px;background:#8b5a2b;border-radius:99px;overflow:hidden;margin-top:14px;border:2px solid #5c3a21;box-shadow:inset 0 2px 4px rgba(0,0,0,0.3)}
@@ -145,7 +145,7 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
   width:100%;font-size:26px;padding:18px;border-radius:12px;
   background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;border:3px solid #a5d6a7;
   box-shadow:0 6px 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3);text-shadow:0 2px 3px rgba(0,0,0,0.4);
-  font-family:Rubik,sans-serif;font-weight:900;cursor:pointer;transition:transform 0.1s,box-shadow 0.1s;
+  font-family:'Noto Sans Hebrew',sans-serif;font-weight:900;cursor:pointer;transition:transform 0.1s,box-shadow 0.1s;
 }
 .big-green-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20,inset 0 4px 6px rgba(255,255,255,0.3)}
 
@@ -167,7 +167,7 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
   background:linear-gradient(180deg,#e0e0e0,#bdbdbd);color:#333;border:3px solid #9e9e9e;border-radius:16px;
   min-width:80px;font-size:22px;direction:ltr;
   box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #757575;
-  font-family:Rubik,sans-serif;font-weight:900;padding:12px 20px;cursor:pointer;
+  font-family:'Noto Sans Hebrew',sans-serif;font-weight:900;padding:12px 20px;cursor:pointer;
   transition:transform 0.1s,box-shadow 0.1s,background 0.2s;
 }
 .opt:active{transform:translateY(6px);box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 0 0 #757575}
@@ -175,14 +175,14 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
 .opt.good{background:linear-gradient(180deg,#c8e6c9,#a5d6a7);border-color:#4caf50;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #2e7d32;color:#1b5e20}
 .opt.bad{background:linear-gradient(180deg,#ffcdd2,#ef9a9a);border-color:#f44336;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #c62828;color:#b71c1c;animation:shake 0.4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-input.num,input.text{font:inherit;font-size:22px;padding:12px 16px;border:3px solid #b47a46;border-radius:14px;width:180px;text-align:center;direction:ltr;background:var(--paper);font-family:Rubik,sans-serif;font-weight:900;color:#4a2810}
+input.num,input.text{font:inherit;font-size:22px;padding:12px 16px;border:3px solid #b47a46;border-radius:14px;width:180px;text-align:center;direction:ltr;background:var(--paper);font-family:'Noto Sans Hebrew',sans-serif;font-weight:900;color:#4a2810}
 input.text{width:100%;direction:rtl;text-align:right}
 .locked{pointer-events:none}
 .prompt{font-size:22px;font-weight:800;margin:6px 0 12px;line-height:1.85}
-.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:Rubik,sans-serif}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:'Noto Sans Hebrew',sans-serif}
 .seq{min-height:60px;display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:rgba(255,255,255,0.5);border-radius:16px;direction:ltr;margin-bottom:12px;border:2px dashed #b47a46}
-.seq span{background:#6b421a;color:#fff;padding:8px 16px;border-radius:12px;font-weight:900;font-family:Rubik,sans-serif}
-.timer{display:inline-block;margin:4px auto 12px;padding:6px 16px;border-radius:99px;background:var(--moss);color:#fff;font-weight:900;font-family:Rubik,sans-serif;font-size:18px;box-shadow:0 3px 0 var(--canopy)}
+.seq span{background:#6b421a;color:#fff;padding:8px 16px;border-radius:12px;font-weight:900;font-family:'Noto Sans Hebrew',sans-serif}
+.timer{display:inline-block;margin:4px auto 12px;padding:6px 16px;border-radius:99px;background:var(--moss);color:#fff;font-weight:900;font-family:'Noto Sans Hebrew',sans-serif;font-size:18px;box-shadow:0 3px 0 var(--canopy)}
 .timer.urgent{background:var(--bad);animation:shake .4s infinite}
 .timer-wrap{text-align:center}
 svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;touch-action:none;background:rgba(255,255,255,0.5);border-radius:16px;border:3px dashed #b47a46}
@@ -196,7 +196,7 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 .action-btn:active{transform:translateY(6px);box-shadow:0 0 0 #1b5e20}
 .ghost-btn{
   background:var(--paper);color:var(--muted);border:3px solid #b47a46;box-shadow:0 6px 0 #8b5a2b;
-  font-weight:900;border-radius:16px;padding:14px 24px;cursor:pointer;transition:transform 0.1s;font-size:18px;font-family:Rubik,sans-serif;
+  font-weight:900;border-radius:16px;padding:14px 24px;cursor:pointer;transition:transform 0.1s;font-size:18px;font-family:'Noto Sans Hebrew',sans-serif;
 }
 .ghost-btn:active{transform:translateY(6px);box-shadow:0 0 0 #8b5a2b}
 .ghost-btn:disabled{opacity:.5;cursor:not-allowed}
@@ -214,7 +214,7 @@ svg.angle{width:100%;max-width:320px;height:auto;display:block;margin:12px auto;
 
 /* bottom nav */
 .nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--paper);border-top:3px solid #e0e0e0;box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.nav button{flex:1;background:transparent;color:#8d6e63;border:none;border-radius:0;padding:12px 4px 14px;font-weight:900;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:Rubik,sans-serif;cursor:pointer}
+.nav button{flex:1;background:transparent;color:#8d6e63;border:none;border-radius:0;padding:12px 4px 14px;font-weight:900;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Noto Sans Hebrew',sans-serif;cursor:pointer}
 .nav button .e{font-size:24px;filter:grayscale(1) opacity(0.6);transition:0.2s}
 .nav button[aria-current="page"]{color:#4caf50;background:linear-gradient(180deg,transparent,rgba(76,175,80,0.1));border-top:3px solid #4caf50;margin-top:-3px}
 .nav button[aria-current="page"] .e{filter:none;transform:scale(1.15)}
@@ -297,7 +297,9 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 #qcard.summary{justify-content:center}
 #qcard>*{flex:none}
 #qcard .qhead{display:flex;align-items:center;justify-content:center;gap:12px;min-height:26px}
-#qcard .qhead .timer{margin:0;padding:2px 12px;font-size:15px}
+#qcard .qhead{position:relative;padding:0 76px}
+@media (max-width:600px){#qcard .qhead{padding:0 0 0 72px}}
+#qcard .qhead .timer{margin:0;padding:2px 12px;font-size:15px;position:absolute;left:0;top:50%;margin-top:-.75em;line-height:1.5}
 #qcard .question-board{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;margin:0;overflow:hidden}
 #qcard .question-board svg.angle{max-height:26vh;width:auto;max-width:100%}
 #qcard .parts svg.angle{max-height:30vh;width:auto;max-width:100%;margin:4px auto}
@@ -409,9 +411,9 @@ header .chip{order:2;flex:none}
 .cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
 .bar.prog{position:relative}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
-.cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 Heebo,sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
+.cats .card .practice-btn{position:relative;z-index:3;align-self:center;margin-top:clamp(2px,3cqh,6px);padding:0 14px;height:clamp(18px,17cqh,28px);border:0;border-radius:99px;background:linear-gradient(#4cc46f,#2e9e50);color:#fff;font:800 clamp(10px,9cqh,14px)/1 'Noto Sans Hebrew',sans-serif;box-shadow:0 2px 0 #1d6b36;cursor:pointer;white-space:nowrap;flex:none}
 .cats .card .practice-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #1d6b36}
-.vert{border-collapse:collapse;margin:6px auto;font:900 clamp(26px,5vh,40px)/1.15 Rubik,sans-serif;color:#163b2a;background:#fff9;border-radius:12px;padding:4px 14px}
+.vert{border-collapse:collapse;margin:6px auto;font:900 clamp(26px,5vh,40px)/1.15 'Noto Sans Hebrew',sans-serif;color:#163b2a;background:#fff9;border-radius:12px;padding:4px 14px}
 .vert td{min-width:1.1em;text-align:center;padding:0 3px}
 .vert td.vs{min-width:1.1em;color:#d84a2b}
 .vert tr.vl td:not(.vs){border-top:4px solid #163b2a}
@@ -439,7 +441,7 @@ header .chip{order:2;flex:none}
 .draw-help b{color:#ffe082}
 #qcard.summary{gap:clamp(4px,1.2vh,12px)}
 .sum-gift{font-size:clamp(40px,9vh,76px);line-height:1;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
-.sum-title{text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,.5);font:900 clamp(22px,4vh,32px)/1.15 Rubik,sans-serif}
+.sum-title{text-align:center;color:#fffdf6;text-shadow:0 2px 4px rgba(0,0,0,.5);font:900 clamp(22px,4vh,32px)/1.15 'Noto Sans Hebrew',sans-serif}
 .sum-box{background:rgba(255,255,255,.85);padding:clamp(6px,1.4vh,14px) 12px;border-radius:16px;border:3px dashed #8b5a2b;text-align:center}
 .sum-box p{margin:clamp(2px,.6vh,8px) 0;font-weight:800;font-size:clamp(16px,2.6vh,20px)}
 .sum-box .trophy-line{border:0;background:none;padding:0}
@@ -507,7 +509,7 @@ header .chip{order:2;flex:none}
 @media (max-width:600px){.home-top .hero-board{flex:none !important;width:100% !important}}
 .cats .card.rec{outline:4px solid #ffd54f;outline-offset:1px;animation:recpulse 1.6s ease-in-out infinite alternate}
 @keyframes recpulse{from{box-shadow:0 0 0 0 rgba(255,213,79,.0),0 5px 0 #5c3a21}to{box-shadow:0 0 14px 4px rgba(255,213,79,.9),0 5px 0 #5c3a21}}
-.rec-badge{position:absolute;top:-13px;inset-inline-end:-7px;z-index:7;transform:rotate(-7deg);white-space:nowrap;background:rgba(255,255,255,.92);border:2px solid #c0392b;outline:1px solid #c0392b;outline-offset:1px;border-radius:6px;padding:0 4px;font:900 clamp(8px,1.2vh,13px)/1.2 Heebo,sans-serif;color:#c0392b;text-align:center;letter-spacing:.2px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.rec-badge{position:absolute;top:-13px;inset-inline-end:-7px;z-index:7;transform:rotate(-7deg);white-space:nowrap;background:rgba(255,255,255,.92);border:2px solid #c0392b;outline:1px solid #c0392b;outline-offset:1px;border-radius:6px;padding:0 4px;font:900 clamp(8px,1.2vh,13px)/1.2 'Noto Sans Hebrew',sans-serif;color:#c0392b;text-align:center;letter-spacing:.2px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .modal-back{position:fixed;inset:0;background:rgba(20,40,30,.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
 .modal{background:#fff9ec;border:4px solid #8b5a2b;border-radius:22px;padding:20px 18px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .modal .m-ic{font-size:48px}.modal .m-img{width:clamp(90px,22vh,150px);height:auto;display:block;margin:0 auto}.modal h2{margin:6px 0;font-size:24px}.modal p{margin:6px 0 14px;font-size:17px;line-height:1.4;color:#4a2810;font-weight:700}
@@ -621,7 +623,7 @@ header h1{font-size:calc(var(--s)*1.15)}
 #view-settings .seg .ghost-btn,#view-settings #resetBtn,#view-settings .big-green-btn{font-size:calc(var(--s)*1.1);padding:.55em 1em}
 #view-settings .tsel{flex-direction:column;align-items:stretch}
 #view-settings .tsel .ghost-btn{display:flex;flex-direction:column;align-items:center;gap:.1em;line-height:1.25}
-#view-settings .tsel .ghost-btn small{font:600 .8em Heebo,sans-serif;opacity:.85}
+#view-settings .tsel .ghost-btn small{font:600 .8em 'Noto Sans Hebrew',sans-serif;opacity:.85}
 /* settings layouts: 3 columns sideways, 2 columns upright on tablets, 1 on phones */
 #view-settings .s-ver{font-size:calc(var(--s)*.8) !important}
 @media (min-width:600px){
@@ -687,7 +689,7 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:calc(var(--q)*.6)}
 #qcard .opts.list{gap:calc(var(--q)*.3)}#qcard .opts.list .opt{font-size:calc(var(--q)*.98);padding:.25em .5em}
 @media (max-height:700px) and (orientation:portrait){#qcard{--q:clamp(12px,min(2.2vh,3.9vw),26px)}}
-@media (orientation:landscape) and (max-height:480px){#qcard svg[aria-label="ישר מספרים"]{height:15vh !important}}
+@media (orientation:landscape) and (max-height:480px){#qcard svg.numline{height:15vh !important}}
 @media (max-width:400px){#qcard .opts:not(.list):not(.ord) .opt{font-size:calc(var(--q)*1.1);padding:.3em .55em;min-width:0}#qcard .opts:not(.list):not(.ord){gap:6px}}
 @media (max-height:700px){#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.08em 0}#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:6px}#qcard .ordwrap .opts.ord,#qcard .ordwrap .seq{gap:4px}}
 .ordwrap .opts.ord .opt,.ordwrap .seq span.filled{touch-action:none;cursor:grab}
@@ -700,11 +702,16 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .pmark .part-fix{font-size:calc(var(--q)*.9) !important;margin:0 !important}
 #qcard .ordwrap .seq span{border:2px solid transparent;box-sizing:border-box;line-height:1.2}
 @media (orientation:landscape) and (max-height:480px){#qcard .vert{font-size:clamp(18px,5.4vh,26px);margin:2px auto}}
+/* nikud version: room for vowel marks */
+.cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
+#qcard .prompt{line-height:1.7}
+.feedback .fb-text{line-height:1.45}
+@media (max-height:480px){#qcard .prompt{line-height:1.3}.feedback .fb-text{line-height:1.25}}
 </style>
 </head>
 <body>
 <header>
-  <h1 class="display"><a href="admin.html" tabindex="-1" aria-hidden="true" style="color:inherit;text-decoration:none;cursor:default;-webkit-tap-highlight-color:transparent">🌴</a> ארץ הג'ונגל במתמטיקה</h1>
+  <h1 class="display"><a href="admin.html" tabindex="-1" aria-hidden="true" style="color:inherit;text-decoration:none;cursor:default;-webkit-tap-highlight-color:transparent">🌴</a> הַגּ'וּנְגֶּל שֶׁל הַמָּתֵמָטִיקָה</h1>
   <div class="wallet">
     <span id="userChip" class="user-chip"></span>
     <span class="chip">🪙 <b id="coins">0</b></span>
@@ -719,10 +726,10 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   <section id="view-settings" class="hidden"></section>
 </main>
 
-<nav class="nav" aria-label="ניווט">
-  <button type="button" data-go="home" aria-current="page"><span class="e">🏠</span>בית</button>
-  <button type="button" data-go="camp"><span class="e">🏕️</span>המחנה</button>
-  <button type="button" data-go="settings"><span class="e">⚙️</span>הגדרות</button>
+<nav class="nav" aria-label="נִיוּוּט">
+  <button type="button" data-go="home" aria-current="page"><span class="e">🏠</span>בַּיִת</button>
+  <button type="button" data-go="camp"><span class="e">🏕️</span>הַמַּחֲנֶה</button>
+  <button type="button" data-go="settings"><span class="e">⚙️</span>הַגְדָּרוֹת</button>
 </nav>
 <div id="toast" class="toast" role="status"></div>
 
@@ -731,7 +738,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v86';
+const APP_VERSION = 'v87';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -741,10 +748,10 @@ const isStandalone = () => matchMedia('(display-mode: standalone)').matches || n
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
 function installBlock() {
   if (isStandalone()) return '';
-  return `<div class="card s-install" style="margin-top:20px"><h2 style="margin-top:8px">📲 התקנה במכשיר</h2>
-    ${installEvt ? `<button type="button" class="big-green-btn" id="installBtn" style="width:100%">התקנת האפליקציה</button>`
-    : isIOS() ? `<div class="rank" style="text-align:right">באייפון: לוחצים על כפתור השיתוף (▫️⬆️) ואז "הוסף למסך הבית".</div>`
-    : `<div class="rank" style="text-align:right">בדפדפן: תפריט ⋮ ← "התקנת אפליקציה" / "הוספה למסך הבית". אם הכפתור לא מופיע כאן, ייתכן שכבר הותקנה.</div>`}</div>`;
+  return `<div class="card s-install" style="margin-top:20px"><h2 style="margin-top:8px">📲 הַתְקָנָה בַּמַּכְשִׁיר</h2>
+    ${installEvt ? `<button type="button" class="big-green-btn" id="installBtn" style="width:100%">הַתְקָנַת הָאַפְּלִיקַצְיָה</button>`
+    : isIOS() ? `<div class="rank" style="text-align:right">בְּאַיְיפוֹן: לוֹחֲצִים עַל כַּפְתּוֹר הַשִּׁיתּוּף (▫️⬆️) וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת".</div>`
+    : `<div class="rank" style="text-align:right">בַּדַּפְדְּפָן: תַּפְרִיט ⋮ ← "הַתְקָנַת אַפְּלִיקַצְיָה" / "הוֹסָפָה לְמָסַךְ הַבַּיִת". אִם הַכַּפְתּוֹר לֹא מוֹפִיעַ כָּאן, יִיתָּכֵן שֶׁכְּבָר הוּתְקְנָה.</div>`}</div>`;
 }
 const wantInstall = () => !isStandalone() && /[?&]install\b/.test(location.search);
 function installBar() { return ''; }
@@ -761,14 +768,14 @@ function maybePrompts() {
   if (modalOpen || currentView === 'play') return;
   if (pendingUpdate) {
     const v = pendingUpdate;
-    showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: 'יצאה גרסה חדשה!', text: 'יש שיפורים ותיקונים באפליקציה. ההתקדמות והמטבעות נשמרים.', ok: 'עדכון עכשיו', cancel: 'אחר כך', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
+    showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: 'יָצְאָה גִּרְסָה חֲדָשָׁה!', text: 'יֵשׁ שִׁיפּוּרִים וְתִיקּוּנִים בָּאַפְּלִיקַצְיָה. הַהִתְקַדְּמוּת וְהַמַּטְבְּעוֹת נִשְׁמָרִים.', ok: 'עִדְכּוּן עַכְשָׁיו', cancel: 'אַחַר כָּךְ', onOk: () => applyUpdate(v), onNo: () => { pendingUpdate = null; } });
     return;
   }
   let dismissed = 0; try { dismissed = +localStorage.getItem('jungle-install-no') || 0; } catch (e) {}
   const recentNo = Date.now() - dismissed < 3 * 864e5;
   if (installAsked || isStandalone() || !(installEvt || isIOS() || wantInstall()) || (recentNo && !wantInstall())) return;
   installAsked = true;
-  showModal({ icon: '📲', title: 'להתקין את האפליקציה?', text: isIOS() && !installEvt ? 'באייפון: לוחצים על כפתור השיתוף ואז "הוסף למסך הבית". כך האפליקציה נפתחת במסך מלא, כמו כל אפליקציה.' : 'האפליקציה תופיע במסך הבית ותיפתח במסך מלא, בלי דפדפן.', ok: isIOS() && !installEvt ? 'הבנתי' : 'התקנה', cancel: 'לא עכשיו', onOk: () => { if (!(isIOS() && !installEvt)) doInstall(); }, onNo: () => { try { localStorage.setItem('jungle-install-no', String(Date.now())); } catch (e) {} } });
+  showModal({ icon: '📲', title: 'לְהַתְקִין אֶת הָאַפְּלִיקַצְיָה?', text: isIOS() && !installEvt ? 'בְּאַיְיפוֹן: לוֹחֲצִים עַל כַּפְתּוֹר הַשִּׁיתּוּף וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת". כָּךְ הָאַפְּלִיקַצְיָה נִפְתַּחַת בְּמָסַךְ מָלֵא, כְּמוֹ כָּל אַפְּלִיקַצְיָה.' : 'הָאַפְּלִיקַצְיָה תּוֹפִיעַ בְּמָסַךְ הַבַּיִת וְתִיפָּתַח בְּמָסַךְ מָלֵא, בְּלִי דַּפְדְּפָן.', ok: isIOS() && !installEvt ? 'הֵבַנְתִּי' : 'הַתְקָנָה', cancel: 'לֹא עַכְשָׁיו', onOk: () => { if (!(isIOS() && !installEvt)) doInstall(); }, onNo: () => { try { localStorage.setItem('jungle-install-no', String(Date.now())); } catch (e) {} } });
 }
 async function checkUpdate() {
   try {
@@ -787,7 +794,7 @@ try { new Image().src = 'monkey-update.png'; } catch (e) {}
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { installAsked = false; checkUpdate(); setTimeout(maybePrompts, 1200); } });
 setInterval(checkUpdate, 10 * 60 * 1000);
 async function doInstall() {
-  if (!installEvt) { toast(isIOS() ? 'באייפון: כפתור השיתוף ואז "הוסף למסך הבית"' : 'בתפריט הדפדפן ⋮ בוחרים "התקנת אפליקציה" או "הוספה למסך הבית"'); return; } installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; if (currentView === 'home') renderHome(); else renderSettings(); }
+  if (!installEvt) { toast(isIOS() ? 'בְּאַיְיפוֹן: כַּפְתּוֹר הַשִּׁיתּוּף וְאָז "הוֹסֵף לְמָסַךְ הַבַּיִת"' : 'בְּתַפְרִיט הַדַּפְדְּפָן ⋮ בּוֹחֲרִים "הַתְקָנַת אַפְּלִיקַצְיָה" אוֹ "הוֹסָפָה לְמָסַךְ הַבַּיִת"'); return; } installEvt.prompt(); await installEvt.userChoice.catch(() => {}); installEvt = null; if (currentView === 'home') renderHome(); else renderSettings(); }
 /* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
@@ -817,35 +824,35 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const parseNum = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^-?\d+$/.test(s) ? Number(s) : NaN; };
 const perms = a => a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
 const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
-const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
-const PLACE = { 1: 'היחידות', 10: 'העשרות', 100: 'המאות', 1000: 'האלפים' };
-const angleClass = d => d < 90 ? 'חדה' : d === 90 ? 'ישרה' : d < 180 ? 'קהה' : 'שטוחה';
-const rank = s => s >= 70 ? 'זהב' : s >= 40 ? 'כסף' : 'ארד';
+const TIERS = [null, 'מַתְחִילִים', 'מִתְקַדְּמִים', 'אַלּוּפִים'];
+const PLACE = { 1: 'הַיְּחִידוֹת', 10: 'הָעֲשָׂרוֹת', 100: 'הַמֵּאוֹת', 1000: 'הָאֲלָפִים' };
+const angleClass = d => d < 90 ? 'חַדָּה' : d === 90 ? 'יְשָׁרָה' : d < 180 ? 'קֵהָה' : 'שְׁטוּחָה';
+const rank = s => s >= 70 ? 'זָהָב' : s >= 40 ? 'כֶּסֶף' : 'אָרָד';
 
 const ITEMS = [
-  { id: 'lion', name: 'אריה', icon: '🦁', price: 15 },
-  { id: 'elephant', name: 'פיל', icon: '🐘', price: 15 },
-  { id: 'leopard', name: 'נמר', icon: '🐆', price: 20 },
-  { id: 'giraffe', g: 'f', name: 'ג\'ירפה', icon: '🦒', price: 25 },
-  { id: 'monkey', name: 'קוף', icon: '🐒', price: 10 },
-  { id: 'parrot', name: 'תוכי', icon: '🦜', price: 10 },
-  { id: 'zebra', g: 'f', name: 'זברה', icon: '🦓', price: 10 },
-  { id: 'koala', g: 'f', name: 'קואלה', icon: '🐨', price: 20 },
-  { id: 'frog', g: 'f', name: 'צפרדע', icon: '🐸', price: 8 },
-  { id: 'croc', name: 'תנין', icon: '🐊', price: 20 }
+  { id: 'lion', name: 'אַרְיֵה', icon: '🦁', price: 15 },
+  { id: 'elephant', name: 'פִּיל', icon: '🐘', price: 15 },
+  { id: 'leopard', name: 'נָמֵר', icon: '🐆', price: 20 },
+  { id: 'giraffe', g: 'f', name: 'גִ\'ירָפָה', icon: '🦒', price: 25 },
+  { id: 'monkey', name: 'קוֹף', icon: '🐒', price: 10 },
+  { id: 'parrot', name: 'תּוּכִּי', icon: '🦜', price: 10 },
+  { id: 'zebra', g: 'f', name: 'זֶבְּרָה', icon: '🦓', price: 10 },
+  { id: 'koala', g: 'f', name: 'קוֹאָלָה', icon: '🐨', price: 20 },
+  { id: 'frog', g: 'f', name: 'צְפַרְדֵּעַ', icon: '🐸', price: 8 },
+  { id: 'croc', name: 'תַּנִּין', icon: '🐊', price: 20 }
 ];
 
 const GEAR = [
-  { id: 'boots', g: 'p', name: 'מגפי טיול', icon: '🥾', r: 0 }, { id: 'hat', name: 'כובע ספארי', icon: '🧢', r: 0 },
-  { id: 'bag', name: 'תרמיל', icon: '🎒', r: 0 }, { id: 'tent', name: 'אוהל', icon: '⛺', r: 0 },
-  { id: 'shell', name: 'צדף קסום', icon: '🐚', r: 0 }, { id: 'feather', g: 'f', name: 'נוצת תוכי', icon: '🪶', r: 0 },
-  { id: 'torch', name: 'פנס', icon: '🔦', r: 1 }, { id: 'map', g: 'f', name: 'מפת אוצר', icon: '🗺️', r: 1 },
-  { id: 'compass', name: 'מצפן', icon: '🧭', r: 1 }, { id: 'scope', g: 'f', name: 'משקפת', icon: '🔭', r: 1 },
-  { id: 'beads', g: 'f', name: 'שרשרת חרוזים', icon: '📿', r: 1 }, { id: 'eye', name: 'קמע עין', icon: '🧿', r: 1 },
-  { id: 'gem', name: 'יהלום הג\'ונגל', icon: '💎', r: 2 }, { id: 'trident', name: 'קלשון הזהב', icon: '🔱', r: 2 },
-  { id: 'star', name: 'כוכב המזל', icon: '🌟', r: 2 }, { id: 'crown', name: 'כתר המלך', icon: '👑', r: 2 }
+  { id: 'boots', g: 'p', name: 'מַגְּפֵי טִיּוּל', icon: '🥾', r: 0 }, { id: 'hat', name: 'כּוֹבַע סָפָארִי', icon: '🧢', r: 0 },
+  { id: 'bag', name: 'תַּרְמִיל', icon: '🎒', r: 0 }, { id: 'tent', name: 'אוֹהֶל', icon: '⛺', r: 0 },
+  { id: 'shell', name: 'צֶדֶף קָסוּם', icon: '🐚', r: 0 }, { id: 'feather', g: 'f', name: 'נוֹצַת תּוּכִּי', icon: '🪶', r: 0 },
+  { id: 'torch', name: 'פָּנָס', icon: '🔦', r: 1 }, { id: 'map', g: 'f', name: 'מַפַּת אוֹצָר', icon: '🗺️', r: 1 },
+  { id: 'compass', name: 'מַצְפֵּן', icon: '🧭', r: 1 }, { id: 'scope', g: 'f', name: 'מְשַׁקֶּפֶת', icon: '🔭', r: 1 },
+  { id: 'beads', g: 'f', name: 'שַׁרְשֶׁרֶת חֲרוּזִים', icon: '📿', r: 1 }, { id: 'eye', name: 'קָמֵעַ עַיִן', icon: '🧿', r: 1 },
+  { id: 'gem', name: 'יַהֲלוֹם הַגּ\'וּנְגֶּל', icon: '💎', r: 2 }, { id: 'trident', name: 'קִלְּשׁוֹן הַזָּהָב', icon: '🔱', r: 2 },
+  { id: 'star', name: 'כּוֹכַב הַמַּזָּל', icon: '🌟', r: 2 }, { id: 'crown', name: 'כֶּתֶר הַמֶּלֶךְ', icon: '👑', r: 2 }
 ];
-const RARITY = ['רגיל', 'נדיר', 'אגדי'];
+const RARITY = ['רָגִיל', 'נָדִיר', 'אַגָּדִי'];
 
 /* ---------- question generators ---------- */
 function genDigit(t) {
@@ -860,21 +867,21 @@ function genDigit(t) {
   if (Math.random() < .4) {
     const nn = n + diff;
     return {
-      body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> משנים את ספרת ${PLACE[pv]} ל-${e}.<br>מה המספר החדש?</div>`,
+      body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> מְשַׁנִּים אֶת סִפְרַת ${PLACE[pv]} לְ-${e}.<br>מָה הַמִּסְפָּר הֶחָדָשׁ?</div>`,
       parts: [{ type: 'num', ans: nn }],
-      hint: `ספרת ${PLACE[pv]} היא הספרה ${old}. מחליפים אותה ב-${e} ושאר הספרות נשארות.`,
-      explain: `<span class="ltr">${fmt(n)}</span> הופך ל-<span class="ltr">${fmt(nn)}</span>.`
+      hint: `סִפְרַת ${PLACE[pv]} הִיא הַסִּפְרָה ${old}. מַחְלִיפִים אוֹתָהּ בְּ-${e} וּשְׁאָר הַסְּפָרוֹת נִשְׁאָרוֹת.`,
+      explain: `<span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(nn)}</span>.`
     };
   }
   const amount = Math.abs(diff), grows = diff > 0;
   return {
-    body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שונתה הספרה ${old} ל-${e}.<br>האם המספר החדש גדל או קטן, ובכמה?</div>`,
+    body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> שׁוּנְּתָה הַסִּפְרָה ${old} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
     parts: [
-      { type: 'buttons', opts: ['גדל', 'קטן'], ans: grows ? 'גדל' : 'קטן' },
-      { type: 'num', label: 'בכמה', ans: amount }
+      { type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' },
+      { type: 'num', label: 'בְּכַמָּה', ans: amount }
     ],
-    hint: 'כדאי לשים לב לאיזה מקום שייכת הספרה. ההפרש מוכפל בערך המקום.',
-    explain: `הספרה ${old} נמצאת במקום ${PLACE[pv]}. לכן המספר ${grows ? 'גדל' : 'קטן'} ב-${fmt(amount)}.`
+    hint: 'כְּדַאי לָשִׂים לֵב לְאֵיזֶה מָקוֹם שַׁיֶּיכֶת הַסִּפְרָה. הַהֶפְרֵשׁ מוּכְפָּל בְּעֵרֶךְ הַמָּקוֹם.',
+    explain: `הַסִּפְרָה ${old} נִמְצֵאת בַּמָּקוֹם ${PLACE[pv]}. לָכֵן הַמִּסְפָּר ${grows ? 'גָּדַל' : 'קָטַן'} בְּ-${fmt(amount)}.`
   };
 }
 
@@ -890,9 +897,9 @@ function genCompare(t) {
   }
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
-    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
-    hint: 'יש לחשב את שני הצדדים, ואז להשוות את התוצאות.',
+    hint: 'יֵשׁ לְחַשֵּׁב אֶת שְׁנֵי הַצְּדָדִים, וְאָז לְהַשְׁווֹת אֶת הַתּוֹצָאוֹת.',
     explain: `<span class="ltr">${fmt(lv)} ${sym==='<'?'&lt;':sym==='>'?'&gt;':'='} ${fmt(rv)}</span>`
   };
 }
@@ -904,22 +911,22 @@ function genNoCalc(t) {
   if (kind === 'sameA') {
     const b = rnd(1, R), c = rnd(1, R), A = Math.max(b, c) + rnd(0, R);
     L = `${fmt(A)} − ${fmt(b)}`; Rt = `${fmt(A)} − ${fmt(c)}`; lv = A - b; rv = A - c;
-    hint = 'המספר הראשון זהה. כשמחסירים מספר גדול יותר, מתקבלת תוצאה קטנה יותר.';
+    hint = 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.';
   } else if (kind === 'sameB') {
     const B = rnd(1, R), A = B + rnd(0, R), C = B + rnd(0, R);
     L = `${fmt(A)} − ${fmt(B)}`; Rt = `${fmt(C)} − ${fmt(B)}`; lv = A - B; rv = C - B;
-    hint = 'המספר שמחסירים זהה. ככל שהמספר הראשון גדול יותר, התוצאה גדולה יותר.';
+    hint = 'הַמִּסְפָּר שֶׁמַּחְסִירִים זֵהֶה. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.';
   } else {
     const A = rnd(1, R), b = rnd(1, R), c = rnd(1, R);
     L = `${fmt(A)} + ${fmt(b)}`; Rt = `${fmt(A)} + ${fmt(c)}`; lv = A + b; rv = A + c;
-    hint = 'המספר הראשון זהה. ככל שמוסיפים מספר גדול יותר, התוצאה גדולה יותר.';
+    hint = 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.';
   }
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
-    body: `<div class="prompt">יש לסמן ללא צורך בחישוב מדויק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן לְלֹא צוֹרֶךְ בְּחִישּׁוּב מְדוּיָּק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
     hint,
-    explain: `הסימן המתאים הוא <span class="ltr">${sym==='<'?'&lt;':sym==='>'?'&gt;':'='}</span>.`
+    explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${sym==='<'?'&lt;':sym==='>'?'&gt;':'='}</span>.`
   };
 }
 
@@ -930,16 +937,16 @@ function genDecomp(t) {
   const m = rnd(0, len - 1);
   const shown = comps.map((c, j) => j === m ? '___' : fmt(c)).join(' + ');
   return {
-    body: `<div class="prompt">יש להשלים את הפירוק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַפֵּירוּק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
     parts: [{ type: 'num', ans: comps[m] }],
-    hint: 'כל ספרה שווה לערך שלה לפי המקום.',
+    hint: 'כָּל סִפְרָה שָׁווָה לָעֵרֶךְ שֶׁלָּהּ לְפִי הַמָּקוֹם.',
     explain: (() => {
       const given = comps.filter((c, j) => j !== m).map(fmt);
-      const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' ו-' + given[given.length - 1] : given[0];
+      const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' וְ-' + given[given.length - 1] : given[0];
       const place = 10 ** (len - 1 - m), digit = comps[m] / place;
-      const UN = { 1: 'יחידות', 10: 'עשרות', 100: 'מאות', 1000: 'אלפים' };
-      if (digit === 0) return `כבר יש ${givenTxt}, ולכן החסר הוא 0: אין ${UN[place]} במספר. הפירוק המלא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
-      return `כבר יש ${givenTxt}, ולכן החסר הוא ${fmt(comps[m])}: הספרה ${digit} נמצאת במקום ${PLACE[place]} ושווה ${fmt(comps[m])}. הפירוק המלא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
+      const UN = { 1: 'יְחִידוֹת', 10: 'עֲשָׂרוֹת', 100: 'מֵאוֹת', 1000: 'אֲלָפִים' };
+      if (digit === 0) return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא 0: אֵין ${UN[place]} בַּמִּסְפָּר. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
+      return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא ${fmt(comps[m])}: הַסִּפְרָה ${digit} נִמְצֵאת בַּמָּקוֹם ${PLACE[place]} וְשָׁווֶה ${fmt(comps[m])}. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
     })()
   };
 }
@@ -951,10 +958,10 @@ function genOrder(t) {
   const nums = [...set];
   const sorted = [...nums].sort((x, y) => x - y);
   return {
-    body: `<div class="prompt">יש ללחוץ או לגרור את המספרים מהקטן לגדול.</div>`,
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ אוֹ לִגְרוֹר אֶת הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
     parts: [{ type: 'order', items: shuffle(nums), ans: sorted }],
-    hint: 'מומלץ להשוות קודם את מספר הספרות, ואז את הספרות השמאליות ביותר.',
-    explain: `הסדר הנכון: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
+    hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
+    explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
   };
 }
 
@@ -967,10 +974,10 @@ function genNumLine(t) {
   while (outs.size < 3) { const x = Math.random() < .5 ? a - rnd(5, 70) : b + rnd(5, 70); if (x > 0) outs.add(x); }
   const opts = shuffle([inside, ...outs]).map(fmt);
   return {
-    body: `<div class="prompt">המספרים <span class="ltr">${fmt(a)}</span> ו-<span class="ltr">${fmt(b)}</span> הם קצוות הקטע.<br>איזה מספר נמצא בתוך הקטע?</div>`,
+    body: `<div class="prompt">הַמִּסְפָּרִים <span class="ltr">${fmt(a)}</span> וְ-<span class="ltr">${fmt(b)}</span> הֵם קַצְווֹת הַקֶּטַע.<br>אֵיזֶה מִסְפָּר נִמְצָא בְּתוֹךְ הַקֶּטַע?</div>`,
     parts: [{ type: 'buttons', opts, ans: fmt(inside) }],
-    hint: 'המספר צריך להיות גדול מהמספר הקטן וקטן מהמספר הגדול.',
-    explain: `${fmt(inside)} נמצא בין ${fmt(a)} ל-${fmt(b)}.`
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `${fmt(inside)} נִמְצָא בֵּין ${fmt(a)} לְ-${fmt(b)}.`
   };
 }
 
@@ -983,12 +990,12 @@ function genSeq(t) {
   const terms = [0, 1, 2, 3, 4, 5].map(i => s + (desc ? -i : i) * k);
   const blanks = pick([[1, 3], [2, 4], [1, 4]]);
   const sortedBlanks = [...blanks].sort((x, y) => x - y);
-  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חסר ${sortedBlanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
+  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חָסֵר ${sortedBlanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
   return {
-    body: `<div class="prompt">יש להשלים את הסדרה, שממשיכה בקפיצות של ${fmt(k)}:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
-    parts: sortedBlanks.map((bi, j) => ({ type: 'num', label: `חסר ${j + 1}`, ans: terms[bi] })),
-    hint: `בכל שלב יש קפיצה קבועה של ${fmt(k)}.`,
-    explain: `הסדרה המלאה: ${terms.map(fmt).join(', ')}`
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַסִּדְרָה, שֶׁמַּמְשִׁיכָה בִּקְפִיצוֹת שֶׁל ${fmt(k)}:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
+    parts: sortedBlanks.map((bi, j) => ({ type: 'num', label: `חָסֵר ${j + 1}`, ans: terms[bi] })),
+    hint: `בְּכָל שָׁלָב יֵשׁ קְפִיצָה קְבוּעָה שֶׁל ${fmt(k)}.`,
+    explain: `הַסִּדְרָה הַמְּלֵאָה: ${terms.map(fmt).join(', ')}`
   };
 }
 
@@ -1001,17 +1008,17 @@ function genSeqMember(t) {
   const X = yes ? s + m * k : s + m * k + rnd(1, k - 1);
   const isIn = (X - s) % k === 0;
   return {
-    body: `<div class="prompt">סדרה: <span class="ltr">${shown}, ...</span><br>האם המספר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יופיע בהמשך הסדרה?</div>`,
-    parts: [{ type: 'buttons', opts: ['כן', 'לא'], ans: isIn ? 'כן' : 'לא' }],
-    hint: 'יש לבדוק אם ההפרש בין המספר המבוקש למספר הראשון מתחלק בקפיצה.',
-    explain: `המספר ${isIn ? 'אכן יופיע' : 'לא יופיע'} כי הוא ${isIn ? 'מתחלק' : 'לא מתחלק'} בקפיצות של ${fmt(k)}.`
+    body: `<div class="prompt">סִדְרָה: <span class="ltr">${shown}, ...</span><br>הַאִם הַמִּסְפָּר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יוֹפִיעַ בְּהֶמְשֵׁךְ הַסִּדְרָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['כֵּן', 'לֹא'], ans: isIn ? 'כֵּן' : 'לֹא' }],
+    hint: 'יֵשׁ לִבְדּוֹק אִם הַהֶפְרֵשׁ בֵּין הַמִּסְפָּר הַמְּבוּקָּשׁ לַמִּסְפָּר הָרִאשׁוֹן מִתְחַלֵּק בִּקְפִיצָה.',
+    explain: `הַמִּסְפָּר ${isIn ? 'אָכֵן יוֹפִיעַ' : 'לֹא יוֹפִיעַ'} כִּי הוּא ${isIn ? 'מִתְחַלֵּק' : 'לֹא מִתְחַלֵּק'} בִּקְפִיצוֹת שֶׁל ${fmt(k)}.`
   };
 }
 
 function genSameDigits(t) {
   const len = t === 1 ? 3 : 4;
   const odd = Math.random() < .5, smaller = Math.random() < .6;
-  const pw = odd ? 'אי-זוגי' : 'זוגי', dw = smaller ? 'הקטן' : 'הגדול';
+  const pw = odd ? 'אִי-זוּגִי' : 'זוּגִי', dw = smaller ? 'הַקָּטָן' : 'הַגָּדוֹל';
   let n, valid = [];
   for (;;) {
     n = len === 3 ? rnd(200, 999) : rnd(2000, 9999);
@@ -1022,35 +1029,35 @@ function genSameDigits(t) {
   }
   const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
   return {
-    body: `<div class="prompt">יש לכתוב מספר ${pw}, ${dw} מ-<span class="ltr">${fmt(n)}</span>, המורכב מאותן ספרות.</div>`,
-    parts: [{ type: 'text', check, placeholder: 'המספר:' }],
-    hint: odd ? 'מספר אי-זוגי מסתיים בספרות 1, 3, 5, 7 או 9.' : 'מספר זוגי מסתיים בספרות 0, 2, 4, 6 או 8.',
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר ${pw}, ${dw} מִ-<span class="ltr">${fmt(n)}</span>, הַמּוּרְכָּב מֵאוֹתָן סְפָרוֹת.</div>`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: odd ? 'מִסְפָּר אִי-זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 1, 3, 5, 7 אוֹ 9.' : 'מִסְפָּר זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 0, 2, 4, 6 אוֹ 8.',
     explain: q => {
       const mine = Number(String(q.parts[0].v ?? '').replace(/[,\s]/g, ''));
       const others = valid.filter(x => x !== mine);
       const list = others.slice(0, 3).map(fmt).join(', ');
-      if (q.result) return others.length ? `אגב, אפשר היה גם: ${list}.` : 'זו הייתה האפשרות היחידה.';
-      return `למשל: ${list}.`;
+      if (q.result) return others.length ? `אַגַּב, אֶפְשָׁר הָיָה גַּם: ${list}.` : 'זוֹ הָיְיתָה הָאֶפְשָׁרוּת הַיְּחִידָה.';
+      return `לְמָשָׁל: ${list}.`;
     }
   };
 }
 
 /* ---------- numbers in words ---------- */
-const W_ONES = ['', 'אחת', 'שתיים', 'שלוש', 'ארבע', 'חמש', 'שש', 'שבע', 'שמונה', 'תשע'];
-const W_TEENS = ['עשר', 'אחת עשרה', 'שתים עשרה', 'שלוש עשרה', 'ארבע עשרה', 'חמש עשרה', 'שש עשרה', 'שבע עשרה', 'שמונה עשרה', 'תשע עשרה'];
-const W_TENS = ['', '', 'עשרים', 'שלושים', 'ארבעים', 'חמישים', 'שישים', 'שבעים', 'שמונים', 'תשעים'];
-const W_THOU = ['', 'אלף', 'אלפיים', 'שלושת אלפים', 'ארבעת אלפים', 'חמשת אלפים', 'ששת אלפים', 'שבעת אלפים', 'שמונת אלפים', 'תשעת אלפים'];
+const W_ONES = ['', 'אַחַת', 'שְׁתַּיִים', 'שָׁלוֹשׁ', 'אַרְבַּע', 'חָמֵשׁ', 'שֵׁשׁ', 'שֶׁבַע', 'שְׁמוֹנֶה', 'תֵּשַׁע'];
+const W_TEENS = ['עֶשֶׂר', 'אַחַת עֶשְׂרֵה', 'שְׁתֵּים עֶשְׂרֵה', 'שְׁלוֹשׁ עֶשְׂרֵה', 'אַרְבַּע עֶשְׂרֵה', 'חֲמֵשׁ עֶשְׂרֵה', 'שֵׁשׁ עֶשְׂרֵה', 'שְׁבַע עֶשְׂרֵה', 'שְׁמוֹנֶה עֶשְׂרֵה', 'תְּשַׁע עֶשְׂרֵה'];
+const W_TENS = ['', '', 'עֶשְׂרִים', 'שְׁלוֹשִׁים', 'אַרְבָּעִים', 'חֲמִישִּׁים', 'שִׁישִּׁים', 'שִׁבְעִים', 'שְׁמוֹנִים', 'תִּשְׁעִים'];
+const W_THOU = ['', 'אֶלֶף', 'אַלְפַּיִים', 'שְׁלוֹשֶׁת אֲלָפִים', 'אַרְבַּעַת אֲלָפִים', 'חֲמֵשֶׁת אֲלָפִים', 'שֵׁשֶׁת אֲלָפִים', 'שִׁבְעַת אֲלָפִים', 'שְׁמוֹנַת אֲלָפִים', 'תִּשְׁעַת אֲלָפִים'];
 function numWords(n) {
   const parts = [];
   const th = Math.floor(n / 1000), h = Math.floor(n % 1000 / 100), r = n % 100;
   if (th) parts.push(W_THOU[th]);
-  if (h) parts.push(h === 1 ? 'מאה' : h === 2 ? 'מאתיים' : W_ONES[h] + ' מאות');
+  if (h) parts.push(h === 1 ? 'מֵאָה' : h === 2 ? 'מָאתַיִים' : W_ONES[h] + ' מֵאוֹת');
   if (r) {
     if (r < 10) parts.push(W_ONES[r]);
     else if (r < 20) parts.push(W_TEENS[r - 10]);
     else { parts.push(W_TENS[Math.floor(r / 10)]); if (r % 10) parts.push(W_ONES[r % 10]); }
   }
-  if (parts.length > 1) parts[parts.length - 1] = 'ו' + parts[parts.length - 1];
+  if (parts.length > 1) parts[parts.length - 1] = 'וְ' + parts[parts.length - 1];
   return parts.join(' ');
 }
 function genWords(t) {
@@ -1067,16 +1074,16 @@ function genWords(t) {
   }
   if (Math.random() < .5) {
     return {
-      body: `<div class="prompt">איזה מספר כתוב כאן במילים?</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+      body: `<div class="prompt">אֵיזֶה מִסְפָּר כָּתוּב כָּאן בְּמִילִּים?</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
       parts: [{ type: 'buttons', opts: shuffle([n, ...decoys]).map(fmt), ans: fmt(n) }],
-      hint: 'כדאי לכתוב את הספרות לפי המקום: אלפים, מאות, עשרות ויחידות.',
+      hint: 'כְּדַאי לִכְתּוֹב אֶת הַסְּפָרוֹת לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
       explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
     };
   }
   return {
-    body: `<div class="prompt">יש לכתוב במספרים:</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב בְּמִסְפָּרִים:</div><div class="prompt" style="font-size:26px">${numWords(n)}</div>`,
     parts: [{ type: 'num', ans: n }],
-    hint: 'כדאי לכתוב את הספרות לפי המקום: אלפים, מאות, עשרות ויחידות.',
+    hint: 'כְּדַאי לִכְתּוֹב אֶת הַסְּפָרוֹת לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
     explain: `${numWords(n)} = <span class="ltr">${fmt(n)}</span>`
   };
 }
@@ -1091,17 +1098,17 @@ function genMoreLess(t) {
     const n = rnd(R[0] + (up ? 0 : d), R[1]);
     const ans = up ? n + d : n - d;
     return {
-      body: `<div class="prompt">איזה מספר ${up ? 'גדול' : 'קטן'} ב-<span class="ltr">${fmt(d)}</span> מהמספר <span class="ltr">${fmt(n)}</span>?</div>`,
+      body: `<div class="prompt">אֵיזֶה מִסְפָּר ${up ? 'גָּדוֹל' : 'קָטַן'} בְּ-<span class="ltr">${fmt(d)}</span> מֵהַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
       parts: [{ type: 'num', ans }],
-      hint: up ? 'גדול ב... פירושו להוסיף.' : 'קטן ב... פירושו לחסר.',
+      hint: up ? 'גָּדוֹל בְּ... פֵּירוּשׁוֹ לְהוֹסִיף.' : 'קָטָן בְּ... פֵּירוּשׁוֹ לְחַסֵּר.',
       explain: `<span class="ltr">${fmt(n)} ${up ? '+' : '−'} ${fmt(d)} = ${fmt(ans)}</span>`
     };
   }
   const b = rnd(R[0], R[1] - d), a = b + d;
   return {
-    body: `<div class="prompt">בכמה המספר <span class="ltr">${fmt(a)}</span> גדול מהמספר <span class="ltr">${fmt(b)}</span>?</div>`,
+    body: `<div class="prompt">בְּכַמָּה הַמִּסְפָּר <span class="ltr">${fmt(a)}</span> גָּדוֹל מֵהַמִּסְפָּר <span class="ltr">${fmt(b)}</span>?</div>`,
     parts: [{ type: 'num', ans: d }],
-    hint: 'כדי לדעת בכמה מספר אחד גדול מהשני, מחסרים את הקטן מהגדול.',
+    hint: 'כְּדֵי לָדַעַת בְּכַמָּה מִסְפָּר אֶחָד גָּדוֹל מֵהַשֵּׁנִי, מְחַסְּרִים אֶת הַקָּטָן מֵהַגָּדוֹל.',
     explain: `<span class="ltr">${fmt(a)} − ${fmt(b)} = ${fmt(d)}</span>`
   };
 }
@@ -1110,21 +1117,21 @@ function genMoreLess(t) {
 function genPlaceCmp(t) {
   const mk = () => {
     const kind = pick(['h', 'ht', 'tu', 'th']);
-    if (kind === 'h') { const h = rnd(1, 9); return { txt: `${h} מאות`, v: h * 100 }; }
-    if (kind === 'ht') { const h = rnd(1, 9), tn = rnd(1, 9); return { txt: `${h} מאות ו-${tn} עשרות`, v: h * 100 + tn * 10 }; }
-    if (kind === 'tu') { const tn = rnd(5, 60), u = rnd(1, 25); return { txt: `${tn} עשרות ו-${u} יחידות`, v: tn * 10 + u }; }
-    const th = rnd(1, 9); return { txt: `${th} אלפים`, v: th * 1000 };
+    if (kind === 'h') { const h = rnd(1, 9); return { txt: `${h} מֵאוֹת`, v: h * 100 }; }
+    if (kind === 'ht') { const h = rnd(1, 9), tn = rnd(1, 9); return { txt: `${h} מֵאוֹת וְ-${tn} עֲשָׂרוֹת`, v: h * 100 + tn * 10 }; }
+    if (kind === 'tu') { const tn = rnd(5, 60), u = rnd(1, 25); return { txt: `${tn} עֲשָׂרוֹת וְ-${u} יְחִידוֹת`, v: tn * 10 + u }; }
+    const th = rnd(1, 9); return { txt: `${th} אֲלָפִים`, v: th * 1000 };
   };
   let A = mk(), B = mk();
   if (t === 1) { while (A.v >= 1000 || B.v >= 1000) { A = mk(); B = mk(); } }
-  if (Math.random() < .25 && A.v % 10 === 0) B = { txt: `${A.v / 10} עשרות`, v: A.v };
+  if (Math.random() < .25 && A.v % 10 === 0) B = { txt: `${A.v / 10} עֲשָׂרוֹת`, v: A.v };
   const sym = A.v < B.v ? '<' : A.v > B.v ? '>' : '=';
   const box = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff8;border-radius:12px;padding:4px 8px;font-weight:800;flex:1 1 0;text-align:center;min-width:0">${x}</span>`;
   return {
-    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${box(A.txt)}<b>?</b>${box(B.txt)}</div>`,
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${box(A.txt)}<b>?</b>${box(B.txt)}</div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
-    hint: 'כדאי להפוך כל צד למספר רגיל: מאה היא 100, עשר היא 10, אלף הוא 1,000.',
-    explain: `${A.txt} = ${fmt(A.v)} ו-${B.txt} = ${fmt(B.v)}. <span class="ltr">${fmt(A.v)} ${sym === '<' ? '&lt;' : sym === '>' ? '&gt;' : '='} ${fmt(B.v)}</span>`
+    hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
+    explain: `${A.txt} = ${fmt(A.v)} וְ-${B.txt} = ${fmt(B.v)}. <span class="ltr">${fmt(A.v)} ${sym === '<' ? '&lt;' : sym === '>' ? '&gt;' : '='} ${fmt(B.v)}</span>`
   };
 }
 
@@ -1140,13 +1147,13 @@ function genEquation(t) {
   else { const A = a + b; eq = `___ − ${fmt(a)} = ${fmt(b)}`; helper = `${fmt(a)} + ${fmt(b)}`; wrong = [`${fmt(b)} − ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = A; }
   const eqText = eq.replace('___', '___');
   return {
-    body: `<div class="prompt">יש להשלים את המספר החסר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eqText}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַמִּסְפָּר הֶחָסֵר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eqText}</span></div>`,
     parts: [
-      { type: 'buttons', label: 'תרגיל עזר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper },
-      { type: 'num', label: 'המספר החסר', ans }
+      { type: 'buttons', label: 'תַּרְגִּיל עֵזֶר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper },
+      { type: 'num', label: 'הַמִּסְפָּר הֶחָסֵר', ans }
     ],
-    hint: 'כדי למצוא מספר חסר בוחרים תרגיל עזר הפוך: חיסור בודק חיבור, וחיבור בודק חיסור.',
-    explain: `תרגיל העזר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כך מתקבל המספר החסר ${fmt(ans)}.`
+    hint: 'כְּדֵי לִמְצוֹא מִסְפָּר חָסֵר בּוֹחֲרִים תַּרְגִּיל עֵזֶר הָפוּךְ: חִיסּוּר בּוֹדֵק חִיבּוּר, וְחִיבּוּר בּוֹדֵק חִיסּוּר.',
+    explain: `תַּרְגִּיל הָעֵזֶר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כָּךְ מִתְקַבֵּל הַמִּסְפָּר הֶחָסֵר ${fmt(ans)}.`
   };
 }
 
@@ -1160,14 +1167,14 @@ function genMult(t) {
     return {
       body: `<div class="prompt"><span class="ltr" style="font-size:34px">___ × ${x} = ${p}</span></div>`,
       parts: [{ type: 'num', ans: y }],
-      hint: `כמה פעמים צריך לקחת ${x} כדי לקבל ${p}?`,
+      hint: `כַּמָּה פְּעָמִים צָרִיךְ לָקַחַת ${x} כְּדֵי לְקַבֵּל ${p}?`,
       explain: `<span class="ltr">${y} × ${x} = ${p}</span>`
     };
   }
   return {
     body: `<div class="prompt"><span class="ltr" style="font-size:34px">${x} × ${y} = ?</span></div>`,
     parts: [{ type: 'num', ans: p }],
-    hint: `אפשר לחבר ${y} פעמים את המספר ${x}, או להיעזר בלוח הכפל.`,
+    hint: `אֶפְשָׁר לְחַבֵּר ${y} פְּעָמִים אֶת הַמִּסְפָּר ${x}, אוֹ לְהֵיעָזֵר בְּלוּחַ הַכֶּפֶל.`,
     explain: `<span class="ltr">${x} × ${y} = ${p}</span>`
   };
 }
@@ -1175,25 +1182,25 @@ function genMult(t) {
 /* ---------- word problems ---------- */
 function genWord(t) {
   const R = t === 1 ? [20, 90] : t === 2 ? [120, 600] : [300, 3000];
-  const names = [['גל', 1], ['נועם', 0], ['אדיר', 0], ['שירה', 1], ['דניאל', 0], ['מאיה', 1]];
+  const names = [['גַּל', 1], ['נוֹעַם', 0], ['אַדִּיר', 0], ['שִׁירָה', 1], ['דָּנִיֵּאל', 0], ['מָאיָה', 1]];
   const [nm, fem] = pick(names);
   const [nm2, fem2] = pick(names.filter(x => x[0] !== nm));
   const a = rnd(R[0], R[1]), b = rnd(R[0] / 2 | 0, Math.min(R[1], a - 1));
   const g = rnd(2, t === 1 ? 5 : 9), k = rnd(2, t === 1 ? 6 : 9);
   const T = [
-    () => ({ q: `בספרייה יש ${fmt(a)} ספרים. השאילו ${fmt(b)} ספרים. כמה ספרים נשארו בספרייה?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'השאילו אומר שהספרים יצאו, ולכן מחסרים.' }),
-    () => ({ q: `בחנות היו ${fmt(a)} תפוחים. הגיעו עוד ${fmt(b)} תפוחים. כמה תפוחים יש עכשיו בחנות?`, ex: `${fmt(a)} + ${fmt(b)}`, ans: a + b, h: 'הגיעו עוד אומר שהכמות גדלה, ולכן מחברים.' }),
-    () => ({ q: `בכל שקית יש ${g} סוכריות. יש ${k} שקיות. כמה סוכריות יש בכל השקיות?`, ex: `${g} × ${k}`, ans: g * k, h: 'כמות זהה בכל קבוצה: מכפילים את מספר הקבוצות בגודל קבוצה.' }),
-    () => ({ q: `בכיתה א' יש ${fmt(a)} ילדים ובכיתה ב' יש ${fmt(b)} ילדים. בכמה ילדים יש יותר בכיתה א'?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'כשרוצים לדעת בכמה יש יותר, מחסרים את הקטן מהגדול.' }),
-    () => ({ q: `ל${nm} יש ${fmt(a)} מדבקות. ל${nm2} יש ${fmt(b)} מדבקות פחות מל${nm}. כמה מדבקות יש ל${nm2}?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'פחות מ... פירושו להחסיר.' }),
-    () => { const c = rnd(R[0] / 2 | 0, R[1]); return { q: `באוטובוס היו ${fmt(a)} נוסעים. ירדו ${fmt(b)} נוסעים ועלו ${fmt(c)} נוסעים. כמה נוסעים יש באוטובוס עכשיו?`, ex: `${fmt(a)} − ${fmt(b)} + ${fmt(c)}`, ans: a - b + c, h: 'קודם מחסרים את מי שירד, ואחר כך מוסיפים את מי שעלה.' }; }
+    () => ({ q: `בַּסִּפְרִיָּיה יֵשׁ ${fmt(a)} סְפָרִים. הִשְׁאִילוּ ${fmt(b)} סְפָרִים. כַּמָּה סְפָרִים נִשְׁאֲרוּ בַּסִּפְרִיָּיה?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'הִשְׁאִילוּ אוֹמֵר שֶׁהַסְּפָרִים יָצְאוּ, וְלָכֵן מְחַסְּרִים.' }),
+    () => ({ q: `בַּחֲנוּת הָיוּ ${fmt(a)} תַּפּוּחִים. הִגִּיעוּ עוֹד ${fmt(b)} תַּפּוּחִים. כַּמָּה תַּפּוּחִים יֵשׁ עַכְשָׁיו בַּחֲנוּת?`, ex: `${fmt(a)} + ${fmt(b)}`, ans: a + b, h: 'הִגִּיעוּ עוֹד אוֹמֵר שֶׁהַכַּמּוּת גָּדְלָה, וְלָכֵן מְחַבְּרִים.' }),
+    () => ({ q: `בְּכָל שַׂקִּית יֵשׁ ${g} סוּכָּרִיּוֹת. יֵשׁ ${k} שַׂקִּיּוֹת. כַּמָּה סוּכָּרִיּוֹת יֵשׁ בְּכָל הַשַּׂקִּיּוֹת?`, ex: `${g} × ${k}`, ans: g * k, h: 'כַּמּוּת זֵהָה בְּכָל קְבוּצָה: מַכְפִּילִים אֶת מִסְפַּר הַקְּבוּצוֹת בְּגוֹדֶל קְבוּצָה.' }),
+    () => ({ q: `בְּכִיתָּה א' יֵשׁ ${fmt(a)} יְלָדִים וּבְכִיתָּה ב' יֵשׁ ${fmt(b)} יְלָדִים. בְּכַמָּה יְלָדִים יֵשׁ יוֹתֵר בְּכִיתָּה א'?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'כְּשֶׁרוֹצִים לָדַעַת בְּכַמָּה יֵשׁ יוֹתֵר, מְחַסְּרִים אֶת הַקָּטָן מֵהַגָּדוֹל.' }),
+    () => ({ q: `לְ${nm} יֵשׁ ${fmt(a)} מַדְבֵּקוֹת. לְ${nm2} יֵשׁ ${fmt(b)} מַדְבֵּקוֹת פָּחוֹת מִלְּ${nm}. כַּמָּה מַדְבֵּקוֹת יֵשׁ לְ${nm2}?`, ex: `${fmt(a)} − ${fmt(b)}`, ans: a - b, h: 'פָּחוֹת מִ... פֵּירוּשׁוֹ לְהַחְסִיר.' }),
+    () => { const c = rnd(R[0] / 2 | 0, R[1]); return { q: `בָּאוֹטוֹבּוּס הָיוּ ${fmt(a)} נוֹסְעִים. יָרְדוּ ${fmt(b)} נוֹסְעִים וְעָלוּ ${fmt(c)} נוֹסְעִים. כַּמָּה נוֹסְעִים יֵשׁ בָּאוֹטוֹבּוּס עַכְשָׁיו?`, ex: `${fmt(a)} − ${fmt(b)} + ${fmt(c)}`, ans: a - b + c, h: 'קוֹדֶם מְחַסְּרִים אֶת מִי שֶׁיָּרַד, וְאַחַר כָּךְ מוֹסִיפִים אֶת מִי שֶׁעָלָה.' }; }
   ];
   const w = pick(T.slice(0, t === 1 ? 5 : 6))();
   return {
     body: `<div class="prompt" style="font-size:22px">${w.q}</div>`,
     parts: [{ type: 'num', ans: w.ans }],
     hint: w.h,
-    explain: `התרגיל: <span class="ltr">${w.ex} = ${fmt(w.ans)}</span>`
+    explain: `הַתַּרְגִּיל: <span class="ltr">${w.ex} = ${fmt(w.ans)}</span>`
   };
 }
 
@@ -1210,12 +1217,12 @@ function numLineWrite(t) {
     ticks += `<line x1="${x}" y1="${y - (i % 5 ? 8 : 14)}" x2="${x}" y2="${y + (i % 5 ? 8 : 14)}" stroke="#163b2a" stroke-width="${i % 5 ? 2 : 3}"/>`;
   }
   const ax = x0 + (x1 - x0) * idx / 10;
-  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
+  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="יְשַׁר מִסְפָּרִים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
   return {
-    body: `<div class="prompt">איזה מספר מסומן בחץ?</div>${svg}`,
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר מְסוּמָּן בְּחֵץ?</div>${svg}`,
     parts: [{ type: 'num', ans: val }],
-    hint: `בין שני המספרים הכתובים יש 10 קפיצות שוות. כל קפיצה היא ${fmt(step)}.`,
-    explain: `כל קפיצה היא ${fmt(step)}. החץ נמצא אחרי ${idx} קפיצות מ-${fmt(start)}, ולכן המספר הוא ${fmt(val)}.`
+    hint: `בֵּין שְׁנֵי הַמִּסְפָּרִים הַכְּתוּבִים יֵשׁ 10 קְפִיצוֹת שָׁווֹת. כָּל קְפִיצָה הִיא ${fmt(step)}.`,
+    explain: `כָּל קְפִיצָה הִיא ${fmt(step)}. הַחֵץ נִמְצָא אַחֲרֵי ${idx} קְפִיצוֹת מִ-${fmt(start)}, וְלָכֵן הַמִּסְפָּר הוּא ${fmt(val)}.`
   };
 }
 
@@ -1246,12 +1253,12 @@ function genColumn(t) {
   const ans = op === '+' ? a + b : a - b;
   const vertical = Math.random() < .7;
   const body = vertical
-    ? `<div class="prompt">יש לפתור במאונך:</div>${vertHTML(a, b, op)}`
+    ? `<div class="prompt">יֵשׁ לִפְתּוֹר בִּמְאוּנָּךְ:</div>${vertHTML(a, b, op)}`
     : `<div class="prompt" style="font-size:36px"><span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ?</span></div>`;
   return {
     body, sig: String(a) + op + b,
     parts: [{ type: 'num', ans }],
-    hint: op === '+' ? 'מתחילים מהיחידות. אם הסכום גדול מ-9, כותבים את היחידות ומעבירים את העשרת לטור הבא.' : 'מתחילים מהיחידות. אם אי אפשר לחסר, לוקחים עשרה מהטור השמאלי.',
+    hint: op === '+' ? 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם הַסְּכוּם גָּדוֹל מִ-9, כּוֹתְבִים אֶת הַיְּחִידוֹת וּמַעֲבִירִים אֶת הָעֲשָׂרָה לַטּוּר הַבָּא.' : 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם אִי אֶפְשָׁר לְחַסֵּר, לוֹקְחִים עֲשָׂרָה מֵהַטּוּר הַשְּׂמָאלִי.',
     explain: `<span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}</span>`
   };
 }
@@ -1259,55 +1266,55 @@ function genColumn(t) {
 let angBag = [], angDrawBag = [];
 function bagPick(bag, items) { if (!bag.length) bag.push(...shuffle(items.slice())); return bag.pop(); }
 function genAngleId() {
-  const cls = bagPick(angBag, ['חדה', 'ישרה', 'קהה', 'שטוחה']);
-  const deg = cls === 'חדה' ? pick([20, 30, 40, 55, 65, 75, 82]) : cls === 'ישרה' ? 90 : cls === 'שטוחה' ? 180 : pick([100, 110, 120, 135, 150, 165]);
+  const cls = bagPick(angBag, ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה']);
+  const deg = cls === 'חַדָּה' ? pick([20, 30, 40, 55, 65, 75, 82]) : cls === 'יְשָׁרָה' ? 90 : cls === 'שְׁטוּחָה' ? 180 : pick([100, 110, 120, 135, 150, 165]);
   const cx = 160, cy = 170, L = 110;
   const rad = deg * Math.PI / 180;
   const x2 = (cx + L * Math.cos(rad)).toFixed(1), y2 = (cy - L * Math.sin(rad)).toFixed(1);
-  const svg = `<svg class="angle" viewBox="0 0 320 220" role="img" aria-label="זווית"><line x1="${cx}" y1="${cy}" x2="${cx + L}" y2="${cy}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
+  const svg = `<svg class="angle" viewBox="0 0 320 220" role="img" aria-label="זָווִית"><line x1="${cx}" y1="${cy}" x2="${cx + L}" y2="${cy}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
   return {
-    body: `${svg}<div class="prompt">איזה סוג זווית מוצג?</div>`,
-    parts: [{ type: 'buttons', opts: ['חדה', 'ישרה', 'קהה', 'שטוחה'], ans: angleClass(deg) }],
-    hint: 'זווית ישרה נראית כמו פינה של מרובע. חדה קטנה ממנה, קהה גדולה ממנה.',
-    explain: `הזווית היא ${angleClass(deg)}.`
+    body: `${svg}<div class="prompt">אֵיזֶה סוּג זָווִית מוּצָּג?</div>`,
+    parts: [{ type: 'buttons', opts: ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה'], ans: angleClass(deg) }],
+    hint: 'זָווִית יְשָׁרָה נִרְאֵית כְּמוֹ פִּינָּה שֶׁל מְרוּבָּע. חַדָּה קְטַנָּה מִמֶּנָּה, קֵהָה גְּדוֹלָה מִמֶּנָּה.',
+    explain: `הַזָּווִית הִיא ${angleClass(deg)}.`
   };
 }
 
 function genAngleDraw() {
-  const target = bagPick(angDrawBag, ['חדה', 'ישרה', 'קהה']);
-  const text = { 'חדה': 'יש לשרטט זווית חדה', 'ישרה': 'יש לשרטט זווית ישרה', 'קהה': 'יש לשרטט זווית קהה' }[target];
+  const target = bagPick(angDrawBag, ['חַדָּה', 'יְשָׁרָה', 'קֵהָה']);
+  const text = { 'חַדָּה': 'יֵשׁ לְשַׂרְטֵט זָווִית חַדָּה', 'יְשָׁרָה': 'יֵשׁ לְשַׂרְטֵט זָווִית יְשָׁרָה', 'קֵהָה': 'יֵשׁ לְשַׂרְטֵט זָווִית קֵהָה' }[target];
   const check = v => {
     if (typeof v !== 'number') return false;
-    if (target === 'חדה') return v > 5 && v < 85;
-    if (target === 'ישרה') return v >= 85 && v <= 95;
+    if (target === 'חַדָּה') return v > 5 && v < 85;
+    if (target === 'יְשָׁרָה') return v >= 85 && v <= 95;
     return v > 95 && v < 175;
   };
   return {
     body: `<div class="prompt compact">${text}</div>`,
-    drawInit: target === 'ישרה' ? pick([30, 45, 135, 150]) : 90,
-    parts: [{ type: 'draw', check, help: { 'חדה': 'מקרבים את הקו הירוק אל הקו השחור, עד שהזווית קטנה יותר מפינה של מרובע.', 'ישרה': 'מעמידים את הקו הירוק בניצב לקו השחור, כך שייווצרו פינה של מרובע.', 'קהה': 'מרחיקים את הקו הירוק מהקו השחור, עד שהזווית גדולה מפינה של מרובע אבל עדיין לא קו ישר.' }[target] }],
-    hint: 'יש לגרור את הקצה הצהוב למיקום המתאים.',
-    explain: `שורטטה זווית בערך של ${target}.`
+    drawInit: target === 'יְשָׁרָה' ? pick([30, 45, 135, 150]) : 90,
+    parts: [{ type: 'draw', check, help: { 'חַדָּה': 'מְקָרְבִים אֶת הַקַּו הַיָּרוֹק אֶל הַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית קְטַנָּה יוֹתֵר מִפִּינָּה שֶׁל מְרוּבָּע.', 'יְשָׁרָה': 'מַעֲמִידִים אֶת הַקַּו הַיָּרוֹק בְּנִיצָּב לַקַּו הַשָּׁחוֹר, כָּךְ שֶׁיִּיווָּצְרוּ פִּינָּה שֶׁל מְרוּבָּע.', 'קֵהָה': 'מַרְחִיקִים אֶת הַקַּו הַיָּרוֹק מֵהַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית גְּדוֹלָה מִפִּינָּה שֶׁל מְרוּבָּע אֲבָל עֲדַיִין לֹא קַו יָשָׁר.' }[target] }],
+    hint: 'יֵשׁ לִגְרוֹר אֶת הַקָּצֶה הַצָּהוֹב לַמִּיקּוּם הַמַּתְאִים.',
+    explain: `שׂוּרְטְטָה זָווִית בְּעֵרֶךְ שֶׁל ${target}.`
   };
 }
 
 const CATS = [
-  { id: 'digit', name: 'שינוי ספרה', animal: '🦁', gen: genDigit },
-  { id: 'compare', name: 'סימני <&nbsp;>&nbsp;=', animal: '🦉', gen: t => Math.random() < .35 ? genPlaceCmp(t) : genCompare(t) },
-  { id: 'nocalc', name: 'השוואה בלי חישוב', animal: '🐯', gen: genNoCalc },
-  { id: 'decomp', name: 'פירוק מספר', animal: '🐨', gen: genDecomp },
-  { id: 'order', name: 'סידור מספרים', animal: '🦓', gen: genOrder },
-  { id: 'numline', name: 'ישר המספרים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
-  { id: 'seq', name: 'סדרות', animal: '🐸', gen: t => Math.random() < .4 ? genSeqMember(t) : genSeq(t) },
-  { id: 'samedigits', name: 'אותן ספרות', animal: '🦥', gen: genSameDigits },
-  { id: 'column', name: 'חיבור וחיסור', animal: '🐒', gen: genColumn },
-  { id: 'angleid', name: 'סוגי זוויות', animal: '🦅', gen: genAngleId },
-  { id: 'angledraw', name: 'שרטוט זווית', animal: '🐍', gen: genAngleDraw },
-  { id: 'words', name: 'מספר במילים', animal: '🦒', gen: genWords },
-  { id: 'moreless', name: 'גדול וקטן ב...', animal: '🐘', gen: genMoreLess },
-  { id: 'equation', name: 'מספר חסר', animal: '🦔', gen: genEquation },
-  { id: 'mult', name: 'לוח הכפל', animal: '🦏', gen: genMult },
-  { id: 'word', name: 'בעיות מילוליות', animal: '🐊', gen: genWord }
+  { id: 'digit', name: 'שִׁינּוּי סִפְרָה', animal: '🦁', gen: genDigit },
+  { id: 'compare', name: 'סִימָנֵי <&nbsp;>&nbsp;=', animal: '🦉', gen: t => Math.random() < .35 ? genPlaceCmp(t) : genCompare(t) },
+  { id: 'nocalc', name: 'הַשְׁווָאָה בְּלִי חִישּׁוּב', animal: '🐯', gen: genNoCalc },
+  { id: 'decomp', name: 'פֵּירוּק מִסְפָּר', animal: '🐨', gen: genDecomp },
+  { id: 'order', name: 'סִידּוּר מִסְפָּרִים', animal: '🦓', gen: genOrder },
+  { id: 'numline', name: 'יְשַׁר הַמִּסְפָּרִים', animal: '🦧', gen: t => Math.random() < .6 ? numLineWrite(t) : genNumLine(t) },
+  { id: 'seq', name: 'סְדָרוֹת', animal: '🐸', gen: t => Math.random() < .4 ? genSeqMember(t) : genSeq(t) },
+  { id: 'samedigits', name: 'אוֹתָן סְפָרוֹת', animal: '🦥', gen: genSameDigits },
+  { id: 'column', name: 'חִיבּוּר וְחִיסּוּר', animal: '🐒', gen: genColumn },
+  { id: 'angleid', name: 'סוּגֵי זָווִיּוֹת', animal: '🦅', gen: genAngleId },
+  { id: 'angledraw', name: 'שִׂרְטוּט זָווִית', animal: '🐍', gen: genAngleDraw },
+  { id: 'words', name: 'מִסְפָּר בְּמִילִּים', animal: '🦒', gen: genWords },
+  { id: 'moreless', name: 'גָּדוֹל וְקָטָן בְּ...', animal: '🐘', gen: genMoreLess },
+  { id: 'equation', name: 'מִסְפָּר חָסֵר', animal: '🦔', gen: genEquation },
+  { id: 'mult', name: 'לוּחַ הַכֶּפֶל', animal: '🦏', gen: genMult },
+  { id: 'word', name: 'בְּעָיוֹת מִילּוּלִיּוֹת', animal: '🐊', gen: genWord }
 ];
 
 /* ---------- state ---------- */
@@ -1318,45 +1325,45 @@ const cmpBox = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff
 function qPlace(A, Av, B, Bv) {
   const s = symOf(Av, Bv);
   return {
-    body: `<div class="prompt">יש לסמן את הסימן המתאים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${cmpBox(A)}<b>?</b>${cmpBox(B)}</div>`,
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${cmpBox(A)}<b>?</b>${cmpBox(B)}</div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
-    hint: 'כדאי להפוך כל צד למספר רגיל: מאה היא 100, עשר היא 10, אלף הוא 1,000.',
-    explain: `${A} = ${fmt(Av)} ו-${B} = ${fmt(Bv)}. <span class="ltr">${fmt(Av)} ${symH(s)} ${fmt(Bv)}</span>`
+    hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
+    explain: `${A} = ${fmt(Av)} וְ-${B} = ${fmt(Bv)}. <span class="ltr">${fmt(Av)} ${symH(s)} ${fmt(Bv)}</span>`
   };
 }
 function qDigit(n, i, e, how) {
   const s = String(n), len = s.length, old = Number(s[i]), pv = 10 ** (len - 1 - i);
   const diff = (e - old) * pv, amount = Math.abs(diff), grows = diff > 0;
-  const what = how === 'place' ? `את ספרת ${PLACE[pv]}` : `את הספרה ${old}`;
+  const what = how === 'place' ? `אֶת סִפְרַת ${PLACE[pv]}` : `אֶת הַסִּפְרָה ${old}`;
   return {
-    body: `<div class="prompt">במספר <span class="ltr">${fmt(n)}</span> שינו ${what} ל-${e}.<br>האם המספר החדש גדל או קטן, ובכמה?</div>`,
-    parts: [{ type: 'buttons', opts: ['גדל', 'קטן'], ans: grows ? 'גדל' : 'קטן' }, { type: 'num', label: 'בכמה', ans: amount }],
-    hint: 'כדאי לשים לב לאיזה מקום שייכת הספרה. ההפרש מוכפל בערך המקום.',
-    explain: `הספרה ${old} נמצאת במקום ${PLACE[pv]}. <span class="ltr">${fmt(n)}</span> הופך ל-<span class="ltr">${fmt(n + diff)}</span>, לכן המספר ${grows ? 'גדל' : 'קטן'} ב-${fmt(amount)}.`
+    body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> שִׁינּוּ ${what} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
+    parts: [{ type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' }, { type: 'num', label: 'בְּכַמָּה', ans: amount }],
+    hint: 'כְּדַאי לָשִׂים לֵב לְאֵיזֶה מָקוֹם שַׁיֶּיכֶת הַסִּפְרָה. הַהֶפְרֵשׁ מוּכְפָּל בְּעֵרֶךְ הַמָּקוֹם.',
+    explain: `הַסִּפְרָה ${old} נִמְצֵאת בַּמָּקוֹם ${PLACE[pv]}. <span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(n + diff)}</span>, לָכֵן הַמִּסְפָּר ${grows ? 'גָּדַל' : 'קָטַן'} בְּ-${fmt(amount)}.`
   };
 }
 function qDecomp(n, shown, ans) {
   return {
-    body: `<div class="prompt">יש להשלים את הפירוק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַפֵּירוּק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
     parts: [{ type: 'num', ans }],
-    hint: 'כל ספרה שווה לערך שלה לפי המקום.',
-    explain: `החסר הוא ${fmt(ans)}. <span class="ltr">${fmt(n)} = ${shown.replace('___', fmt(ans))}</span>`
+    hint: 'כָּל סִפְרָה שָׁווָה לָעֵרֶךְ שֶׁלָּהּ לְפִי הַמָּקוֹם.',
+    explain: `הֶחָסֵר הוּא ${fmt(ans)}. <span class="ltr">${fmt(n)} = ${shown.replace('___', fmt(ans))}</span>`
   };
 }
 function qWordsPick(n, decoys) {
   return {
-    body: `<div class="prompt">איך כותבים במילים את המספר <span class="ltr">${fmt(n)}</span>?</div>`,
+    body: `<div class="prompt">אֵיךְ כּוֹתְבִים בְּמִילִּים אֶת הַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
     parts: [{ type: 'buttons', list: true, opts: shuffle([n, ...decoys]).map(numWords), ans: numWords(n) }],
-    hint: 'כדאי לקרוא לפי המקום: אלפים, מאות, עשרות ויחידות.',
+    hint: 'כְּדַאי לִקְרוֹא לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
     explain: `<span class="ltr">${fmt(n)}</span> = ${numWords(n)}`
   };
 }
 function qMoreLess(n, d, up) {
   const ans = up ? n + d : n - d;
   return {
-    body: `<div class="prompt">איזה מספר ${up ? 'גדול' : 'קטן'} ב-<span class="ltr">${fmt(d)}</span> מהמספר <span class="ltr">${fmt(n)}</span>?</div>`,
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר ${up ? 'גָּדוֹל' : 'קָטַן'} בְּ-<span class="ltr">${fmt(d)}</span> מֵהַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
     parts: [{ type: 'num', ans }],
-    hint: up ? 'גדול ב... פירושו להוסיף.' : 'קטן ב... פירושו לחסר.',
+    hint: up ? 'גָּדוֹל בְּ... פֵּירוּשׁוֹ לְהוֹסִיף.' : 'קָטָן בְּ... פֵּירוּשׁוֹ לְחַסֵּר.',
     explain: `<span class="ltr">${fmt(n)} ${up ? '+' : '−'} ${fmt(d)} = ${fmt(ans)}</span>`
   };
 }
@@ -1365,72 +1372,72 @@ function qSame(n, odd, smaller) {
   const valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => (smaller ? v < n : v > n) && (v % 2 === 1) === odd))];
   const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
   return {
-    body: `<div class="prompt">יש לכתוב מספר ${odd ? 'אי-זוגי' : 'זוגי'}, ${smaller ? 'הקטן' : 'הגדול'} מ-<span class="ltr">${fmt(n)}</span>, המורכב מאותן ספרות.</div>`,
-    parts: [{ type: 'text', check, placeholder: 'המספר:' }],
-    hint: odd ? 'מספר אי-זוגי מסתיים בספרות 1, 3, 5, 7 או 9.' : 'מספר זוגי מסתיים בספרות 0, 2, 4, 6 או 8.',
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר ${odd ? 'אִי-זוּגִי' : 'זוּגִי'}, ${smaller ? 'הַקָּטָן' : 'הַגָּדוֹל'} מִ-<span class="ltr">${fmt(n)}</span>, הַמּוּרְכָּב מֵאוֹתָן סְפָרוֹת.</div>`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: odd ? 'מִסְפָּר אִי-זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 1, 3, 5, 7 אוֹ 9.' : 'מִסְפָּר זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 0, 2, 4, 6 אוֹ 8.',
     explain: q => {
       const mine = Number(String(q.parts[0].v ?? '').replace(/[,\s]/g, ''));
       const others = valid.filter(x => x !== mine).slice(0, 3).map(fmt).join(', ');
-      return q.result ? (others ? `אגב, אפשר היה גם: ${others}.` : 'זו הייתה האפשרות היחידה.') : `למשל: ${others}.`;
+      return q.result ? (others ? `אַגַּב, אֶפְשָׁר הָיָה גַּם: ${others}.` : 'זוֹ הָיְיתָה הָאֶפְשָׁרוּת הַיְּחִידָה.') : `לְמָשָׁל: ${others}.`;
     }
   };
 }
 function qOrder(nums) {
   const sorted = [...nums].sort((x, y) => x - y);
   return {
-    body: `<div class="prompt">יש ללחוץ או לגרור את המספרים מהקטן לגדול.</div>`,
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ אוֹ לִגְרוֹר אֶת הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
     parts: [{ type: 'order', items: [...nums], ans: sorted }],
-    hint: 'מומלץ להשוות קודם את מספר הספרות, ואז את הספרות השמאליות ביותר.',
-    explain: `הסדר הנכון: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
+    hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
+    explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
   };
 }
 function qSeq(terms, blanks) {
   const k = Math.abs(terms[1] - terms[0]);
-  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חסר ${blanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
+  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חָסֵר ${blanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
   return {
-    body: `<div class="prompt">יש להשלים את הסדרה. היא ממשיכה באותן הקפיצות:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
-    parts: blanks.map((bi, j) => ({ type: 'num', label: `חסר ${j + 1}`, ans: terms[bi] })),
-    hint: 'כדאי לבדוק בכמה גדל או קטן כל מספר לעומת המספר שלפניו.',
-    explain: `בכל שלב יש קפיצה של ${fmt(k)}. הסדרה המלאה: ${terms.map(fmt).join(', ')}`
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַסִּדְרָה. הִיא מַמְשִׁיכָה בְּאוֹתָן הַקְּפִיצוֹת:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
+    parts: blanks.map((bi, j) => ({ type: 'num', label: `חָסֵר ${j + 1}`, ans: terms[bi] })),
+    hint: 'כְּדַאי לִבְדּוֹק בְּכַמָּה גָּדֵל אוֹ קָטֵן כָּל מִסְפָּר לְעוּמַּת הַמִּסְפָּר שֶׁלְּפָנָיו.',
+    explain: `בְּכָל שָׁלָב יֵשׁ קְפִיצָה שֶׁל ${fmt(k)}. הַסִּדְרָה הַמְּלֵאָה: ${terms.map(fmt).join(', ')}`
   };
 }
 function qSeqMember(start, k, X) {
   const isIn = (X - start) % k === 0 && X >= start;
   const shown = [0, 1, 2, 3].map(i => fmt(start + i * k)).join(', ');
   return {
-    body: `<div class="prompt">סדרה: <span class="ltr">${shown}, ...</span><br>האם המספר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יופיע בהמשך הסדרה?</div>`,
-    parts: [{ type: 'buttons', opts: ['כן', 'לא'], ans: isIn ? 'כן' : 'לא' }],
-    hint: 'יש לבדוק אם ההפרש בין המספר המבוקש למספר הראשון מתחלק בקפיצה.',
-    explain: `המספר ${isIn ? 'אכן יופיע' : 'לא יופיע'}: הקפיצה היא ${fmt(k)}, וכל המספרים בסדרה מסתיימים ב-${String(start).slice(-1)}.`
+    body: `<div class="prompt">סִדְרָה: <span class="ltr">${shown}, ...</span><br>הַאִם הַמִּסְפָּר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יוֹפִיעַ בְּהֶמְשֵׁךְ הַסִּדְרָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['כֵּן', 'לֹא'], ans: isIn ? 'כֵּן' : 'לֹא' }],
+    hint: 'יֵשׁ לִבְדּוֹק אִם הַהֶפְרֵשׁ בֵּין הַמִּסְפָּר הַמְּבוּקָּשׁ לַמִּסְפָּר הָרִאשׁוֹן מִתְחַלֵּק בִּקְפִיצָה.',
+    explain: `הַמִּסְפָּר ${isIn ? 'אָכֵן יוֹפִיעַ' : 'לֹא יוֹפִיעַ'}: הַקְּפִיצָה הִיא ${fmt(k)}, וְכָל הַמִּסְפָּרִים בַּסִּדְרָה מִסְתַּיְּימִים בְּ-${String(start).slice(-1)}.`
   };
 }
 function segSvg(a, b) {
-  return `<svg viewBox="0 0 320 110" style="width:auto;max-width:100%;height:min(20vh,150px);display:block;margin:4px auto" role="img" aria-label="ישר מספרים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
+  return `<svg class="numline" viewBox="0 0 320 110" style="width:auto;max-width:100%;height:min(20vh,150px);display:block;margin:4px auto" role="img" aria-label="יְשַׁר מִסְפָּרִים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
 }
 function qSegPick(a, b, opts) {
   const inside = opts.find(x => x > a && x < b);
   return {
-    body: `<div class="prompt">איזה מספר נמצא בקטע המודגש בישר המספרים?</div>${segSvg(a, b)}`,
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר נִמְצָא בַּקֶּטַע הַמּוּדְגָּשׁ בִּישַׁר הַמִּסְפָּרִים?</div>${segSvg(a, b)}`,
     parts: [{ type: 'buttons', opts: opts.map(fmt), ans: fmt(inside) }],
-    hint: 'המספר צריך להיות גדול מהמספר הקטן וקטן מהמספר הגדול.',
-    explain: `<span class="ltr">${fmt(inside)}</span> נמצא בין <span class="ltr">${fmt(a)}</span> ל-<span class="ltr">${fmt(b)}</span>.`
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `<span class="ltr">${fmt(inside)}</span> נִמְצָא בֵּין <span class="ltr">${fmt(a)}</span> לְ-<span class="ltr">${fmt(b)}</span>.`
   };
 }
 function qSegWrite(a, b) {
   const check = v => { const n = parseNum(v); return n > a && n < b; };
   return {
-    body: `<div class="prompt">יש לכתוב מספר נוסף שנמצא בקטע המודגש בישר המספרים.</div>${segSvg(a, b)}`,
-    parts: [{ type: 'text', check, placeholder: 'המספר:' }],
-    hint: 'המספר צריך להיות גדול מהמספר הקטן וקטן מהמספר הגדול.',
-    explain: `כל מספר בין <span class="ltr">${fmt(a)}</span> ל-<span class="ltr">${fmt(b)}</span> מתאים, למשל <span class="ltr">${fmt(a + 25)}</span>.`
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר נוֹסָף שֶׁנִּמְצָא בַּקֶּטַע הַמּוּדְגָּשׁ בִּישַׁר הַמִּסְפָּרִים.</div>${segSvg(a, b)}`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `כָּל מִסְפָּר בֵּין <span class="ltr">${fmt(a)}</span> לְ-<span class="ltr">${fmt(b)}</span> מַתְאִים, לְמָשָׁל <span class="ltr">${fmt(a + 25)}</span>.`
   };
 }
 function qCol(a, op, b) {
   const ans = op === '+' ? a + b : a - b;
   return {
-    body: `<div class="prompt">יש לפתור במאונך:</div>${vertHTML(a, b, op)}`, sig: String(a) + op + b,
+    body: `<div class="prompt">יֵשׁ לִפְתּוֹר בִּמְאוּנָּךְ:</div>${vertHTML(a, b, op)}`, sig: String(a) + op + b,
     parts: [{ type: 'num', ans }],
-    hint: op === '+' ? 'מתחילים מהיחידות. אם הסכום גדול מ-9, כותבים את היחידות ומעבירים את העשרת לטור הבא.' : 'מתחילים מהיחידות. אם אי אפשר לחסר, לוקחים עשרה מהטור השמאלי.',
+    hint: op === '+' ? 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם הַסְּכוּם גָּדוֹל מִ-9, כּוֹתְבִים אֶת הַיְּחִידוֹת וּמַעֲבִירִים אֶת הָעֲשָׂרָה לַטּוּר הַבָּא.' : 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם אִי אֶפְשָׁר לְחַסֵּר, לוֹקְחִים עֲשָׂרָה מֵהַטּוּר הַשְּׂמָאלִי.',
     explain: `<span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}</span>`
   };
 }
@@ -1440,58 +1447,58 @@ function qEq(kind, a, b) {
   else if (kind === 'sub1') { eq = `${fmt(a)} − ___ = ${fmt(b)}`; helper = `${fmt(a)} − ${fmt(b)}`; wrong = [`${fmt(a)} + ${fmt(b)}`, `${fmt(b)} − ${fmt(a)}`]; ans = a - b; }
   else { eq = `___ − ${fmt(a)} = ${fmt(b)}`; helper = `${fmt(a)} + ${fmt(b)}`; wrong = [`${fmt(b)} − ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = a + b; }
   return {
-    body: `<div class="prompt">יש להשלים את המספר החסר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eq}</span></div>`,
-    parts: [{ type: 'buttons', label: 'תרגיל עזר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper }, { type: 'num', label: 'המספר החסר', ans }],
-    hint: 'כדי למצוא מספר חסר בוחרים תרגיל עזר הפוך: חיסור בודק חיבור, וחיבור בודק חיסור.',
-    explain: `תרגיל העזר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כך מתקבל המספר החסר ${fmt(ans)}.`
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַמִּסְפָּר הֶחָסֵר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eq}</span></div>`,
+    parts: [{ type: 'buttons', label: 'תַּרְגִּיל עֵזֶר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper }, { type: 'num', label: 'הַמִּסְפָּר הֶחָסֵר', ans }],
+    hint: 'כְּדֵי לִמְצוֹא מִסְפָּר חָסֵר בּוֹחֲרִים תַּרְגִּיל עֵזֶר הָפוּךְ: חִיסּוּר בּוֹדֵק חִיבּוּר, וְחִיבּוּר בּוֹדֵק חִיסּוּר.',
+    explain: `תַּרְגִּיל הָעֵזֶר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כָּךְ מִתְקַבֵּל הַמִּסְפָּר הֶחָסֵר ${fmt(ans)}.`
   };
 }
 function qMult(x, y) {
   return {
     body: `<div class="prompt"><span class="ltr" style="font-size:34px">${x} × ${y} = ?</span></div>`,
     parts: [{ type: 'num', ans: x * y }],
-    hint: `אפשר לחבר ${y} פעמים את המספר ${x}, או להיעזר בלוח הכפל.`,
+    hint: `אֶפְשָׁר לְחַבֵּר ${y} פְּעָמִים אֶת הַמִּסְפָּר ${x}, אוֹ לְהֵיעָזֵר בְּלוּחַ הַכֶּפֶל.`,
     explain: `<span class="ltr">${x} × ${y} = ${x * y}</span>`
   };
 }
 function qNoCalc(L, lv, R, rv, hint) {
   const s = symOf(lv, rv);
   return {
-    body: `<div class="prompt">יש לסמן בלי לפתור את התרגילים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${R}</span></div>`,
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן בְּלִי לִפְתּוֹר אֶת הַתַּרְגִּילִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${R}</span></div>`,
     parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
     hint,
-    explain: `הסימן המתאים הוא <span class="ltr">${symH(s)}</span>.`
+    explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${symH(s)}</span>.`
   };
 }
 function qWordP(q, ex, ans, h) {
-  return { body: `<div class="prompt" style="font-size:22px">${q}</div>`, parts: [{ type: 'num', ans }], hint: h, explain: `התרגיל: <span class="ltr">${ex} = ${fmt(ans)}</span>` };
+  return { body: `<div class="prompt" style="font-size:22px">${q}</div>`, parts: [{ type: 'num', ans }], hint: h, explain: `הַתַּרְגִּיל: <span class="ltr">${ex} = ${fmt(ans)}</span>` };
 }
 function qAngle(deg, rot) {
   const cx = 160, cy = 120, L = 100;
   const pt = d => { const r = d * Math.PI / 180; return [(cx + L * Math.cos(r)).toFixed(1), (cy - L * Math.sin(r)).toFixed(1)]; };
   const [x1, y1] = pt(rot), [x2, y2] = pt(rot + deg);
-  const svg = `<svg class="angle" viewBox="0 0 320 240" role="img" aria-label="זווית"><line x1="${cx}" y1="${cy}" x2="${x1}" y2="${y1}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
+  const svg = `<svg class="angle" viewBox="0 0 320 240" role="img" aria-label="זָווִית"><line x1="${cx}" y1="${cy}" x2="${x1}" y2="${y1}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
   return {
-    body: `${svg}<div class="prompt">איזה סוג זווית מוצג?</div>`,
-    parts: [{ type: 'buttons', opts: ['חדה', 'ישרה', 'קהה', 'שטוחה'], ans: angleClass(deg) }],
-    hint: 'זווית ישרה נראית כמו פינה של מרובע. חדה קטנה ממנה, קהה גדולה ממנה.',
-    explain: `הזווית היא ${angleClass(deg)}.`
+    body: `${svg}<div class="prompt">אֵיזֶה סוּג זָווִית מוּצָּג?</div>`,
+    parts: [{ type: 'buttons', opts: ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה'], ans: angleClass(deg) }],
+    hint: 'זָווִית יְשָׁרָה נִרְאֵית כְּמוֹ פִּינָּה שֶׁל מְרוּבָּע. חַדָּה קְטַנָּה מִמֶּנָּה, קֵהָה גְּדוֹלָה מִמֶּנָּה.',
+    explain: `הַזָּווִית הִיא ${angleClass(deg)}.`
   };
 }
 function qAnglePics() {
   return {
-    body: `<div class="prompt">באיזה ציור מסומנת זווית קהה?</div>`,
-    parts: [{ type: 'buttons', opts: ['📏 פינת סרגל', '✏️ חוד עיפרון', '💻 מחשב נייד פתוח', '✂️ מספריים פתוחים'], ans: '💻 מחשב נייד פתוח' }],
-    hint: 'זווית קהה גדולה מפינה של מרובע, אבל עדיין לא קו ישר.',
-    explain: 'מסך של מחשב נייד פתוח לאחור יוצר זווית קהה. פינת הסרגל היא זווית ישרה, וחוד העיפרון והמספריים יוצרים זוויות חדות.'
+    body: `<div class="prompt">בְּאֵיזֶה צִיּוּר מְסוּמֶּנֶת זָווִית קֵהָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['📏 פִּינַּת סַרְגֵּל', '✏️ חוֹד עִיפָּרוֹן', '💻 מַחְשֵׁב נַיָּיד פָּתוּחַ', '✂️ מִסְפָּרַיִים פְּתוּחִים'], ans: '💻 מַחְשֵׁב נַיָּיד פָּתוּחַ' }],
+    hint: 'זָווִית קֵהָה גְּדוֹלָה מִפִּינָּה שֶׁל מְרוּבָּע, אֲבָל עֲדַיִין לֹא קַו יָשָׁר.',
+    explain: 'מָסָךְ שֶׁל מַחְשֵׁב נַיָּיד פָּתוּחַ לְאָחוֹר יוֹצֵר זָווִית קֵהָה. פִּינַּת הַסַּרְגֵּל הִיא זָווִית יְשָׁרָה, וְחוֹד הָעִיפָּרוֹן וְהַמִּסְפָּרַיִים יוֹצְרִים זָווִיּוֹת חַדּוֹת.'
   };
 }
 const SHEET = [
-  ['compare', () => qPlace('4 מאות', 400, '30 עשרות ו-22 יחידות', 322)],
-  ['compare', () => qPlace('5 אלפים', 5000, '4 אלפים, 3 מאות ו-24 עשרות', 4540)],
-  ['compare', () => qPlace('4 מאות ו-15 עשרות', 550, '5 מאות', 500)],
-  ['compare', () => qPlace('18 עשרות', 180, '16 עשרות ו-32 יחידות', 192)],
-  ['compare', () => qPlace('60 עשרות ו-32 יחידות', 632, '7 מאות', 700)],
+  ['compare', () => qPlace('4 מֵאוֹת', 400, '30 עֲשָׂרוֹת וְ-22 יְחִידוֹת', 322)],
+  ['compare', () => qPlace('5 אֲלָפִים', 5000, '4 אֲלָפִים, 3 מֵאוֹת וְ-24 עֲשָׂרוֹת', 4540)],
+  ['compare', () => qPlace('4 מֵאוֹת וְ-15 עֲשָׂרוֹת', 550, '5 מֵאוֹת', 500)],
+  ['compare', () => qPlace('18 עֲשָׂרוֹת', 180, '16 עֲשָׂרוֹת וְ-32 יְחִידוֹת', 192)],
+  ['compare', () => qPlace('60 עֲשָׂרוֹת וְ-32 יְחִידוֹת', 632, '7 מֵאוֹת', 700)],
   ['digit', () => qDigit(4673, 0, 2)],
   ['digit', () => qDigit(5209, 1, 7)],
   ['digit', () => qDigit(3098, 1, 4, 'place')],
@@ -1550,18 +1557,18 @@ const SHEET = [
   ['mult', () => qMult(5, 6)],
   ['mult', () => qMult(5, 4)],
   ['mult', () => qMult(8, 3)],
-  ['nocalc', () => qNoCalc('6,000 − 1,879', 4121, '7,000 − 1,879', 5121, 'מחסירים אותו מספר. ככל שהמספר הראשון גדול יותר, התוצאה גדולה יותר.')],
-  ['nocalc', () => qNoCalc('3,042 − 1,879', 1163, '3,042 − 2,049', 993, 'המספר הראשון זהה. כשמחסירים מספר גדול יותר, מתקבלת תוצאה קטנה יותר.')],
-  ['nocalc', () => qNoCalc('5,098 + 3,187', 8285, '5,098 + 2,076', 7174, 'המספר הראשון זהה. ככל שמוסיפים מספר גדול יותר, התוצאה גדולה יותר.')],
-  ['nocalc', () => qNoCalc('237 − 149', 88, '237 − 99', 138, 'המספר הראשון זהה. כשמחסירים מספר גדול יותר, מתקבלת תוצאה קטנה יותר.')],
-  ['nocalc', () => qNoCalc('459 − 345', 114, '500 − 345', 155, 'מחסירים אותו מספר. ככל שהמספר הראשון גדול יותר, התוצאה גדולה יותר.')],
-  ['nocalc', () => qNoCalc('245 + 567', 812, '348 + 600', 948, 'בצד אחד שני המספרים גדולים יותר, ולכן גם הסכום שלו גדול יותר.')],
-  ['nocalc', () => qNoCalc('397 + 199', 596, '397 + 678', 1075, 'המספר הראשון זהה. ככל שמוסיפים מספר גדול יותר, התוצאה גדולה יותר.')],
-  ['word', () => qWordP('לעמית היו 350 דפים. הוא השתמש ב-149 דפים. כמה דפים נותרו לו?', '350 − 149', 201, 'השתמש אומר שהדפים ירדו, ולכן מחסרים.')],
-  ['word', () => qWordP('לטל היו 70 שקלים. הוא קיבל מהוריו עוד 42 שקלים ומאחיו עוד 27 שקלים. כמה שקלים יש לו כעת?', '70 + 42 + 27', 139, 'קיבל עוד אומר שהכסף גדל, ולכן מחברים את כל הסכומים.')],
-  ['word', () => qWordP('במאפיית הכפר יש 245 סופגניות. במאפיית השרון יש 16 סופגניות יותר מאשר במאפיית הכפר. כמה סופגניות יש במאפיית השרון?', '245 + 16', 261, 'יותר מאשר... פירושו להוסיף.')],
-  ['word', () => qWordP('במאפיית הכפר יש 245 סופגניות, ובמאפיית השרון יש 261 סופגניות. כמה סופגניות יש בשתי המאפיות יחד?', '245 + 261', 506, 'יחד אומר שמחברים את שתי הכמויות.')],
-  ['word', () => qWordP('דנה קנתה 5 עפרונות. כל עיפרון עלה לה 7 שקלים. כמה עלו לה כל העפרונות?', '5 × 7', 35, 'מחיר זהה לכל עיפרון: מכפילים את מספר העפרונות במחיר של עיפרון אחד.')],
+  ['nocalc', () => qNoCalc('6,000 − 1,879', 4121, '7,000 − 1,879', 5121, 'מַחְסִירִים אוֹתוֹ מִסְפָּר. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('3,042 − 1,879', 1163, '3,042 − 2,049', 993, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('5,098 + 3,187', 8285, '5,098 + 2,076', 7174, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('237 − 149', 88, '237 − 99', 138, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('459 − 345', 114, '500 − 345', 155, 'מַחְסִירִים אוֹתוֹ מִסְפָּר. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('245 + 567', 812, '348 + 600', 948, 'בְּצַד אֶחָד שְׁנֵי הַמִּסְפָּרִים גְּדוֹלִים יוֹתֵר, וְלָכֵן גַּם הַסְּכוּם שֶׁלּוֹ גָּדוֹל יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('397 + 199', 596, '397 + 678', 1075, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['word', () => qWordP('לַעֲמִית הָיוּ 350 דַּפִּים. הוּא הִשְׁתַּמֵּשׁ בְּ-149 דַּפִּים. כַּמָּה דַּפִּים נוֹתְרוּ לוֹ?', '350 − 149', 201, 'הִשְׁתַּמֵּשׁ אוֹמֵר שֶׁהַדַּפִּים יָרְדוּ, וְלָכֵן מְחַסְּרִים.')],
+  ['word', () => qWordP('לְטַל הָיוּ 70 שְׁקָלִים. הוּא קִיבֵּל מֵהוֹרָיו עוֹד 42 שְׁקָלִים וּמֵאָחִיו עוֹד 27 שְׁקָלִים. כַּמָּה שְׁקָלִים יֵשׁ לוֹ כָּעֵת?', '70 + 42 + 27', 139, 'קִיבֵּל עוֹד אוֹמֵר שֶׁהַכֶּסֶף גָּדַל, וְלָכֵן מְחַבְּרִים אֶת כָּל הַסְּכוּמִים.')],
+  ['word', () => qWordP('בְּמַאֲפִיַּית הַכְּפָר יֵשׁ 245 סוּפְגָּנִיּוֹת. בְּמַאֲפִיַּית הַשָּׁרוֹן יֵשׁ 16 סוּפְגָּנִיּוֹת יוֹתֵר מֵאֲשֶׁר בְּמַאֲפִיַּית הַכְּפָר. כַּמָּה סוּפְגָּנִיּוֹת יֵשׁ בְּמַאֲפִיַּית הַשָּׁרוֹן?', '245 + 16', 261, 'יוֹתֵר מֵאֲשֶׁר... פֵּירוּשׁוֹ לְהוֹסִיף.')],
+  ['word', () => qWordP('בְּמַאֲפִיַּית הַכְּפָר יֵשׁ 245 סוּפְגָּנִיּוֹת, וּבְמַאֲפִיַּית הַשָּׁרוֹן יֵשׁ 261 סוּפְגָּנִיּוֹת. כַּמָּה סוּפְגָּנִיּוֹת יֵשׁ בִּשְׁתֵּי הַמַּאֲפִיּוֹת יַחַד?', '245 + 261', 506, 'יַחַד אוֹמֵר שֶׁמְּחַבְּרִים אֶת שְׁתֵּי הַכַּמּוּיוֹת.')],
+  ['word', () => qWordP('דָּנָה קָנְתָה 5 עֶפְרוֹנוֹת. כָּל עִיפָּרוֹן עָלָה לָהּ 7 שְׁקָלִים. כַּמָּה עָלוּ לָהּ כָּל הָעֶפְרוֹנוֹת?', '5 × 7', 35, 'מְחִיר זֵהֶה לְכָל עִיפָּרוֹן: מַכְפִּילִים אֶת מִסְפַּר הָעֶפְרוֹנוֹת בִּמְחִיר שֶׁל עִיפָּרוֹן אֶחָד.')],
   ['angleid', () => qAngle(90, 0)],
   ['angleid', () => qAngle(28, 180)],
   ['angleid', () => qAngle(180, 0)],
@@ -1570,9 +1577,9 @@ const SHEET = [
   ['angleid', () => qAngle(90, 180)],
   ['angleid', () => qAngle(148, 16)],
   ['angleid', qAnglePics],
-  ['angledraw', () => sheetDraw('חדה')],
-  ['angledraw', () => sheetDraw('קהה')],
-  ['angledraw', () => sheetDraw('ישרה')]
+  ['angledraw', () => sheetDraw('חַדָּה')],
+  ['angledraw', () => sheetDraw('קֵהָה')],
+  ['angledraw', () => sheetDraw('יְשָׁרָה')]
 ].map(([cat, make], i) => ({ id: 's' + (i + 1), cat, make }));
 function sheetDraw(target) { angDrawBag = [target]; return genAngleDraw(); }
 const sheetLeft = cat => SHEET.filter(x => !(S.sheetOk || {})[x.id] && (!cat || x.cat === cat));
@@ -1608,7 +1615,7 @@ function save() {
 async function cloudSave() {
   if (!user) return;
   try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
-  catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); return; }
+  catch (e) { console.warn(e); toast('הַשְּׁמִירָה בֶּעָנָן לֹא הִצְלִיחָה'); return; }
   try {
     const topics = {};
     CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
@@ -1618,7 +1625,7 @@ async function cloudSave() {
 let teacherFocus = null;
 function focusBar() {
   const c = teacherFocus && CATS.find(x => x.id === teacherFocus);
-  return c ? `<div class="install-bar"><span>⭐ מומלץ לתרגל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לתרגול</button></div>` : '';
+  return c ? `<div class="install-bar"><span>⭐ מוּמְלָץ לְתַרְגֵּל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לְתִרְגּוּל</button></div>` : '';
 }
 // combine progress made on this device with progress saved in the account: nothing earned is lost
 function mergeProgress(L, C) {
@@ -1682,7 +1689,7 @@ async function cloudLoad() {
     const snap = await getDoc(progressRef(user.uid));
     if (snap.exists() && snap.data().state) {
       const C = snap.data().state;
-      if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('ההתקדמות מהמכשיר נוספה לחשבון 👍'); }
+      if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
       else if (S.owner !== u0.uid) S = mergeState(C);
       else if ((S.resetAt || 0) > (C.resetAt || 0)) { /* signed-in reset on this device wins */ }
       else S = mergeProgress(S, C); // same account: keep anything saved here while offline
@@ -1694,7 +1701,7 @@ async function cloudLoad() {
     try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() && pf.data().focus ? pf.data().focus.topic : null; if (currentView === 'home') renderHome(); } catch (e2) {}
   } catch (e) {
     console.warn(e);
-    toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
+    toast('לֹא הִצְלַחְנוּ לִטְעוֹן מֵהֶעָנָן. מַמְשִׁיכִים עִם הַמֵּידָע שֶׁבַּמַּכְשִׁיר');
   }
 }
 function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
@@ -1710,13 +1717,13 @@ function toast(msg) {
 }
 
 /* ---------- auth UI ---------- */
-const firstName = () => esc((S.profile && S.profile.nick) || (user && user.displayName || '').split(' ')[0] || 'חבר');
+const firstName = () => esc((S.profile && S.profile.nick) || (user && user.displayName || '').split(' ')[0] || 'חָבֵר');
 const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
 let authError = '';
 function loginBlock() {
   if (user) return '';
-  return `<div class="banner"><span>התחברו עם Google כדי לשמור את ההתקדמות ולהמשיך מכל מכשיר.</span>
-    <div class="gbtn" aria-label="התחברות עם Google"></div>
+  return `<div class="banner"><span>הִתְחַבְּרוּ עִם Google כְּדֵי לִשְׁמוֹר אֶת הַהִתְקַדְּמוּת וּלְהַמְשִׁיךְ מִכָּל מַכְשִׁיר.</span>
+    <div class="gbtn" aria-label="הִתְחַבְּרוּת עִם Google"></div>
     ${authError ? `<div class="auth-error">${esc(authError)}</div>` : ''}</div>`;
 }
 function renderUserChip() {
@@ -1724,11 +1731,11 @@ function renderUserChip() {
   if (!el) return;
   if (!user) { el.innerHTML = ''; return; }
   const pic = user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : '👤';
-  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span class="user-name">${esc(user.displayName || user.email || 'חבר')}</span> ▾</button>
+  el.innerHTML = `<button type="button" class="chip user-btn" data-act="usermenu" aria-haspopup="true">${pic}<span class="user-name">${esc(user.displayName || user.email || 'חָבֵר')}</span> ▾</button>
     <div class="user-menu hidden" id="userMenu">
       <div class="um-name">${esc(user.displayName || '')}</div>
       <div class="um-mail">${esc(user.email || '')}</div>
-      <button type="button" class="ghost-btn" data-act="logout">התנתקות</button>
+      <button type="button" class="ghost-btn" data-act="logout">הִתְנַתְּקוּת</button>
     </div>`;
 }
 function mountGoogleButtons() {
@@ -1737,7 +1744,7 @@ function mountGoogleButtons() {
   if (!(window.google && google.accounts && google.accounts.id)) {
     mountGoogleButtons.tries = (mountGoogleButtons.tries || 0) + 1;
     if (mountGoogleButtons.tries < 25) setTimeout(mountGoogleButtons, 600);
-    else holders.forEach(h => { h.textContent = 'לא ניתן לטעון את כפתור Google. בדקו חיבור לאינטרנט ורעננו את הדף.'; });
+    else holders.forEach(h => { h.textContent = 'לֹא נִיתָּן לִטְעוֹן אֶת כַּפְתּוֹר Google. בִּדְקוּ חִיבּוּר לָאִינְטֶרְנֶט וְרַעַנְנוּ אֶת הַדַּף.'; });
     return;
   }
   if (!mountGoogleButtons.inited) {
@@ -1750,10 +1757,10 @@ async function onGoogleCredential(resp) {
   try {
     authError = '';
     await signInWithCredential(auth, GoogleAuthProvider.credential(resp.credential));
-    toast('התחברת בהצלחה!');
+    toast('הִתְחַבַּרְתָּ בְּהַצְלָחָה!');
   } catch (e) {
     console.warn(e);
-    authError = 'ההתחברות נכשלה (' + (e.code || e.message) + ')';
+    authError = 'הַהִתְחַבְּרוּת נִכְשְׁלָה (' + (e.code || e.message) + ')';
     refreshCurrentView();
   }
 }
@@ -1763,7 +1770,7 @@ async function doLogout() {
     await signOut(auth);
     // the account's progress stays in the cloud; this device starts a fresh guest count, so nothing is added twice
     S = DEFAULT(); persistLocal(); updateWallet(); refreshCurrentView();
-    toast('התנתקת. ההתקדמות שמורה בחשבון');
+    toast('הִתְנַתַּקְתָּ. הַהִתְקַדְּמוּת שְׁמוּרָה בַּחֶשְׁבּוֹן');
   }
   catch (e) { console.warn(e); }
 }
@@ -1800,15 +1807,15 @@ function renderHome() {
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
-          ${teacherFocus === c.id ? '<div class="rec-badge">המלצה לתרגול</div>' : ''}
+          ${teacherFocus === c.id ? '<div class="rec-badge">הַמְלָצָה לְתִרְגּוּל</div>' : ''}
           <div class="topic-content" style="position:relative;z-index:2">
             <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>
-            <div class="stars" title="רמה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
+            <div class="stars" title="רָמָה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
             <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
-            ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
+            ${m.trophy ? '<div class="trophy-mark" title="גָּבִיעַ: אַלּוּפִים בַּנּוֹשֵׂא">🏆</div>' : ''}
           </div>
           <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
-          <button type="button" class="practice-btn" data-practice="${c.id}">תרגול נושא זה</button>
+          <button type="button" class="practice-btn" data-practice="${c.id}">תִּרְגּוּל נוֹשֵׂא זֶה</button>
         </div>
       </div>`;
   }).join('');
@@ -1818,11 +1825,11 @@ function renderHome() {
     ${installBar()}
     <div class="home-top">
       <div class="hero-bubble">
-        🐵 ${user ? 'שלום ' + firstName() + '!' : 'ברוכים הבאים לג\'ונגל!'}
-        <small>אימונים היום: ${doneToday} · 📄 דף החזרה: ${SHEET.length - sheetLeft().length} מתוך ${SHEET.length}</small>
+        🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
+        <small>אִימּוּנִים הַיּוֹם: ${doneToday} · 📄 דַּף הַחֲזָרָה: ${SHEET.length - sheetLeft().length} מִתּוֹךְ ${SHEET.length}</small>
       </div>
       <div class="hero-board">
-        <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'המשך אימון' : 'התחלת אימון'}</button>
+        <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
       </div>
     </div>
     <div class="grid cats">${cards}</div>`;
@@ -1836,7 +1843,7 @@ function fitTitles() {
   const base = card ? Math.max(11, Math.min(64, Math.floor(card.clientHeight * (card.clientWidth / card.clientHeight > 1.6 ? 0.24 : 0.17)), Math.floor(card.clientWidth * 0.2))) : 22;
   const conts = [...document.querySelectorAll('#view-home .cats .card .topic-content')];
   ts.forEach(t => t.classList.add('wrap'));
-  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1 || (t.firstElementChild && t.firstElementChild.getBoundingClientRect().height > size * 2.5)) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
+  const bad = () => ts.some(t => t.scrollWidth > t.clientWidth + 1 || (t.firstElementChild && t.firstElementChild.getBoundingClientRect().height > size * 2.9)) || conts.some(c => c.scrollHeight > c.clientHeight + 1);
   let size = base;
   ts.forEach(t => { t.style.fontSize = size + 'px'; });
   while (size > 10 && bad()) { size -= 1; ts.forEach(t => { t.style.fontSize = size + 'px'; }); }
@@ -1853,8 +1860,8 @@ function renderCamp() {
         <div class="ic">${it.icon}</div>
         <b class="big nm">${it.name}</b>
         <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
-        ${owned ? '<button type="button" class="ghost-btn" disabled>באוסף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
-          ${canAfford ? 'לקנייה' : 'אין מטבעות'}
+        ${owned ? '<button type="button" class="ghost-btn" disabled>בָּאוֹסֶף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
+          ${canAfford ? 'לִקְנִיָּיה' : 'אֵין מַטְבְּעוֹת'}
         </button>`}
       </div>`;
   }).join('');
@@ -1864,34 +1871,34 @@ function renderCamp() {
   const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
   const collection = ownedItems.length || trophyShelf || gearShelf
     ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
-    : '<div class="rank" style="color:#fff">סיום אימונים פותח תיבות עם ציוד הישרדות!</div>';
+    : '<div class="rank" style="color:#fff">סִיּוּם אִימּוּנִים פּוֹתֵחַ תֵּיבוֹת עִם צִיּוּד הִישָּׂרְדוּת!</div>';
   const waved = collection.replace(/class="owned-animal"/g, (() => { let i = 0; return () => `class="owned-animal" style="--i:${i++}"`; })());
 
   $('#view-camp').innerHTML = `
-    <h2 class="camp-title">🏕️ חנות המחנה</h2>
+    <h2 class="camp-title">🏕️ חֲנוּת הַמַּחֲנֶה</h2>
     <div class="shop">${shop}</div>
     <div class="camp-collection"><div class="collection-shelf">${waved}</div></div>`;
 }
 
 function renderSettings() {
-  const opts = [['none', 'בלי שעון', 'עונים בנחת, אין מדידת זמן'], ['gentle', 'שעון רגוע', 'רואים כמה זמן עבר, בלי לחץ'], ['challenge', 'שעון אתגר', '25 שניות לכל שאלה']];
+  const opts = [['none', 'בְּלִי שָׁעוֹן', 'עוֹנִים בְּנַחַת, אֵין מְדִידַת זְמַן'], ['gentle', 'שְׁעוֹן רָגוּעַ', 'רוֹאִים כַּמָּה זְמַן עָבַר, בְּלִי לַחַץ'], ['challenge', 'שְׁעוֹן אֶתְגָּר', '25 שְׁנִיּוֹת לְכָל שְׁאֵלָה']];
   $('#view-settings').innerHTML = `
     ${loginBlock()}
     <div class="card s-timer" style="margin-top:20px">
-      <h2 style="margin-top:8px">⏱️ שעון בזמן התרגול</h2>
+      <h2 style="margin-top:8px">⏱️ שָׁעוֹן בִּזְמַן הַתִּרְגּוּל</h2>
       <div class="seg tsel">${opts.map(([v, l, d]) => `<button type="button" class="ghost-btn ${S.settings.timer === v ? 'on' : ''}" data-timer="${v}" aria-pressed="${S.settings.timer === v}"><b>${l}</b><small>${d}</small></button>`).join('')}</div>
     </div>
-    <div class="card s-nick" style="margin-top:20px"><h2 style="margin-top:8px">👤 איך לפנות אליך?</h2>
-      <input id="nickInput" type="text" maxlength="20" placeholder="כינוי (למשל: אדיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
-      <div class="seg">${[['m', 'תלמיד'], ['f', 'תלמידה'], ['', 'לא לציין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div></div>
-    <div class="card s-signs" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מה אומרים הסימנים?</h2>
-      <div class="rank" style="text-align:right;line-height:1.6"><span>⭐ <b>כוכבים</b> = רמת הקושי בנושא: מתחילים, מתקדמים, אלופים. עולים רמה אחרי 3 תשובות נכונות ברצף.</span><span>🥉🥈🥇 <b>ארד, כסף, זהב</b> = הציון בנושא: מתחת ל-40 ארד, 40 עד 69 כסף, 70 ומעלה זהב.</span><span>🏆 <b>גביע</b> = רמת אלופים וגם זהב באותו נושא.</span></div></div>
+    <div class="card s-nick" style="margin-top:20px"><h2 style="margin-top:8px">👤 אֵיךְ לִפְנוֹת אֵלֶיךָ?</h2>
+      <input id="nickInput" type="text" maxlength="20" placeholder="כִּינּוּי (לְמָשָׁל: אַדִּיר)" value="${esc((S.profile && S.profile.nick) || '')}" style="width:100%;font:inherit;font-size:18px;padding:10px;border-radius:12px;border:3px solid #8b5a2b;text-align:center">
+      <div class="seg">${[['m', 'תַּלְמִיד'], ['f', 'תַּלְמִידָה'], ['', 'לֹא לְצַיֵּין']].map(([v, l]) => `<button type="button" class="ghost-btn ${(S.profile.gender || '') === v ? 'on' : ''}" data-gender="${v}" aria-pressed="${(S.profile.gender || '') === v}">${l}</button>`).join('')}</div></div>
+    <div class="card s-signs" style="margin-top:20px"><h2 style="margin-top:8px">ℹ️ מָה אוֹמְרִים הַסִּימָנִים?</h2>
+      <div class="rank" style="text-align:right;line-height:1.6"><span>⭐ <b>כּוֹכָבִים</b> = רָמַת הַקּוֹשִׁי בַּנּוֹשֵׂא: מַתְחִילִים, מִתְקַדְּמִים, אַלּוּפִים. עוֹלִים רָמָה אַחֲרֵי 3 תְּשׁוּבוֹת נְכוֹנוֹת בְּרֶצֶף.</span><span>🥉🥈🥇 <b>אָרָד, כֶּסֶף, זָהָב</b> = הַצִּיּוּן בַּנּוֹשֵׂא: מִתַּחַת לְ-40 אָרָד, 40 עַד 69 כֶּסֶף, 70 וּמַעְלָה זָהָב.</span><span>🏆 <b>גָּבִיעַ</b> = רָמַת אַלּוּפִים וְגַם זָהָב בְּאוֹתוֹ נוֹשֵׂא.</span></div></div>
     ${installBlock()}
     <div class="card s-reset" style="margin-top:28px">
-      <h2 style="margin-top:8px">איפוס</h2>
-      <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">איפוס נתונים</button>
+      <h2 style="margin-top:8px">אִיפּוּס</h2>
+      <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">אִיפּוּס נְתוּנִים</button>
     </div>
-    <div class="rank s-ver" style="text-align:center;margin:14px 0">גרסת האפליקציה: ${APP_VERSION}</div>`;
+    <div class="rank s-ver" style="text-align:center;margin:14px 0">גִּרְסַת הָאַפְּלִיקַצְיָה: ${APP_VERSION}</div>`;
 }
 
 /* ---------- shop & settings actions ---------- */
@@ -1901,19 +1908,19 @@ function buyItem(id) {
   S.coins -= it.price;
   S.items[it.id] = 1;
   save(); updateWallet(); renderCamp();
-  toast(`${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף!`);
+  toast(`${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
   if (!resetArmed) {
-    resetArmed = true; b.classList.add('danger'); b.textContent = '⚠️ לחיצה נוספת תמחק הכל';
+    resetArmed = true; b.classList.add('danger'); b.textContent = '⚠️ לְחִיצָה נוֹסֶפֶת תִּמְחַק הַכֹּל';
     const w = document.createElement('div'); w.className = 'reset-warn'; w.id = 'resetWarn';
-    w.textContent = 'כל המטבעות, הגביעים, האוסף וההתקדמות בכל הנושאים יימחקו, גם בענן. אי אפשר לשחזר.';
+    w.textContent = 'כָּל הַמַּטְבְּעוֹת, הַגְּבִיעִים, הָאוֹסֶף וְהַהִתְקַדְּמוּת בְּכָל הַנּוֹשְׂאִים יִימָּחֲקוּ, גַּם בֶּעָנָן. אִי אֶפְשָׁר לְשַׁחְזֵר.';
     b.insertAdjacentElement('afterend', w);
     clearTimeout(window.__rt); window.__rt = setTimeout(() => { if (resetArmed) { resetArmed = false; renderSettings(); } }, 6000);
     return;
   }
-  S = DEFAULT(); if (user) { S.resetAt = Date.now(); S.owner = user.uid; } save(); updateWallet(); resetArmed = false; renderSettings(); toast('הנתונים אופסו');
+  S = DEFAULT(); if (user) { S.resetAt = Date.now(); S.owner = user.uid; } save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
 }
 
 /* ---------- session flow ---------- */
@@ -1971,7 +1978,7 @@ function startSession(kind, only) {
   const rs = S.resume && S.resume[resumeKey(kind, only)];
   if (rs && rs.done < rs.total && rs.done > 0 && (only || (rs.topics && rs.topics.length))) {
     session = JSON.parse(JSON.stringify(rs));
-    toast('ממשיכים מאיפה שהפסקנו 👍');
+    toast('מַמְשִׁיכִים מֵאֵיפֹה שֶׁהִפְסַקְנוּ 👍');
     nextQ();
     return;
   }
@@ -2019,7 +2026,7 @@ function answered(p) {
   if (p.type === 'draw') return true;
   return false;
 }
-// a child may type the number in Hebrew words ("מאה"); accept it, but remind to write digits
+// a child may type the number in Hebrew words ("מֵאָה"); accept it, but remind to write digits
 /*NIKUD-OFF*/
 const HW_U = { 'אחת': 1, 'אחד': 1, 'שתיים': 2, 'שניים': 2, 'שתים': 2, 'שנים': 2, 'שתי': 2, 'שני': 2, 'שלוש': 3, 'שלושה': 3, 'ארבע': 4, 'ארבעה': 4, 'חמש': 5, 'חמישה': 5, 'חמשה': 5, 'שש': 6, 'שישה': 6, 'ששה': 6, 'שבע': 7, 'שבעה': 7, 'שמונה': 8, 'תשע': 9, 'תשעה': 9 };
 const HW_C = { 'שלושת': 3, 'ארבעת': 4, 'חמשת': 5, 'ששת': 6, 'שבעת': 7, 'שמונת': 8, 'תשעת': 9, 'עשרת': 10 };
@@ -2072,11 +2079,11 @@ function partHTML(p, i) {
     if (locked && p.type === 'num') {
       const ok = correctPart(p);
       st = ok ? ' good' : ' bad';
-      extra = ok ? '<span class="part-fix ok">✅ נכון!</span>' : `<span class="part-fix no">❌ התשובה הנכונה: <span class="ltr">${fmt(p.ans)}</span></span>`;
+      extra = ok ? '<span class="part-fix ok">✅ נָכוֹן!</span>' : `<span class="part-fix no">❌ הַתְּשׁוּבָה הַנְּכוֹנָה: <span class="ltr">${fmt(p.ans)}</span></span>`;
     } else if (locked && p.type === 'text') {
       const ok = correctPart(p);
       st = ok ? ' good' : ' bad';
-      extra = ok ? '<span class="part-fix ok">✅ נכון!</span>' : '<span class="part-fix no">❌ לא נכון</span>';
+      extra = ok ? '<span class="part-fix ok">✅ נָכוֹן!</span>' : '<span class="part-fix no">❌ לֹא נָכוֹן</span>';
     }
     extra = `<div class="pmark">${extra}</div>`;
     return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
@@ -2084,10 +2091,10 @@ function partHTML(p, i) {
   if (p.type === 'order') {
     const slots = p.items.map((_, k) => p.v[k] !== null ? `<span class="filled" data-p="${i}" data-slot="${k}">${fmt(p.v[k])}</span>` : `<span class="empty" data-p="${i}" data-slot="${k}">${k + 1}</span>`).join('');
     const bank = p.items.map((x, j) => `<button type="button" class="opt${p.v.includes(x) ? ' used' : ''}" data-p="${i}" data-o="${j}"${p.v.includes(x) ? ' tabindex="-1" aria-hidden="true"' : ''}>${fmt(x)}</button>`).join('');
-    return `<div class="ordwrap"><div class="ord-label">הסדר שבחרת, מהקטן לגדול:</div><div class="seq">${slots}</div><div class="ord-label">המספרים לבחירה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button><div class="ord-tip">אפשר לגרור מספר לכל משבצת, ולהזיז מספר ממשבצת למשבצת.</div></div>`;
+    return `<div class="ordwrap"><div class="ord-label">הַסֵּדֶר שֶׁבָּחַרְתָּ, מֵהַקָּטָן לַגָּדוֹל:</div><div class="seq">${slots}</div><div class="ord-label">הַמִּסְפָּרִים לִבְחִירָה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">לְהַתְחִיל מֵחָדָשׁ</button><div class="ord-tip">אֶפְשָׁר לִגְרוֹר מִסְפָּר לְכָל מִשְׁבֶּצֶת, וּלְהָזִיז מִסְפָּר מִמִּשְׁבֶּצֶת לְמִשְׁבֶּצֶת.</div></div>`;
   }
   if (p.type === 'draw') {
-    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>איך משרטטים?</b> גוררים באצבע (או בעכבר) את <b>העיגול הכתום</b>. הקו הירוק מסתובב, והזווית נפתחת או נסגרת. כשהזווית מוכנה לוחצים על "בדיקה".</div></div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
   }
   return '';
 }
@@ -2116,15 +2123,15 @@ function renderPlay() {
 
   $('#qcard').classList.remove('summary');
   const nk = (S.profile && S.profile.nick) ? ' ' + esc(S.profile.nick) : '';
-  const praise = pick([`נכון מאוד${nk}!`, `כל הכבוד${nk}!`, `יפה מאוד${nk}!`, G('אלוף', 'אלופה', 'מצוין') + nk + '!']);
-  const oops = pick(['לא בדיוק', 'כמעט', 'לא נורא']) + nk + '. ';
-  const fbText = Q.result ? `${praise} ${Q.earned === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + Q.earned + ' מטבעות ' + '🪙'.repeat(Q.earned)} ` : (Q.timedOut ? 'נגמר הזמן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כמעט' + nk + '! חלק מהתשובות נכון 👏 ' : oops));
-  const wordsNote = Q.result !== undefined && Q.parts.some(wordsAnswer) ? '😉 נכון! רק שבמבחן כותבים את התשובה בספרות.<br>' : '';
+  const praise = pick([`נָכוֹן מְאוֹד${nk}!`, `כָּל הַכָּבוֹד${nk}!`, `יָפֶה מְאוֹד${nk}!`, G('אַלּוּף', 'אַלּוּפָה', 'מְצוּיָּן') + nk + '!']);
+  const oops = pick(['לֹא בְּדִיּוּק', 'כִּמְעַט', 'לֹא נוֹרָא']) + nk + '. ';
+  const fbText = Q.result ? `${praise} ${Q.earned === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + Q.earned + ' מַטְבְּעוֹת ' + '🪙'.repeat(Q.earned)} ` : (Q.timedOut ? 'נִגְמַר הַזְּמַן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כִּמְעַט' + nk + '! חֵלֶק מֵהַתְּשׁוּבוֹת נָכוֹן 👏 ' : oops));
+  const wordsNote = Q.result !== undefined && Q.parts.some(wordsAnswer) ? '😉 נָכוֹן! רַק שֶׁבַּמִּבְחָן כּוֹתְבִים אֶת הַתְּשׁוּבָה בִּסְפָרוֹת.<br>' : '';
   $('#qcard').innerHTML = `
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
     <div class="qhead">
-      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שאלה ${qNum} מתוך ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אימון מתמטיקה'}</div>
+      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}</div>
       ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
     </div>
     <div class="bar"><span style="width:${pct}%"></span></div>
@@ -2136,10 +2143,10 @@ function renderPlay() {
         <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${wordsNote}${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
       </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
     <div class="row qactions">
-      ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רמז 💡</button>`}
+      ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}
       ${locked
-        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה 👈'}</button>`
-        : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בדיקה ✔️</button>`}
+        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סִיּוּם 🎉' : 'לַשְּׁאֵלָה הַבָּאָה 👈'}</button>`
+        : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בְּדִיקָה ✔️</button>`}
     </div>`;
 
   fitFeedback(); fitBoard();
@@ -2219,24 +2226,24 @@ function record(ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
     m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
-    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עָלִית לְרָמַת ${TIERS[m.tier]} בַּנּוֹשֵׂא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
   } else {
     m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
-  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מדליית זהב הושגה!'); }
+  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מֶדַלְיַית זָהָב הוּשְׂגָה!'); }
   if (!m.trophy && m.score >= 70 && m.tier >= 3) {
     m.trophy = true;
     const nm = CATS.find(c => c.id === Q.cat).name;
     (session.trophies = session.trophies || []).push(nm);
-    toast(`🏆 גביע! אלופים בנושא: ${plain(nm)}`);
+    toast(`🏆 גָּבִיעַ! אַלּוּפִים בַּנּוֹשֵׂא: ${plain(nm)}`);
   }
   save(); updateWallet();
 }
 
 function check() {
   if (!Q || Q.result !== undefined) return;
-  if (!Q.parts.every(answered)) { Q.note = 'יש למלא את כל התשובות לפני הבדיקה.'; $('#hintBox').textContent = Q.note; return; }
+  if (!Q.parts.every(answered)) { Q.note = 'יֵשׁ לְמַלֵּא אֶת כָּל הַתְּשׁוּבוֹת לִפְנֵי הַבְּדִיקָה.'; $('#hintBox').textContent = Q.note; return; }
   stopTimer();
   const ok = Q.parts.every(correctPart);
   Q.result = ok;
@@ -2274,16 +2281,16 @@ function endSession() {
   const canBonus = session.kind === 'base';
   $('#qcard').innerHTML = `
     <div class="sum-gift">🎁</div>
-    <div class="sum-title">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
+    <div class="sum-title">${session.kind === 'bonus' ? 'מִשְׂחַק הַבּוֹנוּס הוּשְׁלַם!' : 'הָאִימּוּן הוּשְׁלַם בְּהַצְלָחָה!'}</div>
     <div class="sum-box">
-      <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
-      ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
-      ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כל הכבוד אלוף! 🏆', 'כל הכבוד אלופה! 🏆', 'כל הכבוד! 🏆')}</p>` : ''}
-      <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
+      <p>${session.coins === 0 ? 'לֹא הִתְקַבְּלוּ מַטְבְּעוֹת הַפַּעַם' : session.coins === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + session.coins + ' מַטְבְּעוֹת 🪙'}</p>
+      ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זָכִיתָ בְּגָבִיעַ בַּנּוֹשֵׂא: ${session.trophies.join(', ')}!</p>` : ''}
+      ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כָּל הַכָּבוֹד אַלּוּף! 🏆', 'כָּל הַכָּבוֹד אַלּוּפָה! 🏆', 'כָּל הַכָּבוֹד! 🏆')}</p>` : ''}
+      <p>${gift ? `נִפְתְּחָה תֵּיבָה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${gift.g === 'f' ? 'הִתְווַסְּפָה' : gift.g === 'p' ? 'הִתְווַסְּפוּ' : 'הִתְווַסֵּף'} לְצִיּוּד שֶׁלְּךָ!` : 'הָאוֹסֶף שֶׁלְּךָ מָלֵא! הַתֵּיבָה הֵכִילָה בּוֹנוּס שֶׁל ' + giftCoins + ' מַטְבְּעוֹת 🪙'}</p>
     </div>
     <div class="sum-actions">
-      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}
-      <button type="button" class="ghost-btn" id="homeBtn">חזרה למסך הראשי</button>
+      ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אִימּוּן בּוֹנוּס (מַטְבְּעוֹת כְּפוּלִים)</button>` : ''}
+      <button type="button" class="ghost-btn" id="homeBtn">חֲזָרָה לַמָּסָךְ הָרָאשִׁי</button>
     </div>`;
 }
 

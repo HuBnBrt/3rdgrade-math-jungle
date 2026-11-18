@@ -784,7 +784,7 @@ const APP_VERSION = 'v102';
 const APP_LABEL = '2.5';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = [];
+const RELEASE_NOTES = ['יש צלילים! לתשובה נכונה, לגביע, לתיבה ולסיום אימון – עם מחיאות כפיים וקונפטי. אפשר להשתיק בכפתור 🔊 שליד השאלה.', 'ב־״המצב שלי״ האחוז מראה מה יודעים עכשיו, לפי 10 התשובות האחרונות – טעות שתוקנה כבר לא מורידה את הציון.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

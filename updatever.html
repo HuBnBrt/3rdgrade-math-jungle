@@ -789,7 +789,7 @@ const APP_VERSION = 'v102';
 const APP_LABEL = '2.5';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = [];
+const RELEASE_NOTES = ['יֵשׁ צְלִילִים! לִתְשׁוּבָה נְכוֹנָה, לַגָּבִיעַ, לַתֵּבָה וּלְסִיּוּם אִימּוּן – עִם מְחִיאוֹת כַּפַּיִם וְקוֹנְפֶטִי. אֶפְשָׁר לְהַשְׁתִּיק בַּכַּפְתּוֹר 🔊 שֶׁלְּיַד הַשְּׁאֵלָה.', 'בְּ־״הַמַּצָּב שֶׁלִּי״ הָאָחוּז מַרְאֶה מָה יוֹדְעִים עַכְשָׁיו, לְפִי 10 הַתְּשׁוּבוֹת הָאַחֲרוֹנוֹת – טָעוּת שֶׁתּוּקְּנָה כְּבָר לֹא מוֹרִידָה אֶת הַצִּיּוּן.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

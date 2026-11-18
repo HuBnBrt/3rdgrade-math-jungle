@@ -84,7 +84,10 @@ const esc = s => dec(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '
 const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
 const MIN = 3; // minimal answers to judge a topic
 
-let me = null, kids = [], admins = [], openUid = null;
+let me = null, kids = [], admins = [], openUid = null, loadedAt = null;
+// only the owner manages who may open the dashboard; teachers do not see that list at all
+const OWNER = 'benbritcrm@gmail.com';
+const isOwner = () => !!me && (me.email || '').toLowerCase() === OWNER;
 
 onAuthStateChanged(auth, async u => {
   me = u;
@@ -110,20 +113,25 @@ document.addEventListener('click', async e => {
   else if (t.dataset.focus) setFocus(t.dataset.uid, t.dataset.focus, true);
   else if (t.dataset.unfocus) setFocus(t.dataset.uid, t.dataset.unfocus, false);
   else if (t.dataset.clear) setFocus(t.dataset.clear, null);
-  else if (t.id === 'addAdmin') addAdmin();
-  else if (t.dataset.rmadmin) removeAdmin(t.dataset.rmadmin);
+  else if (t.id === 'addAdmin' && isOwner()) addAdmin();
+  else if (t.dataset.rmadmin && isOwner()) removeAdmin(t.dataset.rmadmin);
+  else if (t.id === 'refreshCard') { t.disabled = true; t.textContent = 'מרענן…'; try { await loadAll(); } catch (x) { alert('הרענון נכשל'); render(); } }
   else if (t.id === 'closeCard') { openUid = null; render(); }
 });
 
 async function loadAll() {
-  const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), getDocs(collection(db, 'admins'))]);
+  const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), isOwner() ? getDocs(collection(db, 'admins')) : Promise.resolve(null)]);
   kids = us.docs.map(d => ({ uid: d.id, ...d.data() })).filter(k => k.topics);
-  admins = ad.docs.map(d => d.id);
+  admins = ad ? ad.docs.map(d => d.id) : [];
+  loadedAt = new Date();
   render();
 }
 
-const acc = t => (t && t.ok + t.bad >= 1) ? t.ok / (t.ok + t.bad) : null;
-const few = t => !t || t.ok + t.bad < MIN;
+// what the child knows now: the last 10 answers in each topic (like the child's own view); old mistakes fade out.
+// the full totals (all answers ever) stay visible in the tooltip and in the child's card.
+const recent = t => { const h = String((t && t.h) || '').slice(-10); if (!h && t && t.ok + t.bad) return { ok: t.ok, n: t.ok + t.bad }; return { ok: [...h].filter(c => c === '1').length, n: h.length }; };
+const acc = t => { const r = recent(t); return r.n ? r.ok / r.n : null; };
+const few = t => recent(t).n < MIN;
 const cls = a => a === null ? 'c0' : a < .5 ? 'c1' : a < .7 ? 'c2' : a < .85 ? 'c3' : 'c4';
 const pct = a => a === null ? '–' : Math.round(a * 100) + '%';
 function trend(t) {
@@ -140,7 +148,7 @@ const shortName = k => { const w = fullShort(k); const dup = kids.filter(x => fu
 const whenShort = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) : '–'; };
 const when = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '–'; };
 const topicIds = () => { const m = {}; kids.forEach(k => Object.entries(k.topics || {}).forEach(([id, t]) => { m[id] = t.name || id; })); return Object.keys(m).map(id => [id, m[id]]); };
-const kidAcc = k => { let o = 0, b = 0; Object.values(k.topics || {}).forEach(t => { o += t.ok || 0; b += t.bad || 0; }); return o + b ? o / (o + b) : null; };
+const kidAcc = k => { let o = 0, n = 0; Object.values(k.topics || {}).forEach(t => { const r = recent(t); o += r.ok; n += r.n; }); return n ? o / n : null; };
 
 function render() {
   const tp = topicIds();
@@ -148,29 +156,29 @@ function render() {
   const active = kids.filter(k => k.lastSeen && k.lastSeen.toDate && now - k.lastSeen.toDate().getTime() < week).length;
   const accs = kids.map(kidAcc).filter(a => a !== null);
   const avg = accs.length ? accs.reduce((a, b) => a + b, 0) / accs.length : null;
-  const classWeak = tp.map(([id, name]) => { let o = 0, b = 0; kids.forEach(k => { const t = (k.topics || {})[id]; if (t) { o += t.ok || 0; b += t.bad || 0; } }); return { id, name, n: o + b, a: o + b >= MIN ? o / (o + b) : null }; })
+  const classWeak = tp.map(([id, name]) => { let o = 0, n = 0; kids.forEach(k => { const t = (k.topics || {})[id]; if (t) { const r = recent(t); o += r.ok; n += r.n; } }); return { id, name, n, a: n >= MIN ? o / n : null }; })
     .filter(x => x.a !== null).filter(x => x.a < .85).sort((x, y) => x.a - y.a).slice(0, 3);
   const sorted = kids.slice().sort((a, b) => (a.name || a.email || '').localeCompare(b.name || b.email || '', 'he'));
   const head = tp.map(([id, n]) => `<th class="t" title="${esc(n)}">${esc(n)}</th>`).join('');
   const rows = sorted.map(k => `<tr><td class="name" data-uid="${k.uid}" title="${esc(k.nick || k.name || k.email || '')}">${esc(shortName(k))}</td>
-      <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="c ${cls(a)}${a !== null && few(t) ? ' few' : ''}" title="${t ? t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}${a !== null ? `<small>${t.ok}/${t.ok + t.bad}</small>` : ''}</td>`; }).join('')}
+      <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="c ${cls(a)}${a !== null && few(t) ? ' few' : ''}" title="${t ? 'עכשיו (10 אחרונות): ' + recent(t).ok + '/' + recent(t).n + ' · מצטבר: ' + t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}${a !== null ? `<small>${recent(t).ok}/${recent(t).n}</small>` : ''}</td>`; }).join('')}
       <td>${k.sessions || 0}</td><td title="${when(k.lastSeen)}">${whenShort(k.lastSeen)}</td></tr>`).join('');
   const k = kids.find(x => x.uid === openUid);
   $('#main').innerHTML = `
   <div class="box"><div class="kpis">
     <div class="kpi"><b>${kids.length}</b><span>ילדים רשומים</span></div>
     <div class="kpi"><b>${active}</b><span>פעילים ב-7 ימים אחרונים</span></div>
-    <div class="kpi"><b>${pct(avg)}</b><span>אחוז הצלחה ממוצע</span></div></div>
+    <div class="kpi"><b>${pct(avg)}</b><span>אחוז הצלחה ממוצע (הידע עכשיו)</span></div></div>
     <h2 style="margin-top:14px">נושאים לחיזוק בכיתה</h2>
     <div class="weak">${classWeak.length ? classWeak.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין עדיין מספיק נתונים</span>'}</div></div>
   <div class="box"><div class="row"><h2 style="margin:0;flex:1">טבלת חום – אחוז הצלחה בכל נושא</h2><button id="csvBtn" class="sm">ייצוא לאקסל (CSV)</button></div>
     <div class="tablewrap"><table class="heat"><thead><tr><th class="w-name">ילד/ה</th><th class="w-all">כללי</th>${head}<th class="w-ses">אימונים</th><th class="w-date">כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
-    <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך שאלות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
-    <p class="muted">מחושב לפי תשובות נכונות ושגויות בפועל. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
+    <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך 10 התשובות האחרונות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
+    <p class="muted">האחוז מראה את הידע עכשיו: 10 התשובות האחרונות בכל נושא, כך שטעויות ישנות שתוקנו לא מורידות את הציון. הסכום המצטבר של כל התשובות מופיע בריחוף על תא ובכרטיס הילד. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
   <div id="card">${k ? kidCard(k) : ''}</div>
-  <div class="box"><h2>מורשי ניהול</h2>
+  ${isOwner() ? `<div class="box"><h2>מורשי ניהול</h2>
     <div>${admins.map(a => `<div class="row" style="margin-bottom:4px"><span style="direction:ltr">${esc(a)}</span>${a !== (me.email || '').toLowerCase() ? `<button class="sm" data-rmadmin="${esc(a)}">הסרה</button>` : '<span class="muted">(אתה)</span>'}</div>`).join('')}</div>
-    <div class="row" style="margin-top:8px"><input type="email" id="newAdmin" placeholder="אימייל Google של מורה"><button id="addAdmin" class="pri sm">הוספת מורה</button></div></div>`;
+    <div class="row" style="margin-top:8px"><input type="email" id="newAdmin" placeholder="אימייל Google של מורה"><button id="addAdmin" class="pri sm">הוספת מורה</button></div></div>` : ''}`;
 }
 
 function kidCard(k) {
@@ -183,14 +191,14 @@ function kidCard(k) {
   const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
   const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
   const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
-  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>
-    <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה כללי: ${pct(kidAcc(k))}</p>
+  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><span class="muted" style="font-size:12px">עודכן ${loadedAt ? loadedAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span><button id="refreshCard" class="sm">↻ רענון</button><button id="closeCard" class="sm">סגירה</button></div>
+    <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה עכשיו: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
     ${au ? `<div class="focus">המלצה פעילה לילד: 🌺 <b>${esc(au.name)}</b> <span class="muted">(המלצת המערכת – תתבטל לבד כשהנושא יתחזק)</span></div>` : ''}
     ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `🍎 <b>${esc(f.name)}</b> <span class="muted">(מורה)</span> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
     <h2 style="margin-top:14px">כל הנושאים – מהחלש לחזק</h2>
-    <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה</th><th>נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;
+    <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה עכשיו</th><th>מצטבר: נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;
 }
 
 // recommendations add up: adding one keeps the others; topic null clears them all

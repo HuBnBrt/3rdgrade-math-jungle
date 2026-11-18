@@ -656,7 +656,9 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:calc(var(--q)*.6)}
 #qcard .opts.list{gap:calc(var(--q)*.3)}#qcard .opts.list .opt{font-size:calc(var(--q)*.98);padding:.25em .5em}
 @media (max-height:700px) and (orientation:portrait){#qcard{--q:clamp(12px,min(2.2vh,3.9vw),26px)}}
-@media (orientation:landscape) and (max-height:480px){#qcard svg.numline{height:15vh !important}}
+/* number lines: a real size that never gets squeezed by the layout (fitBoard makes room for it, and only as a last step trims it) */
+#qcard .question-board svg.numline{flex:none;width:auto;max-width:100%;height:clamp(110px,26vh,210px)}
+@media (orientation:landscape) and (max-height:480px){#qcard .question-board svg.numline{height:clamp(80px,24vh,120px)}}
 @media (max-width:400px){#qcard .opts:not(.list):not(.ord) .opt{font-size:calc(var(--q)*1.1);padding:.3em .55em;min-width:0}#qcard .opts:not(.list):not(.ord){gap:6px}}
 @media (max-height:700px){#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.08em 0}#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:6px}#qcard .ordwrap .opts.ord,#qcard .ordwrap .seq{gap:4px}}
 .ordwrap .opts.ord .opt,.ordwrap .seq span.filled{touch-action:none;cursor:grab}
@@ -1449,6 +1451,9 @@ function fitBoard() {
   if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 52) { h -= 4; fb.style.height = h + 'px'; } }
   // 2. only then make the question text smaller, and last the answer area
   shrink(bd, clipped, 0.5);
+  // last resort for a drawing (number line): trim its height a little, never below a readable size
+  const pic = bd.querySelector('svg.numline');
+  if (pic && clipped()) { let h = pic.getBoundingClientRect().height; while (clipped() && h > 80) { h -= 6; pic.style.height = h + 'px'; } }
   if (parts) shrink(parts, cardOver, 0.65);
 }
 function fitFeedback() {

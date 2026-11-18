@@ -689,7 +689,9 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:calc(var(--q)*.6)}
 #qcard .opts.list{gap:calc(var(--q)*.3)}#qcard .opts.list .opt{font-size:calc(var(--q)*.98);padding:.25em .5em}
 @media (max-height:700px) and (orientation:portrait){#qcard{--q:clamp(12px,min(2.2vh,3.9vw),26px)}}
-@media (orientation:landscape) and (max-height:480px){#qcard svg.numline{height:15vh !important}}
+/* number lines: a real size that never gets squeezed by the layout (fitBoard makes room for it, and only as a last step trims it) */
+#qcard .question-board svg.numline{flex:none;width:auto;max-width:100%;height:clamp(110px,26vh,210px)}
+@media (orientation:landscape) and (max-height:480px){#qcard .question-board svg.numline{height:clamp(80px,24vh,120px)}}
 @media (max-width:400px){#qcard .opts:not(.list):not(.ord) .opt{font-size:calc(var(--q)*1.1);padding:.3em .55em;min-width:0}#qcard .opts:not(.list):not(.ord){gap:6px}}
 @media (max-height:700px){#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.08em 0}#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:6px}#qcard .ordwrap .opts.ord,#qcard .ordwrap .seq{gap:4px}}
 .ordwrap .opts.ord .opt,.ordwrap .seq span.filled{touch-action:none;cursor:grab}
@@ -778,8 +780,8 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v101';
-const APP_LABEL = '2.4';
+const APP_VERSION = 'v102';
+const APP_LABEL = '2.5';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -1269,7 +1271,7 @@ function numLineWrite(t) {
     ticks += `<line x1="${x}" y1="${y - (i % 5 ? 8 : 14)}" x2="${x}" y2="${y + (i % 5 ? 8 : 14)}" stroke="#163b2a" stroke-width="${i % 5 ? 2 : 3}"/>`;
   }
   const ax = x0 + (x1 - x0) * idx / 10;
-  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
+  const svg = `<svg class="numline" viewBox="0 0 320 150" style="display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
   return {
     body: `<div class="prompt">איזה מספר מסומן בחץ?</div>${svg}`,
     parts: [{ type: 'num', ans: val }],
@@ -1464,7 +1466,7 @@ function qSeqMember(start, k, X) {
   };
 }
 function segSvg(a, b) {
-  return `<svg class="numline" viewBox="0 0 320 110" style="width:auto;max-width:100%;height:min(20vh,150px);display:block;margin:4px auto" role="img" aria-label="ישר מספרים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
+  return `<svg class="numline" viewBox="0 0 320 110" style="display:block;margin:4px auto" role="img" aria-label="ישר מספרים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
 }
 function qSegPick(a, b, opts) {
   const inside = opts.find(x => x > a && x < b);
@@ -2231,6 +2233,9 @@ function fitBoard() {
   if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 52) { h -= 4; fb.style.height = h + 'px'; } }
   // 2. only then make the question text smaller, and last the answer area
   shrink(bd, clipped, 0.5);
+  // last resort for a drawing (number line): trim its height a little, never below a readable size
+  const pic = bd.querySelector('svg.numline');
+  if (pic && clipped()) { let h = pic.getBoundingClientRect().height; while (clipped() && h > 80) { h -= 6; pic.style.height = h + 'px'; } }
   if (parts) shrink(parts, cardOver, 0.65);
 }
 function fitFeedback() {

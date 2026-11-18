@@ -361,7 +361,7 @@ function numLineWrite(t) {
     ticks += `<line x1="${x}" y1="${y - (i % 5 ? 8 : 14)}" x2="${x}" y2="${y + (i % 5 ? 8 : 14)}" stroke="#163b2a" stroke-width="${i % 5 ? 2 : 3}"/>`;
   }
   const ax = x0 + (x1 - x0) * idx / 10;
-  const svg = `<svg viewBox="0 0 320 150" style="width:100%;max-width:520px;height:auto;display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
+  const svg = `<svg class="numline" viewBox="0 0 320 150" style="display:block;margin:6px auto" role="img" aria-label="ישר מספרים"><line x1="${x0 - 10}" y1="${y}" x2="${x1 + 10}" y2="${y}" stroke="#163b2a" stroke-width="4"/>${ticks}<text x="${x0}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a" direction="ltr">${fmt(start)}</text><text x="${x1}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span)}</text><text x="${(x0 + x1) / 2}" y="${y + 38}" text-anchor="middle" font-size="17" font-weight="800" fill="#163b2a">${fmt(start + span / 2)}</text><path d="M${ax} ${y - 16} l-9 -22 h6 v-18 h6 v18 h6 z" fill="#d84a2b" stroke="#7a1f0e" stroke-width="2"/></svg>`;
   return {
     body: `<div class="prompt">איזה מספר מסומן בחץ?</div>${svg}`,
     parts: [{ type: 'num', ans: val }],
@@ -556,7 +556,7 @@ function qSeqMember(start, k, X) {
   };
 }
 function segSvg(a, b) {
-  return `<svg class="numline" viewBox="0 0 320 110" style="width:auto;max-width:100%;height:min(20vh,150px);display:block;margin:4px auto" role="img" aria-label="ישר מספרים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
+  return `<svg class="numline" viewBox="0 0 320 110" style="display:block;margin:4px auto" role="img" aria-label="ישר מספרים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
 }
 function qSegPick(a, b, opts) {
   const inside = opts.find(x => x > a && x < b);

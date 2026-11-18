@@ -669,6 +669,20 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .collection-shelf .owned-animal:nth-child(even){animation-delay:calc(var(--i,0) * -0.22s - 2.1s)}
 @keyframes shelfwave{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.collection-shelf .owned-animal{animation:none}}
+/* sheet questions: long answer texts in one column, many numbers in two rows */
+#qcard .opts.list{display:flex !important;flex-direction:column;align-items:stretch;gap:calc(var(--q)*.4);width:min(100%,calc(var(--q)*26));margin-inline:auto}
+#qcard .opts.list .opt{width:100%;font-size:calc(var(--q)*1.05);padding:.35em .6em;line-height:1.25}
+@media (max-width:700px){#qcard .ordwrap .opts.ord:has(.opt:nth-child(6)),#qcard .ordwrap .seq:has(span:nth-child(6)){grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr))}}
+#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)){width:min(100%,calc(var(--q)*44))}
+#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .ord-label{display:none}
+#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.18em 0;font-size:min(4.2vw,calc(var(--q)*1.1))}
+#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .ghost-btn{margin-top:2px !important;padding:.25em .9em}
+#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:calc(var(--q)*.6)}
+#qcard .opts.list{gap:calc(var(--q)*.3)}#qcard .opts.list .opt{font-size:calc(var(--q)*.98);padding:.25em .5em}
+@media (max-height:700px) and (orientation:portrait){#qcard{--q:clamp(12px,min(2.2vh,3.9vw),26px)}}
+@media (orientation:landscape) and (max-height:480px){#qcard svg[aria-label="ישר מספרים"]{height:15vh !important}}
+@media (max-width:400px){#qcard .opts:not(.list):not(.ord) .opt{font-size:calc(var(--q)*1.1);padding:.3em .55em;min-width:0}#qcard .opts:not(.list):not(.ord){gap:6px}}
+@media (max-height:700px){#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.08em 0}#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:6px}#qcard .ordwrap .opts.ord,#qcard .ordwrap .seq{gap:4px}}
 /* nikud version: room for vowel marks */
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
 #qcard .prompt{line-height:1.7}
@@ -704,7 +718,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v79';
+const APP_VERSION = 'v80';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1284,7 +1298,281 @@ const CATS = [
 ];
 
 /* ---------- state ---------- */
-const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, profile: { nick: '', gender: '' }, sessions: 0, today: { day: '', count: 0 } });
+/* ---------- the teacher's review sheets: exact exercises, served before generated ones ---------- */
+const symOf = (a, b) => a < b ? '<' : a > b ? '>' : '=';
+const symH = s => s === '<' ? '&lt;' : s === '>' ? '&gt;' : '=';
+const cmpBox = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff8;border-radius:12px;padding:4px 8px;font-weight:800;flex:1 1 0;text-align:center;min-width:0">${x}</span>`;
+function qPlace(A, Av, B, Bv) {
+  const s = symOf(Av, Bv);
+  return {
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${cmpBox(A)}<b>?</b>${cmpBox(B)}</div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
+    hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
+    explain: `${A} = ${fmt(Av)} וְ-${B} = ${fmt(Bv)}. <span class="ltr">${fmt(Av)} ${symH(s)} ${fmt(Bv)}</span>`
+  };
+}
+function qDigit(n, i, e, how) {
+  const s = String(n), len = s.length, old = Number(s[i]), pv = 10 ** (len - 1 - i);
+  const diff = (e - old) * pv, amount = Math.abs(diff), grows = diff > 0;
+  const what = how === 'place' ? `אֶת סִפְרַת ${PLACE[pv]}` : `אֶת הַסִּפְרָה ${old}`;
+  return {
+    body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> שִׁינּוּ ${what} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
+    parts: [{ type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' }, { type: 'num', label: 'בְּכַמָּה', ans: amount }],
+    hint: 'כְּדַאי לָשִׂים לֵב לְאֵיזֶה מָקוֹם שַׁיֶּיכֶת הַסִּפְרָה. הַהֶפְרֵשׁ מוּכְפָּל בְּעֵרֶךְ הַמָּקוֹם.',
+    explain: `הַסִּפְרָה ${old} נִמְצֵאת בַּמָּקוֹם ${PLACE[pv]}. <span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(n + diff)}</span>, לָכֵן הַמִּסְפָּר ${grows ? 'גָּדַל' : 'קָטַן'} בְּ-${fmt(amount)}.`
+  };
+}
+function qDecomp(n, shown, ans) {
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַפֵּירוּק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
+    parts: [{ type: 'num', ans }],
+    hint: 'כָּל סִפְרָה שָׁווָה לָעֵרֶךְ שֶׁלָּהּ לְפִי הַמָּקוֹם.',
+    explain: `הֶחָסֵר הוּא ${fmt(ans)}. <span class="ltr">${fmt(n)} = ${shown.replace('___', fmt(ans))}</span>`
+  };
+}
+function qWordsPick(n, decoys) {
+  return {
+    body: `<div class="prompt">אֵיךְ כּוֹתְבִים בְּמִילִּים אֶת הַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
+    parts: [{ type: 'buttons', list: true, opts: shuffle([n, ...decoys]).map(numWords), ans: numWords(n) }],
+    hint: 'כְּדַאי לִקְרוֹא לְפִי הַמָּקוֹם: אֲלָפִים, מֵאוֹת, עֲשָׂרוֹת וִיחִידוֹת.',
+    explain: `<span class="ltr">${fmt(n)}</span> = ${numWords(n)}`
+  };
+}
+function qMoreLess(n, d, up) {
+  const ans = up ? n + d : n - d;
+  return {
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר ${up ? 'גָּדוֹל' : 'קָטַן'} בְּ-<span class="ltr">${fmt(d)}</span> מֵהַמִּסְפָּר <span class="ltr">${fmt(n)}</span>?</div>`,
+    parts: [{ type: 'num', ans }],
+    hint: up ? 'גָּדוֹל בְּ... פֵּירוּשׁוֹ לְהוֹסִיף.' : 'קָטָן בְּ... פֵּירוּשׁוֹ לְחַסֵּר.',
+    explain: `<span class="ltr">${fmt(n)} ${up ? '+' : '−'} ${fmt(d)} = ${fmt(ans)}</span>`
+  };
+}
+function qSame(n, odd, smaller) {
+  const d = String(n).split('');
+  const valid = [...new Set(perms(d).filter(x => x[0] !== '0').map(x => Number(x.join(''))).filter(v => (smaller ? v < n : v > n) && (v % 2 === 1) === odd))];
+  const check = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return /^\d+$/.test(s) && valid.includes(Number(s)); };
+  return {
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר ${odd ? 'אִי-זוּגִי' : 'זוּגִי'}, ${smaller ? 'הַקָּטָן' : 'הַגָּדוֹל'} מִ-<span class="ltr">${fmt(n)}</span>, הַמּוּרְכָּב מֵאוֹתָן סְפָרוֹת.</div>`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: odd ? 'מִסְפָּר אִי-זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 1, 3, 5, 7 אוֹ 9.' : 'מִסְפָּר זוּגִי מִסְתַּיֵּים בִּסְפָרוֹת 0, 2, 4, 6 אוֹ 8.',
+    explain: q => {
+      const mine = Number(String(q.parts[0].v ?? '').replace(/[,\s]/g, ''));
+      const others = valid.filter(x => x !== mine).slice(0, 3).map(fmt).join(', ');
+      return q.result ? (others ? `אַגַּב, אֶפְשָׁר הָיָה גַּם: ${others}.` : 'זוֹ הָיְיתָה הָאֶפְשָׁרוּת הַיְּחִידָה.') : `לְמָשָׁל: ${others}.`;
+    }
+  };
+}
+function qOrder(nums) {
+  const sorted = [...nums].sort((x, y) => x - y);
+  return {
+    body: `<div class="prompt">יֵשׁ לִלְחוֹץ עַל הַמִּסְפָּרִים מֵהַקָּטָן לַגָּדוֹל.</div>`,
+    parts: [{ type: 'order', items: [...nums], ans: sorted }],
+    hint: 'מוּמְלָץ לְהַשְׁווֹת קוֹדֶם אֶת מִסְפַּר הַסְּפָרוֹת, וְאָז אֶת הַסְּפָרוֹת הַשְּׂמָאלִיּוֹת בְּיוֹתֵר.',
+    explain: `הַסֵּדֶר הַנָּכוֹן: <span class="ltr">${sorted.map(fmt).join(' &lt; ')}</span>`
+  };
+}
+function qSeq(terms, blanks) {
+  const k = Math.abs(terms[1] - terms[0]);
+  const shown = terms.map((v, i) => blanks.includes(i) ? `<span class="gap">חָסֵר ${blanks.indexOf(i) + 1}</span>` : fmt(v)).join(', ');
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַסִּדְרָה. הִיא מַמְשִׁיכָה בְּאוֹתָן הַקְּפִיצוֹת:<br><span class="ltr" style="font-size:28px;margin-top:10px">${shown}</span></div>`,
+    parts: blanks.map((bi, j) => ({ type: 'num', label: `חָסֵר ${j + 1}`, ans: terms[bi] })),
+    hint: 'כְּדַאי לִבְדּוֹק בְּכַמָּה גָּדֵל אוֹ קָטֵן כָּל מִסְפָּר לְעוּמַּת הַמִּסְפָּר שֶׁלְּפָנָיו.',
+    explain: `בְּכָל שָׁלָב יֵשׁ קְפִיצָה שֶׁל ${fmt(k)}. הַסִּדְרָה הַמְּלֵאָה: ${terms.map(fmt).join(', ')}`
+  };
+}
+function qSeqMember(start, k, X) {
+  const isIn = (X - start) % k === 0 && X >= start;
+  const shown = [0, 1, 2, 3].map(i => fmt(start + i * k)).join(', ');
+  return {
+    body: `<div class="prompt">סִדְרָה: <span class="ltr">${shown}, ...</span><br>הַאִם הַמִּסְפָּר <span class="ltr" style="font-size:32px">${fmt(X)}</span> יוֹפִיעַ בְּהֶמְשֵׁךְ הַסִּדְרָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['כֵּן', 'לֹא'], ans: isIn ? 'כֵּן' : 'לֹא' }],
+    hint: 'יֵשׁ לִבְדּוֹק אִם הַהֶפְרֵשׁ בֵּין הַמִּסְפָּר הַמְּבוּקָּשׁ לַמִּסְפָּר הָרִאשׁוֹן מִתְחַלֵּק בִּקְפִיצָה.',
+    explain: `הַמִּסְפָּר ${isIn ? 'אָכֵן יוֹפִיעַ' : 'לֹא יוֹפִיעַ'}: הַקְּפִיצָה הִיא ${fmt(k)}, וְכָל הַמִּסְפָּרִים בַּסִּדְרָה מִסְתַּיְּימִים בְּ-${String(start).slice(-1)}.`
+  };
+}
+function segSvg(a, b) {
+  return `<svg viewBox="0 0 320 110" style="width:auto;max-width:100%;height:min(20vh,150px);display:block;margin:4px auto" role="img" aria-label="יְשַׁר מִסְפָּרִים"><line x1="10" y1="45" x2="300" y2="45" stroke="#163b2a" stroke-width="3"/><path d="M300 45 l-12 -7 v14 z" fill="#163b2a"/><line x1="70" y1="45" x2="200" y2="45" stroke="#163b2a" stroke-width="12"/><line x1="70" y1="30" x2="70" y2="60" stroke="#163b2a" stroke-width="3"/><line x1="200" y1="30" x2="200" y2="60" stroke="#163b2a" stroke-width="3"/><text x="70" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(a)}</text><text x="200" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#163b2a">${fmt(b)}</text></svg>`;
+}
+function qSegPick(a, b, opts) {
+  const inside = opts.find(x => x > a && x < b);
+  return {
+    body: `<div class="prompt">אֵיזֶה מִסְפָּר נִמְצָא בַּקֶּטַע הַמּוּדְגָּשׁ בִּישַׁר הַמִּסְפָּרִים?</div>${segSvg(a, b)}`,
+    parts: [{ type: 'buttons', opts: opts.map(fmt), ans: fmt(inside) }],
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `<span class="ltr">${fmt(inside)}</span> נִמְצָא בֵּין <span class="ltr">${fmt(a)}</span> לְ-<span class="ltr">${fmt(b)}</span>.`
+  };
+}
+function qSegWrite(a, b) {
+  const check = v => { const n = parseNum(v); return n > a && n < b; };
+  return {
+    body: `<div class="prompt">יֵשׁ לִכְתּוֹב מִסְפָּר נוֹסָף שֶׁנִּמְצָא בַּקֶּטַע הַמּוּדְגָּשׁ בִּישַׁר הַמִּסְפָּרִים.</div>${segSvg(a, b)}`,
+    parts: [{ type: 'text', check, placeholder: 'הַמִּסְפָּר:' }],
+    hint: 'הַמִּסְפָּר צָרִיךְ לִהְיוֹת גָּדוֹל מֵהַמִּסְפָּר הַקָּטָן וְקָטָן מֵהַמִּסְפָּר הַגָּדוֹל.',
+    explain: `כָּל מִסְפָּר בֵּין <span class="ltr">${fmt(a)}</span> לְ-<span class="ltr">${fmt(b)}</span> מַתְאִים, לְמָשָׁל <span class="ltr">${fmt(a + 25)}</span>.`
+  };
+}
+function qCol(a, op, b) {
+  const ans = op === '+' ? a + b : a - b;
+  return {
+    body: `<div class="prompt">יֵשׁ לִפְתּוֹר בִּמְאוּנָּךְ:</div>${vertHTML(a, b, op)}`, sig: String(a) + op + b,
+    parts: [{ type: 'num', ans }],
+    hint: op === '+' ? 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם הַסְּכוּם גָּדוֹל מִ-9, כּוֹתְבִים אֶת הַיְּחִידוֹת וּמַעֲבִירִים אֶת הָעֲשָׂרָה לַטּוּר הַבָּא.' : 'מַתְחִילִים מֵהַיְּחִידוֹת. אִם אִי אֶפְשָׁר לְחַסֵּר, לוֹקְחִים עֲשָׂרָה מֵהַטּוּר הַשְּׂמָאלִי.',
+    explain: `<span class="ltr">${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}</span>`
+  };
+}
+function qEq(kind, a, b) {
+  let eq, helper, wrong, ans;
+  if (kind === 'add') { eq = `${fmt(a)} + ___ = ${fmt(b)}`; helper = `${fmt(b)} − ${fmt(a)}`; wrong = [`${fmt(b)} + ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = b - a; }
+  else if (kind === 'sub1') { eq = `${fmt(a)} − ___ = ${fmt(b)}`; helper = `${fmt(a)} − ${fmt(b)}`; wrong = [`${fmt(a)} + ${fmt(b)}`, `${fmt(b)} − ${fmt(a)}`]; ans = a - b; }
+  else { eq = `___ − ${fmt(a)} = ${fmt(b)}`; helper = `${fmt(a)} + ${fmt(b)}`; wrong = [`${fmt(b)} − ${fmt(a)}`, `${fmt(a)} − ${fmt(b)}`]; ans = a + b; }
+  return {
+    body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַמִּסְפָּר הֶחָסֵר:<br><span class="ltr" style="font-size:30px;margin-top:8px">${eq}</span></div>`,
+    parts: [{ type: 'buttons', label: 'תַּרְגִּיל עֵזֶר', ltr: true, opts: shuffle([helper, ...wrong]), ans: helper }, { type: 'num', label: 'הַמִּסְפָּר הֶחָסֵר', ans }],
+    hint: 'כְּדֵי לִמְצוֹא מִסְפָּר חָסֵר בּוֹחֲרִים תַּרְגִּיל עֵזֶר הָפוּךְ: חִיסּוּר בּוֹדֵק חִיבּוּר, וְחִיבּוּר בּוֹדֵק חִיסּוּר.',
+    explain: `תַּרְגִּיל הָעֵזֶר: <span class="ltr">${helper} = ${fmt(ans)}</span>. כָּךְ מִתְקַבֵּל הַמִּסְפָּר הֶחָסֵר ${fmt(ans)}.`
+  };
+}
+function qMult(x, y) {
+  return {
+    body: `<div class="prompt"><span class="ltr" style="font-size:34px">${x} × ${y} = ?</span></div>`,
+    parts: [{ type: 'num', ans: x * y }],
+    hint: `אֶפְשָׁר לְחַבֵּר ${y} פְּעָמִים אֶת הַמִּסְפָּר ${x}, אוֹ לְהֵיעָזֵר בְּלוּחַ הַכֶּפֶל.`,
+    explain: `<span class="ltr">${x} × ${y} = ${x * y}</span>`
+  };
+}
+function qNoCalc(L, lv, R, rv, hint) {
+  const s = symOf(lv, rv);
+  return {
+    body: `<div class="prompt">יֵשׁ לְסַמֵּן בְּלִי לִפְתּוֹר אֶת הַתַּרְגִּילִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${R}</span></div>`,
+    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
+    hint,
+    explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${symH(s)}</span>.`
+  };
+}
+function qWordP(q, ex, ans, h) {
+  return { body: `<div class="prompt" style="font-size:22px">${q}</div>`, parts: [{ type: 'num', ans }], hint: h, explain: `הַתַּרְגִּיל: <span class="ltr">${ex} = ${fmt(ans)}</span>` };
+}
+function qAngle(deg, rot) {
+  const cx = 160, cy = 120, L = 100;
+  const pt = d => { const r = d * Math.PI / 180; return [(cx + L * Math.cos(r)).toFixed(1), (cy - L * Math.sin(r)).toFixed(1)]; };
+  const [x1, y1] = pt(rot), [x2, y2] = pt(rot + deg);
+  const svg = `<svg class="angle" viewBox="0 0 320 240" role="img" aria-label="זָווִית"><line x1="${cx}" y1="${cy}" x2="${x1}" y2="${y1}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="8" fill="#f0a430"/></svg>`;
+  return {
+    body: `${svg}<div class="prompt">אֵיזֶה סוּג זָווִית מוּצָּג?</div>`,
+    parts: [{ type: 'buttons', opts: ['חַדָּה', 'יְשָׁרָה', 'קֵהָה', 'שְׁטוּחָה'], ans: angleClass(deg) }],
+    hint: 'זָווִית יְשָׁרָה נִרְאֵית כְּמוֹ פִּינָּה שֶׁל מְרוּבָּע. חַדָּה קְטַנָּה מִמֶּנָּה, קֵהָה גְּדוֹלָה מִמֶּנָּה.',
+    explain: `הַזָּווִית הִיא ${angleClass(deg)}.`
+  };
+}
+function qAnglePics() {
+  return {
+    body: `<div class="prompt">בְּאֵיזֶה צִיּוּר מְסוּמֶּנֶת זָווִית קֵהָה?</div>`,
+    parts: [{ type: 'buttons', opts: ['📏 פִּינַּת סַרְגֵּל', '✏️ חוֹד עִיפָּרוֹן', '💻 מַחְשֵׁב נַיָּיד פָּתוּחַ', '✂️ מִסְפָּרַיִים פְּתוּחִים'], ans: '💻 מַחְשֵׁב נַיָּיד פָּתוּחַ' }],
+    hint: 'זָווִית קֵהָה גְּדוֹלָה מִפִּינָּה שֶׁל מְרוּבָּע, אֲבָל עֲדַיִין לֹא קַו יָשָׁר.',
+    explain: 'מָסָךְ שֶׁל מַחְשֵׁב נַיָּיד פָּתוּחַ לְאָחוֹר יוֹצֵר זָווִית קֵהָה. פִּינַּת הַסַּרְגֵּל הִיא זָווִית יְשָׁרָה, וְחוֹד הָעִיפָּרוֹן וְהַמִּסְפָּרַיִים יוֹצְרִים זָווִיּוֹת חַדּוֹת.'
+  };
+}
+const SHEET = [
+  ['compare', () => qPlace('4 מֵאוֹת', 400, '30 עֲשָׂרוֹת וְ-22 יְחִידוֹת', 322)],
+  ['compare', () => qPlace('5 אֲלָפִים', 5000, '4 אֲלָפִים, 3 מֵאוֹת וְ-24 עֲשָׂרוֹת', 4540)],
+  ['compare', () => qPlace('4 מֵאוֹת וְ-15 עֲשָׂרוֹת', 550, '5 מֵאוֹת', 500)],
+  ['compare', () => qPlace('18 עֲשָׂרוֹת', 180, '16 עֲשָׂרוֹת וְ-32 יְחִידוֹת', 192)],
+  ['compare', () => qPlace('60 עֲשָׂרוֹת וְ-32 יְחִידוֹת', 632, '7 מֵאוֹת', 700)],
+  ['digit', () => qDigit(4673, 0, 2)],
+  ['digit', () => qDigit(5209, 1, 7)],
+  ['digit', () => qDigit(3098, 1, 4, 'place')],
+  ['digit', () => qDigit(2938, 2, 5, 'place')],
+  ['digit', () => qDigit(4532, 1, 9)],
+  ['digit', () => qDigit(3607, 1, 2, 'place')],
+  ['decomp', () => qDecomp(124, '100 + ___ + 4', 20)],
+  ['decomp', () => qDecomp(3145, '3,000 + ___ + 40 + 5', 100)],
+  ['decomp', () => qDecomp(2046, '2,000 + ___ + 6', 40)],
+  ['decomp', () => qDecomp(2459, '2,000 + ___ + 50 + 9', 400)],
+  ['words', () => qWordsPick(5784, [5874, 5748, 4785])],
+  ['moreless', () => qMoreLess(5784, 200, true)],
+  ['moreless', () => qMoreLess(5784, 84, false)],
+  ['samedigits', () => qSame(5784, true, true)],
+  ['words', () => qWordsPick(2769, [2796, 2679, 7269])],
+  ['moreless', () => qMoreLess(2769, 100, true)],
+  ['moreless', () => qMoreLess(2769, 59, false)],
+  ['samedigits', () => qSame(2769, false, false)],
+  ['order', () => qOrder([2142, 899, 3099, 4001, 2098, 3198])],
+  ['order', () => qOrder([3452, 1409, 3099, 2456, 2098, 999, 1097])],
+  ['seq', () => qSeq([452, 462, 472, 482, 492, 502, 512], [2, 3, 6])],
+  ['seq', () => qSeqMember(452, 10, 515)],
+  ['seq', () => qSeqMember(452, 10, 532)],
+  ['seq', () => qSeq([6500, 5500, 4500, 3500, 2500, 1500], [3, 4])],
+  ['seq', () => qSeq([2983, 2984, 2985, 2986, 2987], [0, 3, 4])],
+  ['seq', () => qSeq([134, 154, 174, 194, 214], [2, 3])],
+  ['seq', () => qSeq([133, 136, 139, 142, 145], [2, 3])],
+  ['numline', () => qSegPick(3670, 3770, [3780, 3681, 3657, 3791])],
+  ['numline', () => qSegWrite(3670, 3770)],
+  ['column', () => qCol(437, '+', 278)],
+  ['column', () => qCol(387, '+', 179)],
+  ['column', () => qCol(408, '+', 187)],
+  ['column', () => qCol(548, '+', 342)],
+  ['column', () => qCol(653, '+', 249)],
+  ['column', () => qCol(239, '+', 458)],
+  ['column', () => qCol(500, '−', 175)],
+  ['column', () => qCol(472, '−', 56)],
+  ['column', () => qCol(436, '−', 147)],
+  ['column', () => qCol(568, '−', 349)],
+  ['column', () => qCol(600, '−', 347)],
+  ['column', () => qCol(741, '−', 239)],
+  ['column', () => qCol(239, '+', 175)],
+  ['equation', () => qEq('add', 348, 742)],
+  ['equation', () => qEq('sub1', 405, 237)],
+  ['equation', () => qEq('sub2', 204, 205)],
+  ['equation', () => qEq('add', 546, 871)],
+  ['equation', () => qEq('sub1', 763, 249)],
+  ['equation', () => qEq('sub2', 193, 273)],
+  ['equation', () => qEq('sub1', 432, 237)],
+  ['equation', () => qEq('add', 537, 642)],
+  ['equation', () => qEq('sub2', 146, 579)],
+  ['mult', () => qMult(5, 5)],
+  ['mult', () => qMult(7, 3)],
+  ['mult', () => qMult(6, 4)],
+  ['mult', () => qMult(8, 4)],
+  ['mult', () => qMult(5, 6)],
+  ['mult', () => qMult(5, 4)],
+  ['mult', () => qMult(8, 3)],
+  ['nocalc', () => qNoCalc('6,000 − 1,879', 4121, '7,000 − 1,879', 5121, 'מַחְסִירִים אוֹתוֹ מִסְפָּר. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('3,042 − 1,879', 1163, '3,042 − 2,049', 993, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('5,098 + 3,187', 8285, '5,098 + 2,076', 7174, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('237 − 149', 88, '237 − 99', 138, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּשֶׁמַּחֲסִירִים מִסְפָּר גָּדוֹל יוֹתֵר, מִתְקַבֶּלֶת תּוֹצָאָה קְטַנָּה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('459 − 345', 114, '500 − 345', 155, 'מַחְסִירִים אוֹתוֹ מִסְפָּר. כְּכָל שֶׁהַמִּסְפָּר הָרִאשׁוֹן גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('245 + 567', 812, '348 + 600', 948, 'בְּצַד אֶחָד שְׁנֵי הַמִּסְפָּרִים גְּדוֹלִים יוֹתֵר, וְלָכֵן גַּם הַסְּכוּם שֶׁלּוֹ גָּדוֹל יוֹתֵר.')],
+  ['nocalc', () => qNoCalc('397 + 199', 596, '397 + 678', 1075, 'הַמִּסְפָּר הָרִאשׁוֹן זֵהֶה. כְּכָל שֶׁמּוֹסִיפִים מִסְפָּר גָּדוֹל יוֹתֵר, הַתּוֹצָאָה גְּדוֹלָה יוֹתֵר.')],
+  ['word', () => qWordP('לַעֲמִית הָיוּ 350 דַּפִּים. הוּא הִשְׁתַּמֵּשׁ בְּ-149 דַּפִּים. כַּמָּה דַּפִּים נוֹתְרוּ לוֹ?', '350 − 149', 201, 'הִשְׁתַּמֵּשׁ אוֹמֵר שֶׁהַדַּפִּים יָרְדוּ, וְלָכֵן מְחַסְּרִים.')],
+  ['word', () => qWordP('לְטַל הָיוּ 70 שְׁקָלִים. הוּא קִיבֵּל מֵהוֹרָיו עוֹד 42 שְׁקָלִים וּמֵאָחִיו עוֹד 27 שְׁקָלִים. כַּמָּה שְׁקָלִים יֵשׁ לוֹ כָּעֵת?', '70 + 42 + 27', 139, 'קִיבֵּל עוֹד אוֹמֵר שֶׁהַכֶּסֶף גָּדַל, וְלָכֵן מְחַבְּרִים אֶת כָּל הַסְּכוּמִים.')],
+  ['word', () => qWordP('בְּמַאֲפִיַּית הַכְּפָר יֵשׁ 245 סוּפְגָּנִיּוֹת. בְּמַאֲפִיַּית הַשָּׁרוֹן יֵשׁ 16 סוּפְגָּנִיּוֹת יוֹתֵר מֵאֲשֶׁר בְּמַאֲפִיַּית הַכְּפָר. כַּמָּה סוּפְגָּנִיּוֹת יֵשׁ בְּמַאֲפִיַּית הַשָּׁרוֹן?', '245 + 16', 261, 'יוֹתֵר מֵאֲשֶׁר... פֵּירוּשׁוֹ לְהוֹסִיף.')],
+  ['word', () => qWordP('בְּמַאֲפִיַּית הַכְּפָר יֵשׁ 245 סוּפְגָּנִיּוֹת, וּבְמַאֲפִיַּית הַשָּׁרוֹן יֵשׁ 261 סוּפְגָּנִיּוֹת. כַּמָּה סוּפְגָּנִיּוֹת יֵשׁ בִּשְׁתֵּי הַמַּאֲפִיּוֹת יַחַד?', '245 + 261', 506, 'יַחַד אוֹמֵר שֶׁמְּחַבְּרִים אֶת שְׁתֵּי הַכַּמּוּיוֹת.')],
+  ['word', () => qWordP('דָּנָה קָנְתָה 5 עֶפְרוֹנוֹת. כָּל עִיפָּרוֹן עָלָה לָהּ 7 שְׁקָלִים. כַּמָּה עָלוּ לָהּ כָּל הָעֶפְרוֹנוֹת?', '5 × 7', 35, 'מְחִיר זֵהֶה לְכָל עִיפָּרוֹן: מַכְפִּילִים אֶת מִסְפַּר הָעֶפְרוֹנוֹת בִּמְחִיר שֶׁל עִיפָּרוֹן אֶחָד.')],
+  ['angleid', () => qAngle(90, 0)],
+  ['angleid', () => qAngle(28, 180)],
+  ['angleid', () => qAngle(180, 0)],
+  ['angleid', () => qAngle(134, 42)],
+  ['angleid', () => qAngle(180, 140)],
+  ['angleid', () => qAngle(90, 180)],
+  ['angleid', () => qAngle(148, 16)],
+  ['angleid', qAnglePics],
+  ['angledraw', () => sheetDraw('חַדָּה')],
+  ['angledraw', () => sheetDraw('קֵהָה')],
+  ['angledraw', () => sheetDraw('יְשָׁרָה')]
+].map(([cat, make], i) => ({ id: 's' + (i + 1), cat, make }));
+function sheetDraw(target) { angDrawBag = [target]; return genAngleDraw(); }
+const sheetLeft = cat => SHEET.filter(x => !(S.sheetOk || {})[x.id] && (!cat || x.cat === cat));
+// order pending sheet items so consecutive questions come from different topics
+function sheetPlan(n) {
+  const left = sheetLeft(), byCat = {};
+  left.forEach(x => (byCat[x.cat] = byCat[x.cat] || []).push(x));
+  const cats = Object.keys(byCat), out = [];
+  for (let r = 0; out.length < n && cats.some(c => byCat[c].length); r++) cats.forEach(c => { if (out.length < n && byCat[c].length) out.push(byCat[c].shift()); });
+  return out;
+}
+
+const DEFAULT = () => ({ coins: 0, medals: [], items: {}, gear: {}, mastery: {}, settings: { timer: 'none' }, rot: [], resume: {}, stats: {}, sheetOk: {}, profile: { nick: '', gender: '' }, sessions: 0, today: { day: '', count: 0 } });
 const mergeState = x => ({
   ...DEFAULT(), ...x,
   settings: { ...DEFAULT().settings, ...(x.settings || {}) },
@@ -1448,7 +1736,7 @@ function renderHome() {
     <div class="home-top">
       <div class="hero-bubble">
         🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
-        <small>אִימּוּנִים הַיּוֹם: ${doneToday} · אִימּוּן רָגִיל כְּ-5 דַּקּוֹת</small>
+        <small>אִימּוּנִים הַיּוֹם: ${doneToday} · 📄 דַּף הַחֲזָרָה: ${SHEET.length - sheetLeft().length} מִתּוֹךְ ${SHEET.length}</small>
       </div>
       <div class="hero-board">
         <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
@@ -1605,7 +1893,12 @@ function startSession(kind, only) {
     return;
   }
   session = { kind, only: only || null, total: kind === 'bonus' ? 6 : 8, done: 0, correct: 0, coins: 0 };
-  if (!only) { session.topics = planTopics(session.total); save(); }
+  if (!only) {
+    const sp = kind === 'base' ? sheetPlan(session.total) : [];
+    session.topics = sp.map(x => x.cat).concat(sp.length < session.total ? planTopics(session.total - sp.length) : []);
+    session.sheet = sp.map(x => x.id);
+    save();
+  }
   nextQ();
 }
 
@@ -1618,6 +1911,10 @@ function nextQ() {
   let cat, sig;
   for (let tries = 0; tries < 60; tries++) {
     cat = pickCat();
+    const sid = session.sheet && session.sheet[session.done];
+    let sh = sid ? SHEET.find(x => x.id === sid) : null;
+    if (!sh && session.only) { session.usedSheet = session.usedSheet || []; sh = sheetLeft(session.only).find(x => !session.usedSheet.includes(x.id)); if (sh) session.usedSheet.push(sh.id); }
+    if (sh) { cat = CATS.find(c => c.id === sh.cat); Q = sh.make(); Q.sheetId = sh.id; sig = sigOf(Q.body + (Q.sig || '')); break; }
     Q = cat.gen(mast(cat.id).tier);
     sig = sigOf(Q.body + (Q.sig || ''));
     if (!S.recent.includes(sig)) break;
@@ -1651,7 +1948,7 @@ function correctPart(p) {
 function partHTML(p, i) {
   const locked = Q.result !== undefined;
   if (p.type === 'buttons') {
-    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
+    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts${p.list ? ' list' : ''}"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
       let cls = p.v === o ? 'sel' : '';
       if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
       return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${p.ltr ? `<span class="ltr">${esc(o)}</span>` : esc(o)}</button>`;
@@ -1711,7 +2008,7 @@ function renderPlay() {
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
     <div class="qhead">
-      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}</div>
+      <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שְׁאֵלָה ${qNum} מִתּוֹךְ ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אִימּוּן מָתֵמָטִיקָה'}${Q.sheetId ? ' · 📄' : ''}</div>
       ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
     </div>
     <div class="bar"><span style="width:${pct}%"></span></div>
@@ -1798,6 +2095,7 @@ function record(ok) {
   if (!S.stats) S.stats = {};
   const st = S.stats[Q.cat] || (S.stats[Q.cat] = { ok: 0, bad: 0, h: '' });
   if (ok) st.ok++; else st.bad++;
+  if (ok && Q.sheetId) { S.sheetOk = S.sheetOk || {}; S.sheetOk[Q.sheetId] = true; }
   st.h = (st.h + (ok ? '1' : '0')).slice(-12);
   if (!S.resume) S.resume = {};
   S.resume[resumeKey(session.kind, session.only)] = JSON.parse(JSON.stringify(session));

@@ -3,7 +3,7 @@
 
   python3 tools/release.py build     engine + game files -> src.html -> updatever.html (test page, with nikud)
   python3 tools/release.py dev       next test version: 2.0 -> 2.1 -> 2.2 ... (after a publish: next whole number, e.g. 3.0), then build
-  python3 tools/release.py publish   test page -> index.html (what the parents open), new service-worker cache name,
+  python3 tools/release.py publish   test page -> index.html (what the parents open), adminver.html -> admin.html, new service-worker cache name,
                                      records the published version. "release_notes" in game.json must be filled first
                                      (shown once to returning users after they update).
 
@@ -58,6 +58,8 @@ elif cmd == 'publish':
         sys.exit('fill "release_notes" in game.json first')
     build()
     wr('index.html', rd('updatever.html').replace('<meta name="robots" content="noindex">', '', 1))
+    if os.path.exists(os.path.join(root, 'adminver.html')):
+        wr('admin.html', rd('adminver.html'))  # the test dashboard goes live together with the app
     wr('sw.js', re.sub(r"jungle-v\d+", f"jungle-v{V['build']}", rd('sw.js')))
     V['published'] = V['label']
     V['publishedBuild'] = V['build']

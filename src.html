@@ -774,8 +774,8 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v99';
-const APP_LABEL = '2.2';
+const APP_VERSION = 'v100';
+const APP_LABEL = '2.3';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -2057,7 +2057,8 @@ function planTopics(n) {
   return n >= 8 ? boostWeak(chosen) : shuffle(chosen);
 }
 // accuracy per topic from real answers (null when too few answers)
-function topicAcc(id) { const st = (S.stats || {})[id]; return st && st.ok + st.bad >= 4 ? st.ok / (st.ok + st.bad) : null; }
+// how well a topic is known now: the last 10 answers (a mistake that was later fixed stops counting)
+function topicAcc(id) { const h = String(((S.stats || {})[id] || {}).h || '').slice(-10); return h.length >= 4 ? [...h].filter(c => c === '1').length / h.length : null; }
 // When there is a clear gap between weak and strong topics, a weak topic gets a second question
 // in place of a strong topic's question (the strong topic returns first in the next session).
 function boostWeak(chosen) {

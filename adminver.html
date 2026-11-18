@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+הג'ונגל של המתמטיקה – אפליקציית תרגול לכיתה ג'
+רעיון, אפיון ועיצוב: חן בן-ברית (BenBrit), לבנו אדיר ולתלמידות ולתלמידי כיתה ג'4
+פיתוח: חן בן-ברית יחד עם קלוד, שותף לבנייה
+נובמבר 2026
+-->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ניהול – הג'ונגל של המתמטיקה</title>
+<link rel="icon" href="favicon.png">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Heebo,Arial,sans-serif;background:#f4f6f5;color:#1d2b25;font-size:15px}
+header{background:#24493a;color:#fff;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:19px;margin:0;flex:1}
+button{font:inherit;cursor:pointer;border:1px solid #b8c4be;background:#fff;border-radius:8px;padding:6px 12px;color:#1d2b25}
+button.pri{background:#2e8b57;color:#fff;border-color:#2e8b57}
+button.sm{padding:3px 9px;font-size:13px}
+button:disabled{opacity:.5;cursor:default}
+main{padding:16px;max-width:1500px;margin:auto}
+.box{background:#fff;border:1px solid #dde3df;border-radius:10px;padding:14px;margin-bottom:16px}
+.box h2{margin:0 0 10px;font-size:17px}
+.kpis{display:flex;gap:12px;flex-wrap:wrap}
+.kpi{flex:1 1 150px;background:#f4f6f5;border-radius:8px;padding:10px 12px}
+.kpi b{display:block;font-size:24px}
+.kpi span{color:#5b6b63;font-size:13px}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #e2e7e4;padding:4px 4px;text-align:center;white-space:nowrap}
+th{background:#eef2f0;font-weight:600;font-size:13px}
+th.t{white-space:normal;line-height:1.15;font-size:12px;overflow-wrap:normal}
+/* heat table: equal topic columns that share the width, names on up to two lines */
+table.heat{table-layout:fixed;min-width:900px}
+table.heat th{white-space:normal}table.heat th.w-name{width:64px}table.heat th.w-all{width:46px}table.heat th.w-ses{width:52px}table.heat th.w-date{width:62px}table.heat th.t{font-size:11px;padding:4px 1px}
+td.c{font-weight:700;font-size:13px;line-height:1.1}
+td.name{text-align:right;font-weight:600;cursor:pointer;color:#1b5e3f}
+tr:hover td.name{text-decoration:underline}
+.c0{background:#e9ecea;color:#8a958f}.c1{background:#f4b5ad}.c2{background:#f9d9a0}.c3{background:#cde8b9}.c4{background:#9fd49a}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;font-size:13px;color:#4a5a52}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-inline-end:4px}
+.weak{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:#fdeceb;border:1px solid #f1bdb8;border-radius:99px;padding:4px 12px}
+.focus{background:#fff6d8;border:1px solid #efd37a;border-radius:8px;padding:6px 10px;margin-top:8px}
+.up{color:#1f8f4e}.down{color:#c0392b}.flat{color:#7a867f}
+.hidden{display:none}
+td small{display:block;font-size:10.5px;font-weight:400;color:#5b6b63;line-height:1.1}
+td.few{opacity:.6;font-style:italic}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=email]{font:inherit;padding:6px 10px;border:1px solid #b8c4be;border-radius:8px;min-width:240px;direction:ltr}
+.muted{color:#6b7b73;font-size:13px}
+.center{text-align:center;padding:40px 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1><a href="./" style="color:inherit;text-decoration:none;cursor:default" aria-label="חזרה לאפליקציה">🌴</a> ניהול – הג'ונגל של המתמטיקה</h1>
+  <a href="./" style="color:#fff;background:#2e8b57;border-radius:8px;padding:6px 12px;text-decoration:none">← חזרה לאפליקציה</a>
+  <span id="who" class="muted" style="color:#cfe3d8"></span>
+  <button id="outBtn" class="hidden">יציאה</button>
+</header>
+<main id="main"><div class="center">טוען…</div></main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDuTrqEWj63hPN1pGCKXcsgjRh78C1rkwU",
+  authDomain: "jungle-math-kids.firebaseapp.com",
+  projectId: "jungle-math-kids",
+  storageBucket: "jungle-math-kids.firebasestorage.app",
+  messagingSenderId: "984154992852",
+  appId: "1:984154992852:web:49dcb9957f8baa4e108b41"
+});
+const auth = getAuth(app), db = getFirestore(app);
+const $ = s => document.querySelector(s);
+const dec = s => String(s ?? '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+const esc = s => dec(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
+const MIN = 3; // minimal answers to judge a topic
+
+let me = null, kids = [], admins = [], openUid = null;
+
+onAuthStateChanged(auth, async u => {
+  me = u;
+  $('#outBtn').classList.toggle('hidden', !u);
+  $('#who').textContent = u ? u.email : '';
+  if (!u) { $('#main').innerHTML = '<div class="center box"><h2>כניסה למנהלים</h2><p class="muted">הדף מיועד למורה ולמנהל בלבד.</p><button class="pri" id="inBtn">כניסה עם Google</button></div>'; return; }
+  $('#main').innerHTML = '<div class="center">בודק הרשאות…</div>';
+  try {
+    const a = await getDoc(doc(db, 'admins', (u.email || '').toLowerCase()));
+    if (!a.exists()) throw new Error('no');
+    await loadAll();
+  } catch (e) {
+    $('#main').innerHTML = '<div class="center box"><h2>אין הרשאה</h2><p class="muted">החשבון ' + esc(u.email) + ' אינו ברשימת המורשים.</p></div>';
+  }
+});
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('button,td.name'); if (!t) return;
+  if (t.id === 'inBtn') { try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (x) { alert('הכניסה נכשלה'); } }
+  else if (t.id === 'outBtn') signOut(auth);
+  else if (t.id === 'csvBtn') exportCsv();
+  else if (t.dataset.uid && t.classList.contains('name')) { openUid = t.dataset.uid; render(); $('#card').scrollIntoView({ behavior: 'smooth' }); }
+  else if (t.dataset.focus) setFocus(t.dataset.uid, t.dataset.focus, true);
+  else if (t.dataset.unfocus) setFocus(t.dataset.uid, t.dataset.unfocus, false);
+  else if (t.dataset.clear) setFocus(t.dataset.clear, null);
+  else if (t.id === 'addAdmin') addAdmin();
+  else if (t.dataset.rmadmin) removeAdmin(t.dataset.rmadmin);
+  else if (t.id === 'closeCard') { openUid = null; render(); }
+});
+
+async function loadAll() {
+  const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), getDocs(collection(db, 'admins'))]);
+  kids = us.docs.map(d => ({ uid: d.id, ...d.data() })).filter(k => k.topics);
+  admins = ad.docs.map(d => d.id);
+  render();
+}
+
+// what the child knows now: the last 10 answers in each topic (like the child's own view); old mistakes fade out.
+// the full totals (all answers ever) stay visible in the tooltip and in the child's card.
+const recent = t => { const h = String((t && t.h) || '').slice(-10); if (!h && t && t.ok + t.bad) return { ok: t.ok, n: t.ok + t.bad }; return { ok: [...h].filter(c => c === '1').length, n: h.length }; };
+const acc = t => { const r = recent(t); return r.n ? r.ok / r.n : null; };
+const few = t => recent(t).n < MIN;
+const cls = a => a === null ? 'c0' : a < .5 ? 'c1' : a < .7 ? 'c2' : a < .85 ? 'c3' : 'c4';
+const pct = a => a === null ? '–' : Math.round(a * 100) + '%';
+function trend(t) {
+  const h = (t && t.h) || ''; const old = h.slice(0, -4), rec = h.slice(-4);
+  if (old.length < 3 || rec.length < 3) return '';
+  const r = s => [...s].filter(c => c === '1').length / s.length;
+  const d = r(rec) - r(old);
+  return d >= .2 ? '<span class="up">▲ משתפר</span>' : d <= -.2 ? '<span class="down">▼ יורד</span>' : '<span class="flat">● יציב</span>';
+}
+// table: first name + first letter of family name (full name on hover)
+const fullShort = k => { const full = dec(k.nick || k.name || k.email || 'ללא שם').replace(/[\u0591-\u05c7\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '').split(/\s+[-–(]/)[0].trim(); const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x))); return w; };
+// first name only; the family-name initial ("ב.") is added only when two children share a first name
+const shortName = k => { const w = fullShort(k); const dup = kids.filter(x => fullShort(x)[0] === w[0]).length > 1; return dup && w.length > 1 ? w[0] + ' ' + w[w.length - 1][0] + '.' : w[0]; };
+const whenShort = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) : '–'; };
+const when = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '–'; };
+const topicIds = () => { const m = {}; kids.forEach(k => Object.entries(k.topics || {}).forEach(([id, t]) => { m[id] = t.name || id; })); return Object.keys(m).map(id => [id, m[id]]); };
+const kidAcc = k => { let o = 0, n = 0; Object.values(k.topics || {}).forEach(t => { const r = recent(t); o += r.ok; n += r.n; }); return n ? o / n : null; };
+
+function render() {
+  const tp = topicIds();
+  const now = Date.now(), week = 7 * 864e5;
+  const active = kids.filter(k => k.lastSeen && k.lastSeen.toDate && now - k.lastSeen.toDate().getTime() < week).length;
+  const accs = kids.map(kidAcc).filter(a => a !== null);
+  const avg = accs.length ? accs.reduce((a, b) => a + b, 0) / accs.length : null;
+  const classWeak = tp.map(([id, name]) => { let o = 0, n = 0; kids.forEach(k => { const t = (k.topics || {})[id]; if (t) { const r = recent(t); o += r.ok; n += r.n; } }); return { id, name, n, a: n >= MIN ? o / n : null }; })
+    .filter(x => x.a !== null).filter(x => x.a < .85).sort((x, y) => x.a - y.a).slice(0, 3);
+  const sorted = kids.slice().sort((a, b) => (a.name || a.email || '').localeCompare(b.name || b.email || '', 'he'));
+  const head = tp.map(([id, n]) => `<th class="t" title="${esc(n)}">${esc(n)}</th>`).join('');
+  const rows = sorted.map(k => `<tr><td class="name" data-uid="${k.uid}" title="${esc(k.nick || k.name || k.email || '')}">${esc(shortName(k))}</td>
+      <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="c ${cls(a)}${a !== null && few(t) ? ' few' : ''}" title="${t ? 'עכשיו (10 אחרונות): ' + recent(t).ok + '/' + recent(t).n + ' · מצטבר: ' + t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}${a !== null ? `<small>${recent(t).ok}/${recent(t).n}</small>` : ''}</td>`; }).join('')}
+      <td>${k.sessions || 0}</td><td title="${when(k.lastSeen)}">${whenShort(k.lastSeen)}</td></tr>`).join('');
+  const k = kids.find(x => x.uid === openUid);
+  $('#main').innerHTML = `
+  <div class="box"><div class="kpis">
+    <div class="kpi"><b>${kids.length}</b><span>ילדים רשומים</span></div>
+    <div class="kpi"><b>${active}</b><span>פעילים ב-7 ימים אחרונים</span></div>
+    <div class="kpi"><b>${pct(avg)}</b><span>אחוז הצלחה ממוצע (הידע עכשיו)</span></div></div>
+    <h2 style="margin-top:14px">נושאים לחיזוק בכיתה</h2>
+    <div class="weak">${classWeak.length ? classWeak.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין עדיין מספיק נתונים</span>'}</div></div>
+  <div class="box"><div class="row"><h2 style="margin:0;flex:1">טבלת חום – אחוז הצלחה בכל נושא</h2><button id="csvBtn" class="sm">ייצוא לאקסל (CSV)</button></div>
+    <div class="tablewrap"><table class="heat"><thead><tr><th class="w-name">ילד/ה</th><th class="w-all">כללי</th>${head}<th class="w-ses">אימונים</th><th class="w-date">כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
+    <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך 10 התשובות האחרונות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
+    <p class="muted">האחוז מראה את הידע עכשיו: 10 התשובות האחרונות בכל נושא, כך שטעויות ישנות שתוקנו לא מורידות את הציון. הסכום המצטבר של כל התשובות מופיע בריחוף על תא ובכרטיס הילד. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
+  <div id="card">${k ? kidCard(k) : ''}</div>
+  <div class="box"><h2>מורשי ניהול</h2>
+    <div>${admins.map(a => `<div class="row" style="margin-bottom:4px"><span style="direction:ltr">${esc(a)}</span>${a !== (me.email || '').toLowerCase() ? `<button class="sm" data-rmadmin="${esc(a)}">הסרה</button>` : '<span class="muted">(אתה)</span>'}</div>`).join('')}</div>
+    <div class="row" style="margin-top:8px"><input type="email" id="newAdmin" placeholder="אימייל Google של מורה"><button id="addAdmin" class="pri sm">הוספת מורה</button></div></div>`;
+}
+
+function kidCard(k) {
+  const list = Object.entries(k.topics || {}).map(([id, t]) => ({ id, ...t, a: acc(t) }));
+  const judged = list.filter(x => x.a !== null).sort((x, y) => x.a - y.a);
+  const none = list.filter(x => x.a === null);
+  const solid = judged.filter(x => x.ok + x.bad >= MIN);
+  const weak3 = solid.filter(x => x.a < .85).slice(0, 3);
+  const fl = focusList(k.focus), fs = fl.map(id => list.find(x => x.id === id)).filter(Boolean);
+  const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
+  const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
+  const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
+  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>
+    <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה עכשיו: ${pct(kidAcc(k))}</p>
+    <h2>מה כדאי לחזק</h2>
+    <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
+    ${au ? `<div class="focus">המלצה פעילה לילד: 🌺 <b>${esc(au.name)}</b> <span class="muted">(המלצת המערכת – תתבטל לבד כשהנושא יתחזק)</span></div>` : ''}
+    ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `🍎 <b>${esc(f.name)}</b> <span class="muted">(מורה)</span> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
+    <h2 style="margin-top:14px">כל הנושאים – מהחלש לחזק</h2>
+    <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה עכשיו</th><th>מצטבר: נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;
+}
+
+// recommendations add up: adding one keeps the others; topic null clears them all
+const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
+async function setFocus(uid, topic, add) {
+  try {
+    const k = kids.find(x => x.uid === uid);
+    const cur = focusList(k && k.focus);
+    const next = topic === null ? [] : add ? [...new Set([...cur, topic])] : cur.filter(x => x !== topic);
+    const focus = next.length ? { topics: next, by: me.email, at: Date.now() } : null;
+    await updateDoc(doc(db, 'users', uid), { focus });
+    if (k) k.focus = focus;
+    render();
+  } catch (e) { alert('לא ניתן לשמור את ההמלצה'); }
+}
+async function addAdmin() {
+  const v = ($('#newAdmin').value || '').trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { alert('אימייל לא תקין'); return; }
+  await setDoc(doc(db, 'admins', v), { addedBy: me.email, at: serverTimestamp() });
+  admins.push(v); render();
+}
+async function removeAdmin(a) {
+  if (!confirm('להסיר את ' + a + ' מרשימת המורשים?')) return;
+  await deleteDoc(doc(db, 'admins', a)); admins = admins.filter(x => x !== a); render();
+}
+function exportCsv() {
+  const tp = topicIds();
+  const q = s => '"' + String(s ?? '').replace(/"/g, '""') + '"';
+  const lines = [['שם', 'אימייל', 'אימונים', 'כניסה אחרונה', 'הצלחה כללית', ...tp.map(([, n]) => n + ' (%)')].map(q).join(',')];
+  kids.forEach(k => lines.push([k.name, k.email, k.sessions || 0, when(k.lastSeen), pct(kidAcc(k)), ...tp.map(([id]) => pct(acc((k.topics || {})[id])))].map(q).join(',')));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'jungle-math-class.csv'; a.click();
+}
+</script>
+</body>
+</html>

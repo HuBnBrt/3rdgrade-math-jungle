@@ -13,7 +13,10 @@ def sub(m):
     if t in M: return M[t]
     if t not in missing: missing.append(t)
     return t
-out = s[:i] + pat.sub(sub, s[i:])
+# regions between /*NIKUD-OFF*/ and /*NIKUD-ON*/ hold words used for matching typed answers: keep them plain
+body = s[i:]
+chunks = re.split(r'(/\*NIKUD-OFF\*/.*?/\*NIKUD-ON\*/)', body, flags=re.S)
+out = s[:i] + ''.join(c if c.startswith('/*NIKUD-OFF*/') else pat.sub(sub, c) for c in chunks)
 # vowel marks need room and a font that draws them correctly
 out = out.replace("\n</style>", """
 /* nikud version: room for vowel marks */

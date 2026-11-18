@@ -735,7 +735,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v84';
+const APP_VERSION = 'v85';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1988,9 +1988,37 @@ function answered(p) {
   if (p.type === 'draw') return true;
   return false;
 }
+// a child may type the number in Hebrew words ("מֵאָה"); accept it, but remind to write digits
+/*NIKUD-OFF*/
+const HW_U = { 'אחת': 1, 'אחד': 1, 'שתיים': 2, 'שניים': 2, 'שתים': 2, 'שנים': 2, 'שתי': 2, 'שני': 2, 'שלוש': 3, 'שלושה': 3, 'ארבע': 4, 'ארבעה': 4, 'חמש': 5, 'חמישה': 5, 'חמשה': 5, 'שש': 6, 'שישה': 6, 'ששה': 6, 'שבע': 7, 'שבעה': 7, 'שמונה': 8, 'תשע': 9, 'תשעה': 9 };
+const HW_C = { 'שלושת': 3, 'ארבעת': 4, 'חמשת': 5, 'ששת': 6, 'שבעת': 7, 'שמונת': 8, 'תשעת': 9, 'עשרת': 10 };
+const HW_T = { 'עשר': 10, 'עשרה': 10, 'עשרים': 20, 'שלושים': 30, 'ארבעים': 40, 'חמישים': 50, 'חמשים': 50, 'שישים': 60, 'ששים': 60, 'שבעים': 70, 'שמונים': 80, 'תשעים': 90 };
+const HW_X = { 'מאה': 100, 'מאתיים': 200, 'אלף': 1000, 'אלפיים': 2000, 'אפס': 0 };
+function hebWordsNum(v) {
+  const known = w => w in HW_U || w in HW_C || w in HW_T || w in HW_X || w === 'מאות' || w === 'אלפים';
+  const toks = String(v ?? '').replace(/[\u0591-\u05c7]/g, '').replace(/[-,.]/g, ' ').trim().split(/\s+/).filter(Boolean)
+    .map(w => !known(w) && w[0] === 'ו' && known(w.slice(1)) ? w.slice(1) : w);
+  if (!toks.length || !toks.every(known)) return NaN;
+  let total = 0, cur = 0;
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i], nx = toks[i + 1];
+    const u = HW_U[w] ?? HW_C[w];
+    if (u !== undefined && nx === 'אלפים') { total += u * 1000; i++; }
+    else if (HW_U[w] !== undefined && nx === 'מאות') { cur += HW_U[w] * 100; i++; }
+    else if (HW_U[w] !== undefined && (nx === 'עשרה' || nx === 'עשר')) { cur += 10 + HW_U[w]; i++; }
+    else if (HW_U[w] !== undefined) cur += HW_U[w];
+    else if (HW_T[w] !== undefined) cur += HW_T[w];
+    else if (w === 'אלף' || w === 'אלפיים') total += HW_X[w];
+    else if (HW_X[w] !== undefined) cur += HW_X[w];
+    else return NaN;
+  }
+  return total + cur;
+}
+/*NIKUD-ON*/
+const wordsAnswer = p => p.type === 'num' && isNaN(parseNum(p.v)) && hebWordsNum(p.v) === p.ans;
 function correctPart(p) {
   if (p.type === 'buttons') return p.v === p.ans;
-  if (p.type === 'num') return parseNum(p.v) === p.ans;
+  if (p.type === 'num') return parseNum(p.v) === p.ans || wordsAnswer(p);
   if (p.type === 'text') return p.check(p.v);
   if (p.type === 'order') return p.v.length === p.ans.length && p.v.every((x, i) => x === p.ans[i]);
   if (p.type === 'draw') return p.check(p.v);
@@ -2060,6 +2088,7 @@ function renderPlay() {
   const praise = pick([`נָכוֹן מְאוֹד${nk}!`, `כָּל הַכָּבוֹד${nk}!`, `יָפֶה מְאוֹד${nk}!`, G('אַלּוּף', 'אַלּוּפָה', 'מְצוּיָּן') + nk + '!']);
   const oops = pick(['לֹא בְּדִיּוּק', 'כִּמְעַט', 'לֹא נוֹרָא']) + nk + '. ';
   const fbText = Q.result ? `${praise} ${Q.earned === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + Q.earned + ' מַטְבְּעוֹת ' + '🪙'.repeat(Q.earned)} ` : (Q.timedOut ? 'נִגְמַר הַזְּמַן. ' : (Q.parts.length > 1 && Q.parts.some(correctPart) ? 'כִּמְעַט' + nk + '! חֵלֶק מֵהַתְּשׁוּבוֹת נָכוֹן 👏 ' : oops));
+  const wordsNote = Q.result !== undefined && Q.parts.some(wordsAnswer) ? '😉 נָכוֹן! רַק שֶׁבַּמִּבְחָן כּוֹתְבִים אֶת הַתְּשׁוּבָה בִּסְפָרוֹת.<br>' : '';
   $('#qcard').innerHTML = `
     <div class="card-leaf leaf-tl">🌿</div>
     <div class="card-leaf leaf-tr">🌿</div>
@@ -2073,7 +2102,7 @@ function renderPlay() {
     <div class="fbslot">${locked ? `
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
-        <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
+        <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${wordsNote}${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
       </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}

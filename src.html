@@ -658,6 +658,7 @@ header h1{font-size:calc(var(--s)*1.15)}
   .cats .card .stars .lvl{display:none}
   .cats .card .stars,.cats .card .rankbadge{margin-top:0}
   .cats .card .rankbadge{display:inline-block}
+  .cats .card .stars.stat-n .ln{display:none}.cats .card .stars.stat-n .sh{display:inline}
 }
 /* plain header edge: no scallops, no extra bottom padding */
 header::after{display:none}
@@ -709,9 +710,16 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .stat-toggle.on{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;box-shadow:0 3px 0 #2e7d32}
 .stat-toggle.on i{background:#43a047}.stat-toggle.on i::after{inset-inline-start:16px}
 .cats .card.statcard{cursor:pointer}
-.cats .card .stars.stat-pct{color:#3e2410;font-weight:900;font-size:1.7em;line-height:1.05}
-.cats .card .stars.stat-pct.soon{font-size:1em;opacity:.75}
-.cats .card .stat-n{background:#fff8ec;color:#5c3a21;border-color:#c9a27a;font-size:.85em;padding-inline:.6em;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cats .card .rankbadge.stat-pct{font-weight:900;min-width:3.4em;text-align:center}
+.cats .card .rankbadge.stat-pct.heat-g{background:#c8e6c9;color:#1b5e20;border-color:#43a047}
+.cats .card .rankbadge.stat-pct.heat-lg{background:#e6f2d0;color:#33691e;border-color:#9ccc65}
+.cats .card .rankbadge.stat-pct.heat-y{background:#fff0c2;color:#7a5200;border-color:#f4b942}
+.cats .card .rankbadge.stat-pct.heat-r{background:#fde0e0;color:#8e1d1d;border-color:#e57373}
+.cats .card .rankbadge.stat-pct.heat-none{background:#f3ebe0;color:#8a6d55;border-color:#c9a27a}
+.cats .card .stars.stat-n{font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cats .card .stars.stat-n .ln{font-size:.85em}
+.cats .card .stat-n .sh,.cats .card .stat-n .pc{display:none}
+@container (max-height:118px){.cats .card .stars.stat-n .ln,.cats .card .stars.stat-n .sh{display:none}.cats .card .stars.stat-n .pc{display:inline}}
 .cats .card .bar.heat-g span{background:#4caf50}.cats .card .bar.heat-lg span{background:#9ccc65}.cats .card .bar.heat-y span{background:#f4b942}.cats .card .bar.heat-r span{background:#e57373}
 @media (orientation:landscape) and (max-height:560px){.stat-toggle{font-size:12px;padding:2px 8px 2px 6px}}
 @media (max-width:600px){
@@ -751,7 +759,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v90';
+const APP_VERSION = 'v91';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1855,11 +1863,11 @@ function renderHome() {
           <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
           <button type="button" class="practice-btn" data-practice="${c.id}">תרגול נושא זה</button>`;
     const numbers = `
-            <div class="stars stat-pct${a === null ? ' soon' : ''}">${a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–'}</div>
-            <div class="rankbadge stat-n">${n ? st.ok + ' מתוך ' + n + ' נכונות' : 'עוד לא תורגל'}</div>
+            <div class="rankbadge stat-pct heat-${heat(a)}">${a !== null ? Math.round(a * 100) + '%' : '–'}</div>
+            <div class="stars stat-n"><span class="ln">${n ? st.ok + ' מתוך ' + n + ' נכונות' : 'עוד לא תורגל'}</span><span class="sh">${n ? st.ok + '/' + n : 'לא תורגל'}</span><span class="pc">${a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–'}</span></div>
           </div>
           <div class="bar prog heat-${heat(a)}" style="position:relative;z-index:2"><span style="width:${a === null ? 0 : Math.round(a * 100)}%"></span></div>
-          `;
+          <button type="button" class="practice-btn" tabindex="-1" aria-hidden="true" style="visibility:hidden">תרגול נושא זה</button>`;
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>

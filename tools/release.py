@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
-"""Versions of the app.
+"""Build and version a game.
 
-  python3 tools/release.py dev       next test version: 2.0 -> 2.1 -> 2.2 ... (after a publish: next major, e.g. 3.0)
-                                     updates src.html and rebuilds updatever.html (the test page)
-  python3 tools/release.py publish   copies the test page to index.html (what the parents open),
-                                     refreshes the service-worker cache name and records the published version.
-                                     RELEASE_NOTES in src.html must be filled first (shown once after updating).
+  python3 tools/release.py build     engine + game files -> src.html -> updatever.html (test page, with nikud)
+  python3 tools/release.py dev       next test version: 2.0 -> 2.1 -> 2.2 ... (after a publish: next whole number, e.g. 3.0), then build
+  python3 tools/release.py publish   test page -> index.html (what the parents open), new service-worker cache name,
+                                     records the published version. "release_notes" in game.json must be filled first
+                                     (shown once to returning users after they update).
 
-State lives in tools/version.json. APP_VERSION keeps the old 'vNN' build form, because copies already
-installed look for exactly that text to know an update exists.
+Add --game games/<folder> to work on another game (default games/math3-jungle).
+Versions live in games/<folder>/game.json -> "version". APP_VERSION keeps the old 'vNN' form, because copies
+already installed look for exactly that text to know an update exists.
 """
 import json, os, re, subprocess, sys
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-vf = os.path.join(root, 'tools', 'version.json')
-V = json.load(open(vf, encoding='utf-8'))
+args = sys.argv[1:]
+gdir = args[args.index('--game') + 1] if '--game' in args else 'games/math3-jungle'
+gf = os.path.join(root, gdir, 'game.json')
+G = json.load(open(gf, encoding='utf-8'))
+V = G['version']
 
 
 def rd(name):
@@ -25,46 +29,39 @@ def wr(name, text):
     open(os.path.join(root, name), 'w', encoding='utf-8').write(text)
 
 
-def set_src(build, label):
-    s = rd('src.html')
-    s, a = re.subn(r"const APP_VERSION = 'v\d+';", f"const APP_VERSION = 'v{build}';", s)
-    s, b = re.subn(r"const APP_LABEL = '[\d.]+';", f"const APP_LABEL = '{label}';", s)
-    assert a == 1 and b == 1, 'version lines not found in src.html'
-    wr('src.html', s)
+def save_game():
+    json.dump(G, open(gf, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 
 def build():
-    r = subprocess.run([sys.executable, os.path.join(root, 'tools', 'build_nikud.py')])
-    if r.returncode:
-        sys.exit('nikud build reported missing phrases - add them to tools/nikud-map.json')
+    for step in (['build_game.py', gdir], ['build_nikud.py']):
+        if subprocess.run([sys.executable, os.path.join(root, 'tools', step[0])] + step[1:]).returncode:
+            sys.exit('stopped: ' + step[0] + ' failed (for nikud: add the missing phrases to tools/nikud-map.json)')
 
 
-cmd = sys.argv[1] if len(sys.argv) > 1 else ''
-if cmd == 'dev':
+cmd = args[0] if args else ''
+if cmd == 'build':
+    build()
+elif cmd == 'dev':
     major, minor = (int(x) for x in V['label'].split('.'))
     pmajor = int(V['published'].split('.')[0])
     label = f'{major + 1}.0' if major == pmajor else f'{major}.{minor + 1}'
+    if label.endswith('.0'):
+        G['release_notes'] = []  # first test version after a publish: start a fresh what's-new list
     V['build'] += 1
-    if label.endswith('.0'):  # first test version after a publish: start a fresh what's-new list
-        wr('src.html', re.sub(r'const RELEASE_NOTES = \[.*?\];', 'const RELEASE_NOTES = [];', rd('src.html'), flags=re.S))
     V['label'] = label
-    set_src(V['build'], label)
+    save_game()
     build()
-    json.dump(V, open(vf, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(f'test version {label} (build v{V["build"]})')
 elif cmd == 'publish':
-    s = rd('src.html')
-    notes = re.search(r'const RELEASE_NOTES = \[(.*?)\];', s, re.S)
-    if not notes or not notes.group(1).strip():
-        sys.exit('fill RELEASE_NOTES in src.html first')
+    if not G.get('release_notes'):
+        sys.exit('fill "release_notes" in game.json first')
     build()
-    page = rd('updatever.html').replace('<meta name="robots" content="noindex">', '', 1)
-    wr('index.html', page)
-    sw = re.sub(r"jungle-v\d+", f"jungle-v{V['build']}", rd('sw.js'))
-    wr('sw.js', sw)
+    wr('index.html', rd('updatever.html').replace('<meta name="robots" content="noindex">', '', 1))
+    wr('sw.js', re.sub(r"jungle-v\d+", f"jungle-v{V['build']}", rd('sw.js')))
     V['published'] = V['label']
     V['publishedBuild'] = V['build']
-    json.dump(V, open(vf, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    save_game()
     print(f'published {V["label"]} (build v{V["build"]}) to index.html')
 else:
     print(__doc__)

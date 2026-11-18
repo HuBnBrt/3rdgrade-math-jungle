@@ -1,0 +1,24 @@
+{
+ "subject": "math3",
+ "tokens": {
+  "GAME_TITLE": "הג'ונגל של המתמטיקה",
+  "WELCOME": "ברוכים הבאים לג\\'ונגל!",
+  "MASCOT": "🐵",
+  "CAMP_ICON": "🏕️",
+  "CAMP_NAV": "המחנה",
+  "CAMP_TITLE": "חנות המחנה",
+  "EMPTY_SHELF": "סיום אימונים פותח תיבות עם ציוד הישרדות!",
+  "HEADER_ICON": "🌴",
+  "STORAGE_KEY": "jungle-math-v4",
+  "OLD_STORAGE_KEY": "jungle-math-v3",
+  "LS_PREFIX": "jungle-",
+  "UPDATE_IMG": "monkey-update.png"
+ },
+ "version": {
+  "build": 99,
+  "label": "2.2",
+  "published": "1.96",
+  "publishedBuild": 96
+ },
+ "release_notes": []
+}

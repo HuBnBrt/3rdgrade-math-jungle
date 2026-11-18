@@ -131,7 +131,9 @@ function trend(t) {
   return d >= .2 ? '<span class="up">▲ משתפר</span>' : d <= -.2 ? '<span class="down">▼ יורד</span>' : '<span class="flat">● יציב</span>';
 }
 // table: first name + first letter of family name (full name on hover)
-const shortName = k => { const full = dec(k.nick || k.name || k.email || 'ללא שם').replace(/[\u0591-\u05c7]/g, '').split(/\s+[-–(]/)[0].trim(); const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x))); return w.length > 1 ? w[0] + ' ' + w[w.length - 1][0] + "'" : full; };
+const fullShort = k => { const full = dec(k.nick || k.name || k.email || 'ללא שם').replace(/[\u0591-\u05c7]/g, '').split(/\s+[-–(]/)[0].trim(); const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x))); return w; };
+// first name only; the family-name initial ("ב.") is added only when two children share a first name
+const shortName = k => { const w = fullShort(k); const dup = kids.filter(x => fullShort(x)[0] === w[0]).length > 1; return dup && w.length > 1 ? w[0] + ' ' + w[w.length - 1][0] + '.' : w[0]; };
 const whenShort = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) : '–'; };
 const when = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : '–'; };
 const topicIds = () => { const m = {}; kids.forEach(k => Object.entries(k.topics || {}).forEach(([id, t]) => { m[id] = t.name || id; })); return Object.keys(m).map(id => [id, m[id]]); };
@@ -175,12 +177,15 @@ function kidCard(k) {
   const solid = judged.filter(x => x.ok + x.bad >= MIN);
   const weak3 = solid.filter(x => x.a < .85).slice(0, 3);
   const fl = focusList(k.focus), fs = fl.map(id => list.find(x => x.id === id)).filter(Boolean);
-  const line = x => `<tr><td style="text-align:right">${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
+  const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
+  const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
+  const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
   return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>
     <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה כללי: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
-    ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `<b>${esc(f.name)}</b> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
+    ${au ? `<div class="focus">המלצה פעילה לילד: 🌺 <b>${esc(au.name)}</b> <span class="muted">(המלצת המערכת – תתבטל לבד כשהנושא יתחזק)</span></div>` : ''}
+    ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `🍎 <b>${esc(f.name)}</b> <span class="muted">(מורה)</span> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
     <h2 style="margin-top:14px">כל הנושאים – מהחלש לחזק</h2>
     <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה</th><th>נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;
 }

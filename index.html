@@ -702,6 +702,24 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .pmark .part-fix{font-size:calc(var(--q)*.9) !important;margin:0 !important}
 #qcard .ordwrap .seq span{border:2px solid transparent;box-sizing:border-box;line-height:1.2}
 @media (orientation:landscape) and (max-height:480px){#qcard .vert{font-size:clamp(18px,5.4vh,26px);margin:2px auto}}
+/* "המצב שלי" view: same card places, numbers instead of stars and badges */
+.stat-toggle{flex:none;display:inline-flex;align-items:center;gap:6px;border:2px solid #8b5a2b;background:#fff8ec;color:#5c3a21;border-radius:99px;padding:4px 12px 4px 8px;font:800 14px 'Noto Sans Hebrew',sans-serif;cursor:pointer;box-shadow:0 3px 0 #8b5a2b}
+.stat-toggle i{position:relative;width:30px;height:16px;border-radius:99px;background:#c9b9a6;transition:background .2s}
+.stat-toggle i::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:inset-inline-start .2s}
+.stat-toggle.on{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;box-shadow:0 3px 0 #2e7d32}
+.stat-toggle.on i{background:#43a047}.stat-toggle.on i::after{inset-inline-start:16px}
+.cats .card.statcard{cursor:pointer}
+.cats .card .stars.stat-pct{color:#3e2410;font-weight:900;font-size:1.7em;line-height:1.05}
+.cats .card .stars.stat-pct.soon{font-size:1em;opacity:.75}
+.cats .card .stat-n{background:#fff8ec;color:#5c3a21;border-color:#c9a27a;font-size:.85em;padding-inline:.6em;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cats .card .bar.heat-g span{background:#4caf50}.cats .card .bar.heat-lg span{background:#9ccc65}.cats .card .bar.heat-y span{background:#f4b942}.cats .card .bar.heat-r span{background:#e57373}
+@media (orientation:landscape) and (max-height:560px){.stat-toggle{font-size:12px;padding:2px 8px 2px 6px}}
+@media (max-width:600px){
+  .home-top{flex-direction:row !important;flex-wrap:wrap}
+  .home-top .hero-bubble{order:1;flex:0 0 100%}
+  .home-top .hero-board{order:2;flex:1 1 0 !important;width:auto !important;min-width:0}
+  .home-top .stat-toggle{order:3;flex-direction:column;gap:2px;padding:4px 8px;font-size:11px;line-height:1.1;align-self:stretch;justify-content:center}
+}
 /* nikud version: room for vowel marks */
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
 #qcard .prompt{line-height:1.7}
@@ -738,7 +756,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v89';
+const APP_VERSION = 'v90';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -898,7 +916,7 @@ function genCompare(t) {
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
     body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
-    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    parts: [{ type: 'buttons', opts: ['>', '=', '<'], ans: sym }],
     hint: 'יֵשׁ לְחַשֵּׁב אֶת שְׁנֵי הַצְּדָדִים, וְאָז לְהַשְׁווֹת אֶת הַתּוֹצָאוֹת.',
     explain: `<span class="ltr">${fmt(lv)} ${sym==='<'?'&lt;':sym==='>'?'&gt;':'='} ${fmt(rv)}</span>`
   };
@@ -924,7 +942,7 @@ function genNoCalc(t) {
   const sym = lv < rv ? '<' : lv > rv ? '>' : '=';
   return {
     body: `<div class="prompt">יֵשׁ לְסַמֵּן לְלֹא צוֹרֶךְ בְּחִישּׁוּב מְדוּיָּק:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${Rt}</span></div>`,
-    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    parts: [{ type: 'buttons', opts: ['>', '=', '<'], ans: sym }],
     hint,
     explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${sym==='<'?'&lt;':sym==='>'?'&gt;':'='}</span>.`
   };
@@ -1129,7 +1147,7 @@ function genPlaceCmp(t) {
   const box = x => `<span dir="rtl" style="unicode-bidi:isolate;background:#fff8;border-radius:12px;padding:4px 8px;font-weight:800;flex:1 1 0;text-align:center;min-width:0">${x}</span>`;
   return {
     body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${box(A.txt)}<b>?</b>${box(B.txt)}</div>`,
-    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: sym }],
+    parts: [{ type: 'buttons', opts: ['>', '=', '<'], ans: sym }],
     hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
     explain: `${A.txt} = ${fmt(A.v)} וְ-${B.txt} = ${fmt(B.v)}. <span class="ltr">${fmt(A.v)} ${sym === '<' ? '&lt;' : sym === '>' ? '&gt;' : '='} ${fmt(B.v)}</span>`
   };
@@ -1326,7 +1344,7 @@ function qPlace(A, Av, B, Bv) {
   const s = symOf(Av, Bv);
   return {
     body: `<div class="prompt">יֵשׁ לְסַמֵּן אֶת הַסִּימָן הַמַּתְאִים:</div><div class="prompt" style="direction:ltr;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:nowrap;font-size:clamp(15px,4.4vw,22px)">${cmpBox(A)}<b>?</b>${cmpBox(B)}</div>`,
-    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
+    parts: [{ type: 'buttons', opts: ['>', '=', '<'], ans: s }],
     hint: 'כְּדַאי לַהֲפוֹךְ כָּל צַד לְמִסְפָּר רָגִיל: מֵאָה הִיא 100, עֶשֶׂר הִיא 10, אֶלֶף הוּא 1,000.',
     explain: `${A} = ${fmt(Av)} וְ-${B} = ${fmt(Bv)}. <span class="ltr">${fmt(Av)} ${symH(s)} ${fmt(Bv)}</span>`
   };
@@ -1465,7 +1483,7 @@ function qNoCalc(L, lv, R, rv, hint) {
   const s = symOf(lv, rv);
   return {
     body: `<div class="prompt">יֵשׁ לְסַמֵּן בְּלִי לִפְתּוֹר אֶת הַתַּרְגִּילִים:</div><div class="prompt" style="font-size:28px"><span class="ltr">${L} &nbsp; ? &nbsp; ${R}</span></div>`,
-    parts: [{ type: 'buttons', opts: ['<', '=', '>'], ans: s }],
+    parts: [{ type: 'buttons', opts: ['>', '=', '<'], ans: s }],
     hint,
     explain: `הַסִּימָן הַמַּתְאִים הוּא <span class="ltr">${symH(s)}</span>.`
   };
@@ -1619,10 +1637,30 @@ async function cloudSave() {
   try {
     const topics = {};
     CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
 let teacherFocus = [];
+// the app recommends one weak topic by itself, only when the teacher has no active recommendation
+const recentAcc = st => { const r = String((st && st.h) || '').slice(-6); return r.length ? [...r].filter(x => x === '1').length / r.length : null; };
+function updateAutoRec() {
+  const now = Date.now(), DAY = 864e5, before = JSON.stringify(S.autoRec || null);
+  if (!S.recCool) S.recCool = {};
+  const a = S.autoRec;
+  if (a) { const r = recentAcc((S.stats || {})[a.topic]); if (r !== null && r > 0.75) { S.recCool[a.topic] = now; S.autoRec = null; } }
+  if (!S.autoRec && !teacherFocus.length) {
+    let best = null;
+    CATS.forEach(c => {
+      const st = (S.stats || {})[c.id];
+      if (!st || (st.ok || 0) + (st.bad || 0) < 6 || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)) return;
+      const r = recentAcc(st);
+      if (r !== null && r < 0.6 && (!best || r < best.r)) best = { id: c.id, r };
+    });
+    if (best) S.autoRec = { topic: best.id, at: now };
+  }
+  return JSON.stringify(S.autoRec || null) !== before;
+}
+const autoShown = () => (!teacherFocus.length && S.autoRec) ? S.autoRec.topic : null;
 const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 function focusBar() {
   const cs = teacherFocus.map(id => CATS.find(x => x.id === id)).filter(Boolean);
@@ -1718,7 +1756,15 @@ function toast(msg) {
 }
 
 /* ---------- auth UI ---------- */
-const firstName = () => esc((S.profile && S.profile.nick) || (user && user.displayName || '').split(' ')[0] || 'חָבֵר');
+const FRIEND = 'חָבֵר';
+/*NIKUD-OFF*/
+// greeting uses the first name only: titles (הרב, ד"ר...) and anything after " - " or "(" are skipped
+const firstName = () => {
+  const full = String((S.profile && S.profile.nick) || (user && user.displayName) || '').split(/\s+[-–(]/)[0].trim();
+  const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x.replace(/[\u0591-\u05c7]/g, ''))));
+  return esc(w[0] || FRIEND);
+};
+/*NIKUD-ON*/
 const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
 let authError = '';
 function loginBlock() {
@@ -1796,27 +1842,39 @@ function refreshCurrentView() {
   mountGoogleButtons();
 }
 
+const heat = a => a === null ? 'none' : a >= .85 ? 'g' : a >= .7 ? 'lg' : a >= .5 ? 'y' : 'r';
 function renderHome() {
+  if (updateAutoRec()) save();
+  const statsView = !!S.settings.statsView, auto = autoShown();
   const today = new Date().toDateString();
   const doneToday = S.today.day === today ? S.today.count : 0;
   const cards = CATS.map((c, i) => {
     const m = mast(c.id);
-    return `
-      <div class="slot">
-        <div class="peek-animal p${i % 3}">${c.animal}</div>
-        <div class="card cat-${c.id}${teacherFocus.includes(c.id) ? ' rec' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
-          <div class="card-leaf leaf-tl">🌿</div>
-          <div class="card-leaf leaf-tr">🌿</div>
-          <div class="card-leaf leaf-br">🌿</div>
-          ${teacherFocus.includes(c.id) ? '<div class="rec-badge">הַמְלָצָה לְתִרְגּוּל</div>' : ''}
-          <div class="topic-content" style="position:relative;z-index:2">
-            <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>
+    const recBy = teacherFocus.includes(c.id) ? 't' : auto === c.id ? 'a' : '';
+    const st = (S.stats || {})[c.id] || { ok: 0, bad: 0 }, n = (st.ok || 0) + (st.bad || 0), a = n >= 3 ? st.ok / n : null;
+    const normal = `
             <div class="stars" title="רָמָה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
             <div class="rankbadge">${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}</div>
             ${m.trophy ? '<div class="trophy-mark" title="גָּבִיעַ: אַלּוּפִים בַּנּוֹשֵׂא">🏆</div>' : ''}
           </div>
           <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
-          <button type="button" class="practice-btn" data-practice="${c.id}">תִּרְגּוּל נוֹשֵׂא זֶה</button>
+          <button type="button" class="practice-btn" data-practice="${c.id}">תִּרְגּוּל נוֹשֵׂא זֶה</button>`;
+    const numbers = `
+            <div class="stars stat-pct${a === null ? ' soon' : ''}">${a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–'}</div>
+            <div class="rankbadge stat-n">${n ? st.ok + ' מִתּוֹךְ ' + n + ' נְכוֹנוֹת' : 'עוֹד לֹא תּוּרְגַּל'}</div>
+          </div>
+          <div class="bar prog heat-${heat(a)}" style="position:relative;z-index:2"><span style="width:${a === null ? 0 : Math.round(a * 100)}%"></span></div>
+          `;
+    return `
+      <div class="slot">
+        <div class="peek-animal p${i % 3}">${c.animal}</div>
+        <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
+          <div class="card-leaf leaf-tl">🌿</div>
+          <div class="card-leaf leaf-tr">🌿</div>
+          <div class="card-leaf leaf-br">🌿</div>
+          ${recBy ? `<div class="rec-badge">${recBy === 't' ? '🍎' : '🌺'} הַמְלָצָה לְתִרְגּוּל</div>` : ''}
+          <div class="topic-content" style="position:relative;z-index:2">
+            <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>${statsView ? numbers : normal}
         </div>
       </div>`;
   }).join('');
@@ -1832,6 +1890,7 @@ function renderHome() {
       <div class="hero-board">
         <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
       </div>
+      <button type="button" id="statToggle" class="stat-toggle${statsView ? ' on' : ''}" role="switch" aria-checked="${statsView}"><i></i><span>📊 הַמַּצָּב שֶׁלִּי</span></button>
     </div>
     <div class="grid cats">${cards}</div>`;
   fitTitles();
@@ -2067,7 +2126,7 @@ function correctPart(p) {
 function partHTML(p, i) {
   const locked = Q.result !== undefined;
   if (p.type === 'buttons') {
-    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts${p.list ? ' list' : ''}"${p.opts[0] === '<' ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
+    return `${p.label ? `<div class="rank" style="text-align:center;font-weight:900;color:#fff;margin:2px 0">${esc(p.label)}:</div>` : ''}<div class="opts${p.list ? ' list' : ''}"${p.opts.includes('<') ? ' style="direction:ltr"' : ''}>${p.opts.map((o, j) => {
       let cls = p.v === o ? 'sel' : '';
       if (locked) cls = o === p.ans ? 'good' : (p.v === o ? 'bad' : '');
       return `<button type="button" class="opt ${cls}" data-p="${i}" data-o="${j}">${p.ltr ? `<span class="ltr">${esc(o)}</span>` : esc(o)}</button>`;
@@ -2264,6 +2323,7 @@ function endSession() {
   stopTimer();
   { const done = teacherFocus.filter(id => session.only === id || (session.tc && session.tc[id] >= 2)); if (done.length) clearFocus(done); }
   if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
+  updateAutoRec();
   if (!S.gear) S.gear = {};
   const acc = session.total ? session.correct / session.total : 0;
   const rr = Math.random();
@@ -2376,6 +2436,7 @@ document.addEventListener('click', e => {
   const pr = t.closest('[data-practice]');
   if (pr) { startSession('base', pr.dataset.practice); return; }
   if (t.closest('#startBtn')) { startSession('base'); return; }
+  if (t.closest('#statToggle')) { S.settings.statsView = !S.settings.statsView; save(); renderHome(); return; }
   const act = t.closest('[data-act]');
   if (act && act.dataset.act === 'logout') { doLogout(); return; }
   if (act && act.dataset.act === 'usermenu') { $('#userMenu').classList.toggle('hidden'); return; }

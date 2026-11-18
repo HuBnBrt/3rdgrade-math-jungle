@@ -737,6 +737,10 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard.tight .opts{margin:4px 0;gap:6px}
 #qcard.tight .ordwrap .ghost-btn{margin-top:4px !important}
 #qcard.tight .parts .rank{margin:0 !important}#qcard.tight .parts input{padding-top:4px;padding-bottom:4px;min-height:0;height:auto}#qcard.tight .opt{padding-top:4px;padding-bottom:4px}#qcard.tight .question-board{padding-top:4px;padding-bottom:4px}
+/* the same item more than once: copies stand close together, one behind the other, and float as one */
+.owned-animal.stack{display:inline-flex;position:relative}.owned-animal.stack span+span{margin-inline-start:-.6em}
+.owned-animal.stack span:nth-child(1){position:relative;z-index:3}.owned-animal.stack span:nth-child(2){z-index:2;filter:brightness(.92)}.owned-animal.stack span:nth-child(3){z-index:1;filter:brightness(.84)}
+.owned-animal.stack .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:4;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em Heebo,sans-serif;padding:0 .4em}
 </style>
 </head>
 <body>
@@ -770,8 +774,8 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v97';
-const APP_LABEL = '2.0';
+const APP_VERSION = 'v99';
+const APP_LABEL = '2.2';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -1692,6 +1696,9 @@ function focusBar() {
   const cs = teacherFocus.map(id => CATS.find(x => x.id === id)).filter(Boolean);
   return cs.length ? `<div class="install-bar"><span>⭐ מומלץ לתרגל: <b>${cs.map(c => c.name).join(', ')}</b></span><button type="button" class="big-green-btn" data-practice="${cs[0].id}">לתרגול</button></div>` : '';
 }
+// how many of a gear item: older saves keep true for one
+const gearCount = v => v === true ? 1 : (+v || 0);
+const maxGear = (a, b) => { const o = {}; [a || {}, b || {}].forEach(x => Object.entries(x).forEach(([k, v]) => { o[k] = Math.max(gearCount(o[k]), gearCount(v)); })); return o; };
 // combine progress made on this device with progress saved in the account: nothing earned is lost
 function mergeProgress(L, C) {
   const out = mergeState(C);
@@ -1700,7 +1707,7 @@ function mergeProgress(L, C) {
   out.sessions = max(L.sessions, C.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(L.medals || [])])];
   out.items = { ...(L.items || {}), ...(C.items || {}) };
-  out.gear = { ...(L.gear || {}), ...(C.gear || {}) };
+  out.gear = maxGear(L.gear, C.gear);
   out.sheetOk = { ...(L.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
   Object.entries(L.mastery || {}).forEach(([id, m]) => {
@@ -1728,7 +1735,7 @@ function addProgress(G, C) {
   out.sessions = n(C.sessions) + n(G.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(G.medals || [])])];
   out.items = { ...(G.items || {}), ...(C.items || {}) };
-  out.gear = { ...(G.gear || {}), ...(C.gear || {}) };
+  out.gear = maxGear(G.gear, C.gear);
   out.sheetOk = { ...(G.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
   Object.entries(G.mastery || {}).forEach(([id, m]) => {
@@ -1877,17 +1884,19 @@ function renderHome() {
   const cards = CATS.map((c, i) => {
     const m = mast(c.id);
     const recBy = teacherFocus.includes(c.id) ? 't' : auto === c.id ? 'a' : '';
-    const st = (S.stats || {})[c.id] || { ok: 0, bad: 0 }, n = (st.ok || 0) + (st.bad || 0), a = n >= 3 ? st.ok / n : null;
+    // the child sees what they know now: the last 10 answers in the topic (old mistakes fade out); the dashboard keeps the full totals
+    const recent = String(((S.stats || {})[c.id] || {}).h || '').slice(-10), n = recent.length, st = { ok: [...recent].filter(x => x === '1').length }, a = n >= 3 ? st.ok / n : null;
     // the numbers view reuses the very same elements (originals kept invisible underneath), so nothing on the card moves
     const starsIn = `${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span>`;
     const rankIn = `${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}`;
     const pctTxt = a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–';
     const body = statsView ? `
-            <div class="stars stat-cap"><span class="keep">${starsIn}</span><span class="ov"><span class="cap">אחוז הצלחה</span><span class="pc">${pctTxt}</span></span></div>
+            <div class="stars stat-cap"><span class="keep">${starsIn}</span><span class="ov"><span class="cap">הצלחה לאחרונה</span><span class="pc">${pctTxt}</span></span></div>
             <div class="rankbadge stat-pct heat-${heat(a)}"><span class="keep">${rankIn}</span><span class="ov">${a !== null ? Math.round(a * 100) + '%' : '–'}</span></div>
+            ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
           </div>
           <div class="bar prog heat-${heat(a)}" style="position:relative;z-index:2"><span style="width:${a === null ? 0 : Math.round(a * 100)}%"></span></div>
-          <button type="button" class="practice-btn stat-n" tabindex="-1" aria-hidden="true">${n ? st.ok + ' מתוך ' + n + ' נכונות' : 'עוד לא תורגל'}</button>` : `
+          <button type="button" class="practice-btn stat-n" tabindex="-1" aria-hidden="true">${n ? st.ok + ' מתוך ' + n + ' אחרונות' : 'עוד לא תורגל'}</button>` : `
             <div class="stars" title="רמה: ${TIERS[m.tier]}">${starsIn}</div>
             <div class="rankbadge">${rankIn}</div>
             ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
@@ -1956,7 +1965,9 @@ function renderCamp() {
   }).join('');
 
   const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
-  const gearShelf = GEAR.filter(g => (S.gear || {})[g.id]).map(g => `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`).join('');
+  const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => { const n = gearCount(S.gear[g.id]); return n > 1
+    ? `<div class="owned-animal stack" title="${g.name} (${RARITY[g.r]}) ×${n}">${Array.from({ length: Math.min(n, 3) }, () => `<span>${g.icon}</span>`).join('')}${n > 3 ? `<b class="stack-n">${n}</b>` : ''}</div>`
+    : `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`; }).join('');
   const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
   const collection = ownedItems.length || trophyShelf || gearShelf
     ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
@@ -2206,7 +2217,9 @@ function fitBoard() {
   };
   const card = document.querySelector('#qcard'), parts = card && card.querySelector('.parts'), fb = card && card.querySelector('.fbslot');
   const clipped = () => bd.scrollHeight > bd.clientHeight + 2;
-  const cardOver = () => card.scrollHeight > card.clientHeight + 2;
+  // the check/hint buttons keep a clear gap from the bottom edge of the card (and the menu under it)
+  const actGap = () => { const a = [...card.querySelectorAll('.qactions button')].map(x => x.getBoundingClientRect().bottom); return a.length ? card.getBoundingClientRect().bottom - Math.max(...a) : 99; };
+  const cardOver = () => card.scrollHeight > card.clientHeight + 2 || actGap() < 10;
   if (!card || (!clipped() && !cardOver())) return;
   card.classList.add('tight');
   // 1. give back part of the empty space kept for the feedback, so the question gets room before anything shrinks
@@ -2378,13 +2391,12 @@ function endSession() {
   const acc = session.total ? session.correct / session.total : 0;
   const rr = Math.random();
   const wantR = acc >= 0.875 ? (rr < 0.45 ? 2 : rr < 0.85 ? 1 : 0) : acc >= 0.6 ? (rr < 0.1 ? 2 : rr < 0.5 ? 1 : 0) : (rr < 0.03 ? 1 : 0);
-  const left = GEAR.filter(g => !S.gear[g.id]);
-  let gift = null, giftCoins = 0;
-  if (left.length) {
-    const pool = left.filter(g => g.r === wantR);
-    gift = pick(pool.length ? pool : left);
-    S.gear[gift.id] = true;
-  } else { giftCoins = 10; S.coins += giftCoins; session.coins += giftCoins; }
+  // new items first; once the collection is complete, items come again and stand together on the shelf
+  const left = GEAR.filter(g => !gearCount(S.gear[g.id]));
+  const from = left.length ? left : GEAR;
+  const pool = from.filter(g => g.r === wantR);
+  const gift = pick(pool.length ? pool : from), giftN = gearCount(S.gear[gift.id]) + 1;
+  S.gear[gift.id] = giftN;
   if (session.kind === 'base') {
     const today = new Date().toDateString();
     if (S.today.day !== today) S.today = { day: today, count: 0 };
@@ -2401,7 +2413,7 @@ function endSession() {
       <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
       ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כל הכבוד אלוף! 🏆', 'כל הכבוד אלופה! 🏆', 'כל הכבוד! 🏆')}</p>` : ''}
-      <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
+      <p>נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${giftN > 1 ? `– ${gift.g === 'f' ? 'עוד אחת' : gift.g === 'p' ? 'עוד זוג' : 'עוד אחד'} לאוסף! עכשיו יש ${giftN}.` : `${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!`}</p>
     </div>
     <div class="sum-actions">
       ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}

@@ -764,7 +764,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v91';
+const APP_VERSION = 'v92';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1893,7 +1893,7 @@ function renderHome() {
     <div class="home-top">
       <div class="hero-bubble">
         🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
-        <small>אִימּוּנִים הַיּוֹם: ${doneToday} · 📄 דַּף הַחֲזָרָה: ${SHEET.length - sheetLeft().length} מִתּוֹךְ ${SHEET.length}</small>
+        <small>אִימּוּנִים הַיּוֹם: ${doneToday}</small>
       </div>
       <div class="hero-board">
         <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
@@ -2182,6 +2182,8 @@ function fitFeedback() {
   let size = parseFloat(getComputedStyle(f).fontSize);
   while (f.scrollHeight > f.clientHeight + 1 && size > 11) { size -= 1; f.style.fontSize = size + 'px'; }
 }
+// after moving on with Enter, the cursor waits in the new answer box
+let focusAnswer = false;
 function renderPlay() {
   const locked = Q.result !== undefined;
   const pct = Math.round((session.done / session.total) * 100);
@@ -2218,6 +2220,7 @@ function renderPlay() {
     </div>`;
 
   fitFeedback(); fitBoard();
+  if (focusAnswer) { focusAnswer = false; const inp = document.querySelector('#qcard input:not([disabled])'); if (inp) inp.focus(); }
   const sv = document.querySelector('#qcard svg[data-draw]');
   if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
   tick();
@@ -2470,7 +2473,7 @@ document.addEventListener('keydown', e => {
   if (e.target.tagName === 'TEXTAREA') return;
   e.preventDefault();
   if (Q.result === undefined) check();
-  else if ($('#nextBtn')) nextQ();
+  else if ($('#nextBtn')) { focusAnswer = true; nextQ(); }
 });
 
 /* ---------- auth state ---------- */

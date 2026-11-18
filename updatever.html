@@ -775,11 +775,11 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v96';
-const APP_LABEL = '1.96';
+const APP_VERSION = 'v97';
+const APP_LABEL = '2.0';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = ['הַכְּתָב בַּשְּׁאֵלוֹת מוּתְאָם תָּמִיד לַמִּסְגֶּרֶת שֶׁלּוֹ, וְנִשְׁאָר גָּדוֹל וְקָרִיא גַּם בְּמָסַכִּים קְטַנִּים.'];
+const RELEASE_NOTES = [];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

@@ -172,7 +172,7 @@ main{max-width:1200px;margin:0 auto;padding:18px 16px 0}
 }
 .opt:active{transform:translateY(6px);box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 0 0 #757575}
 .opt.sel{background:linear-gradient(180deg,#fff9c4,#fff59d);border-color:#fbc02d;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #f57f17;color:#f57f17}
-.opt.good{background:linear-gradient(180deg,#c8e6c9,#a5d6a7);border-color:#4caf50;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #2e7d32;color:#1b5e20;transform:scale(1.05)}
+.opt.good{background:linear-gradient(180deg,#c8e6c9,#a5d6a7);border-color:#4caf50;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #2e7d32;color:#1b5e20}
 .opt.bad{background:linear-gradient(180deg,#ffcdd2,#ef9a9a);border-color:#f44336;box-shadow:inset 0 2px 4px rgba(255,255,255,0.8),0 6px 0 #c62828;color:#b71c1c;animation:shake 0.4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 input.num,input.text{font:inherit;font-size:22px;padding:12px 16px;border:3px solid #b47a46;border-radius:14px;width:180px;text-align:center;direction:ltr;background:var(--paper);font-family:Rubik,sans-serif;font-weight:900;color:#4a2810}
@@ -690,6 +690,16 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 @media (orientation:landscape) and (max-height:480px){#qcard svg[aria-label="ישר מספרים"]{height:15vh !important}}
 @media (max-width:400px){#qcard .opts:not(.list):not(.ord) .opt{font-size:calc(var(--q)*1.1);padding:.3em .55em;min-width:0}#qcard .opts:not(.list):not(.ord){gap:6px}}
 @media (max-height:700px){#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq span,#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .opts.ord .opt{padding:.08em 0}#qcard .ordwrap:has(.opts.ord .opt:nth-child(6)) .seq{margin-bottom:6px}#qcard .ordwrap .opts.ord,#qcard .ordwrap .seq{gap:4px}}
+.ordwrap .opts.ord .opt,.ordwrap .seq span.filled{touch-action:none;cursor:grab}
+.ordwrap .seq span.over{outline:3px solid #f0a430;outline-offset:1px}
+.drag-ghost{position:fixed;z-index:200;pointer-events:none;margin:0 !important;opacity:.95;transform:scale(1.08);box-shadow:0 8px 18px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+.ord-tip{color:#fffdf6;font-size:calc(var(--q)*.8);opacity:.9;margin-top:4px}
+@media (orientation:landscape) and (max-height:480px){.ord-tip{display:none}}
+/* the answer mark under each input always has its place, so nothing moves when the answer is checked */
+#qcard .pmark{height:calc(var(--q)*1.6);display:flex;align-items:center;justify-content:center;white-space:nowrap}
+#qcard .pmark .part-fix{font-size:calc(var(--q)*.9) !important;margin:0 !important}
+#qcard .ordwrap .seq span{border:2px solid transparent;box-sizing:border-box;line-height:1.2}
+@media (orientation:landscape) and (max-height:480px){#qcard .vert{font-size:clamp(18px,5.4vh,26px);margin:2px auto}}
 </style>
 </head>
 <body>
@@ -721,7 +731,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v82';
+const APP_VERSION = 'v83';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -816,22 +826,22 @@ const ITEMS = [
   { id: 'lion', name: 'אריה', icon: '🦁', price: 15 },
   { id: 'elephant', name: 'פיל', icon: '🐘', price: 15 },
   { id: 'leopard', name: 'נמר', icon: '🐆', price: 20 },
-  { id: 'giraffe', name: 'ג\'ירפה', icon: '🦒', price: 25 },
+  { id: 'giraffe', g: 'f', name: 'ג\'ירפה', icon: '🦒', price: 25 },
   { id: 'monkey', name: 'קוף', icon: '🐒', price: 10 },
   { id: 'parrot', name: 'תוכי', icon: '🦜', price: 10 },
-  { id: 'zebra', name: 'זברה', icon: '🦓', price: 10 },
-  { id: 'koala', name: 'קואלה', icon: '🐨', price: 20 },
-  { id: 'frog', name: 'צפרדע', icon: '🐸', price: 8 },
+  { id: 'zebra', g: 'f', name: 'זברה', icon: '🦓', price: 10 },
+  { id: 'koala', g: 'f', name: 'קואלה', icon: '🐨', price: 20 },
+  { id: 'frog', g: 'f', name: 'צפרדע', icon: '🐸', price: 8 },
   { id: 'croc', name: 'תנין', icon: '🐊', price: 20 }
 ];
 
 const GEAR = [
-  { id: 'boots', name: 'מגפי טיול', icon: '🥾', r: 0 }, { id: 'hat', name: 'כובע ספארי', icon: '🧢', r: 0 },
+  { id: 'boots', g: 'p', name: 'מגפי טיול', icon: '🥾', r: 0 }, { id: 'hat', name: 'כובע ספארי', icon: '🧢', r: 0 },
   { id: 'bag', name: 'תרמיל', icon: '🎒', r: 0 }, { id: 'tent', name: 'אוהל', icon: '⛺', r: 0 },
-  { id: 'shell', name: 'צדף קסום', icon: '🐚', r: 0 }, { id: 'feather', name: 'נוצת תוכי', icon: '🪶', r: 0 },
-  { id: 'torch', name: 'פנס', icon: '🔦', r: 1 }, { id: 'map', name: 'מפת אוצר', icon: '🗺️', r: 1 },
-  { id: 'compass', name: 'מצפן', icon: '🧭', r: 1 }, { id: 'scope', name: 'משקפת', icon: '🔭', r: 1 },
-  { id: 'beads', name: 'שרשרת חרוזים', icon: '📿', r: 1 }, { id: 'eye', name: 'קמע עין', icon: '🧿', r: 1 },
+  { id: 'shell', name: 'צדף קסום', icon: '🐚', r: 0 }, { id: 'feather', g: 'f', name: 'נוצת תוכי', icon: '🪶', r: 0 },
+  { id: 'torch', name: 'פנס', icon: '🔦', r: 1 }, { id: 'map', g: 'f', name: 'מפת אוצר', icon: '🗺️', r: 1 },
+  { id: 'compass', name: 'מצפן', icon: '🧭', r: 1 }, { id: 'scope', g: 'f', name: 'משקפת', icon: '🔭', r: 1 },
+  { id: 'beads', g: 'f', name: 'שרשרת חרוזים', icon: '📿', r: 1 }, { id: 'eye', name: 'קמע עין', icon: '🧿', r: 1 },
   { id: 'gem', name: 'יהלום הג\'ונגל', icon: '💎', r: 2 }, { id: 'trident', name: 'קלשון הזהב', icon: '🔱', r: 2 },
   { id: 'star', name: 'כוכב המזל', icon: '🌟', r: 2 }, { id: 'crown', name: 'כתר המלך', icon: '👑', r: 2 }
 ];
@@ -1821,7 +1831,7 @@ function buyItem(id) {
   S.coins -= it.price;
   S.items[it.id] = 1;
   save(); updateWallet(); renderCamp();
-  toast(`${plain(it.name)} הצטרף לאוסף!`);
+  toast(`${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
@@ -1925,7 +1935,7 @@ function nextQ() {
   S.recent.push(sig);
   if (S.recent.length > 60) S.recent.shift();
   Q.cat = cat.id; Q.note = ''; Q.result = undefined; Q.earned = 0; Q.timedOut = false; Q.startedAt = Date.now();
-  Q.parts.forEach(p => { if (p.type === 'order') p.v = []; if (p.type === 'draw') p.v = Q.drawInit; });
+  Q.parts.forEach(p => { if (p.type === 'order') p.v = p.items.map(() => null); if (p.type === 'draw') p.v = Q.drawInit; });
   lastCat = cat.id;
   showView('play');
   renderPlay();
@@ -1935,7 +1945,7 @@ function nextQ() {
 function answered(p) {
   if (p.type === 'buttons') return p.v !== undefined;
   if (p.type === 'num' || p.type === 'text') return String(p.v ?? '').trim() !== '';
-  if (p.type === 'order') return p.v.length === p.items.length;
+  if (p.type === 'order') return p.v.every(x => x !== null);
   if (p.type === 'draw') return true;
   return false;
 }
@@ -1964,15 +1974,19 @@ function partHTML(p, i) {
     if (locked && p.type === 'num') {
       const ok = correctPart(p);
       st = ok ? ' good' : ' bad';
-      mark = ok ? ' ✅' : ' ❌';
-      extra = ok ? '<span class="part-fix ok">נכון!</span>' : `<span class="part-fix no">התשובה הנכונה: <span class="ltr">${fmt(p.ans)}</span></span>`;
+      extra = ok ? '<span class="part-fix ok">✅ נכון!</span>' : `<span class="part-fix no">❌ התשובה הנכונה: <span class="ltr">${fmt(p.ans)}</span></span>`;
+    } else if (locked && p.type === 'text') {
+      const ok = correctPart(p);
+      st = ok ? ' good' : ' bad';
+      extra = ok ? '<span class="part-fix ok">✅ נכון!</span>' : '<span class="part-fix no">❌ לא נכון</span>';
     }
+    extra = `<div class="pmark">${extra}</div>`;
     return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
   }
   if (p.type === 'order') {
-    const slots = p.items.map((_, k) => k < p.v.length ? `<span>${fmt(p.v[k])}</span>` : `<span class="empty">${k + 1}</span>`).join('');
+    const slots = p.items.map((_, k) => p.v[k] !== null ? `<span class="filled" data-p="${i}" data-slot="${k}">${fmt(p.v[k])}</span>` : `<span class="empty" data-p="${i}" data-slot="${k}">${k + 1}</span>`).join('');
     const bank = p.items.map((x, j) => `<button type="button" class="opt${p.v.includes(x) ? ' used' : ''}" data-p="${i}" data-o="${j}"${p.v.includes(x) ? ' tabindex="-1" aria-hidden="true"' : ''}>${fmt(x)}</button>`).join('');
-    return `<div class="ordwrap"><div class="ord-label">הסדר שבחרת, מהקטן לגדול:</div><div class="seq">${slots}</div><div class="ord-label">המספרים לבחירה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button></div>`;
+    return `<div class="ordwrap"><div class="ord-label">הסדר שבחרת, מהקטן לגדול:</div><div class="seq">${slots}</div><div class="ord-label">המספרים לבחירה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">להתחיל מחדש</button><div class="ord-tip">אפשר לגרור מספר לכל משבצת, ולהזיז מספר ממשבצת למשבצת.</div></div>`;
   }
   if (p.type === 'draw') {
     return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>איך משרטטים?</b> גוררים באצבע (או בעכבר) את <b>העיגול הכתום</b>. הקו הירוק מסתובב, והזווית נפתחת או נסגרת. כשהזווית מוכנה לוחצים על "בדיקה".</div></div>`;
@@ -2166,7 +2180,7 @@ function endSession() {
       <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
       ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כל הכבוד אלוף! 🏆', 'כל הכבוד אלופה! 🏆', 'כל הכבוד! 🏆')}</p>` : ''}
-      <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) התווסף לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
+      <p>${gift ? `נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!` : 'האוסף שלך מלא! התיבה הכילה בונוס של ' + giftCoins + ' מטבעות 🪙'}</p>
     </div>
     <div class="sum-actions">
       ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}
@@ -2183,16 +2197,67 @@ function handlePlayClick(t) {
   if (b.id === 'checkBtn') { check(); return; }
   if (b.id === 'nextBtn') { nextQ(); return; }
   if (b.id === 'hintBtn') { Q.note = Q.hint; $('#hintBox').textContent = Q.note; return; }
-  if (b.dataset.reset !== undefined && Q.result === undefined) { Q.parts[+b.dataset.p].v = []; renderPlay(); return; }
+  if (b.dataset.reset !== undefined && Q.result === undefined) { const rp = Q.parts[+b.dataset.p]; rp.v = rp.items.map(() => null); renderPlay(); return; }
   if (b.dataset.p !== undefined && b.dataset.o !== undefined && Q.result === undefined) {
     const p = Q.parts[+b.dataset.p];
     if (p.type === 'buttons') { p.v = p.opts[+b.dataset.o]; renderPlay(); }
-    else if (p.type === 'order') { const val = p.items[+b.dataset.o]; if (!p.v.includes(val)) p.v.push(val); renderPlay(); }
+    else if (p.type === 'order') { if (dragJustEnded) return; const val = p.items[+b.dataset.o]; const k = p.v.indexOf(null); if (!p.v.includes(val) && k >= 0) p.v[k] = val; renderPlay(); }
   }
 }
 
 /* ---------- global events ---------- */
 document.addEventListener('input', e => { if (e.target && e.target.id === 'nickInput') { S.profile.nick = e.target.value.trim().slice(0, 20); save(); } });
+/* ---------- drag numbers between the bank and the slots (mouse and touch) ---------- */
+let drag = null, dragJustEnded = false;
+document.addEventListener('pointerdown', e => {
+  if (!Q || Q.result !== undefined) return;
+  const el = e.target.closest('.ordwrap .opts.ord .opt:not(.used), .ordwrap .seq span.filled');
+  if (!el) return;
+  const p = Q.parts[+el.dataset.p];
+  const fromSlot = el.dataset.slot !== undefined ? +el.dataset.slot : null;
+  const val = fromSlot !== null ? p.v[fromSlot] : p.items[+el.dataset.o];
+  drag = { el, p, fromSlot, val, x0: e.clientX, y0: e.clientY, moved: false, ghost: null };
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 8) return;
+  if (!drag.moved) {
+    drag.moved = true;
+    const r = drag.el.getBoundingClientRect();
+    const g = drag.el.cloneNode(true); g.classList.add('drag-ghost');
+    g.style.width = r.width + 'px'; g.style.height = r.height + 'px';
+    const cs = getComputedStyle(drag.el); ['background','color','font','borderRadius','border','boxSizing','textAlign'].forEach(k => { g.style[k] = cs[k]; });
+    document.body.appendChild(g); drag.ghost = g; drag.el.style.opacity = '.35';
+  }
+  e.preventDefault();
+  drag.ghost.style.left = (e.clientX - drag.ghost.offsetWidth / 2) + 'px';
+  drag.ghost.style.top = (e.clientY - drag.ghost.offsetHeight / 2) + 'px';
+  document.querySelectorAll('.ordwrap .seq span.over').forEach(x => x.classList.remove('over'));
+  const t = document.elementFromPoint(e.clientX, e.clientY);
+  const sl = t && t.closest('.ordwrap .seq span[data-slot]'); if (sl) sl.classList.add('over');
+}, { passive: false });
+function endDrag(e) {
+  if (!drag) return;
+  const d = drag; drag = null;
+  if (d.ghost) d.ghost.remove();
+  d.el.style.opacity = '';
+  if (!d.moved) { // a tap on a filled slot sends the number back to the bank
+    if (d.fromSlot !== null) { d.p.v[d.fromSlot] = null; renderPlay(); }
+    return;
+  }
+  dragJustEnded = true; setTimeout(() => { dragJustEnded = false; }, 50);
+  const t = document.elementFromPoint(e.clientX, e.clientY);
+  const sl = t && t.closest('.ordwrap .seq span[data-slot]');
+  if (sl) {
+    const k = +sl.dataset.slot, prev = d.p.v[k];
+    if (d.fromSlot !== null) { d.p.v[d.fromSlot] = prev; d.p.v[k] = d.val; } // swap two slots
+    else d.p.v[k] = d.val; // from the bank: the number that was there goes back to the bank
+  } else if (d.fromSlot !== null && t && t.closest('.ordwrap .opts.ord')) d.p.v[d.fromSlot] = null;
+  renderPlay();
+}
+document.addEventListener('pointerup', endDrag);
+document.addEventListener('pointercancel', e => { if (drag) { if (drag.ghost) drag.ghost.remove(); drag.el.style.opacity = ''; drag = null; } });
+
 document.addEventListener('click', e => {
   const t = e.target;
   const nav = t.closest('.nav [data-go]');

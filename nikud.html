@@ -1,7 +1,14 @@
 <!DOCTYPE html>
+<!--
+ארץ הג'ונגל במתמטיקה – אפליקציית תרגול לכיתה ג'
+רעיון, אפיון ועיצוב: חן בן-ברית (BenBrit), לבנו אדיר ולתלמידות ולתלמידי כיתה ג'4
+פיתוח: חן בן-ברית יחד עם קלוד, שותף לבנייה
+נובמבר 2026
+-->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="author" content="חן בן-ברית (BenBrit)">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest?v=5">
@@ -718,7 +725,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v80';
+const APP_VERSION = 'v81';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

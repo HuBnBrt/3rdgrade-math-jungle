@@ -721,7 +721,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v81';
+const APP_VERSION = 'v82';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -2025,7 +2025,7 @@ function renderPlay() {
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רמז 💡</button>`}
       ${locked
-        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה ←'}</button>`
+        ? `<button type="button" class="action-btn" id="nextBtn">${session.done >= session.total ? 'סיום 🎉' : 'לשאלה הבאה 👈'}</button>`
         : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בדיקה ✔️</button>`}
     </div>`;
 

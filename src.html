@@ -2223,7 +2223,7 @@ function fitBoard() {
   if (!card || (!clipped() && !cardOver())) return;
   card.classList.add('tight');
   // 1. give back part of the empty space kept for the feedback, so the question gets room before anything shrinks
-  if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 64) { h -= 4; fb.style.height = h + 'px'; } }
+  if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 52) { h -= 4; fb.style.height = h + 'px'; } }
   // 2. only then make the question text smaller, and last the answer area
   shrink(bd, clipped, 0.5);
   if (parts) shrink(parts, cardOver, 0.65);

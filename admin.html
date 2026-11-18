@@ -131,7 +131,7 @@ function trend(t) {
   return d >= .2 ? '<span class="up">▲ משתפר</span>' : d <= -.2 ? '<span class="down">▼ יורד</span>' : '<span class="flat">● יציב</span>';
 }
 // table: first name + first letter of family name (full name on hover)
-const fullShort = k => { const full = dec(k.nick || k.name || k.email || 'ללא שם').replace(/[\u0591-\u05c7]/g, '').split(/\s+[-–(]/)[0].trim(); const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x))); return w; };
+const fullShort = k => { const full = dec(k.nick || k.name || k.email || 'ללא שם').replace(/[\u0591-\u05c7\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '').split(/\s+[-–(]/)[0].trim(); const w = full.split(/\s+/).filter((x, i, all) => !(i < all.length - 1 && /^(הרב|הרבנית|ד"ר|דר'|פרופ'|מר|גב')$/.test(x))); return w; };
 // first name only; the family-name initial ("ב.") is added only when two children share a first name
 const shortName = k => { const w = fullShort(k); const dup = kids.filter(x => fullShort(x)[0] === w[0]).length > 1; return dup && w.length > 1 ? w[0] + ' ' + w[w.length - 1][0] + '.' : w[0]; };
 const whenShort = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) : '–'; };

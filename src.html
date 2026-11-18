@@ -2237,6 +2237,7 @@ function fitBoard() {
   const pic = bd.querySelector('svg.numline');
   if (pic && clipped()) { let h = pic.getBoundingClientRect().height; while (clipped() && h > 80) { h -= 6; pic.style.height = h + 'px'; } }
   if (parts) shrink(parts, cardOver, 0.65);
+  if (pic && cardOver()) { let h = pic.getBoundingClientRect().height; while (cardOver() && h > 70) { h -= 6; pic.style.height = h + 'px'; } }
 }
 function fitFeedback() {
   const f = document.querySelector('#qcard .feedback');

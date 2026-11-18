@@ -735,7 +735,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v83';
+const APP_VERSION = 'v84';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1624,12 +1624,47 @@ function focusBar() {
   const c = teacherFocus && CATS.find(x => x.id === teacherFocus);
   return c ? `<div class="install-bar"><span>⭐ מוּמְלָץ לְתַרְגֵּל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לְתִרְגּוּל</button></div>` : '';
 }
+// combine progress made on this device with progress saved in the account: nothing earned is lost
+function mergeProgress(L, C) {
+  const out = mergeState(C);
+  const max = (a, b) => Math.max(a || 0, b || 0);
+  out.coins = max(L.coins, C.coins);
+  out.sessions = max(L.sessions, C.sessions);
+  out.medals = [...new Set([...(C.medals || []), ...(L.medals || [])])];
+  out.items = { ...(L.items || {}), ...(C.items || {}) };
+  out.gear = { ...(L.gear || {}), ...(C.gear || {}) };
+  out.sheetOk = { ...(L.sheetOk || {}), ...(C.sheetOk || {}) };
+  out.mastery = { ...(C.mastery || {}) };
+  Object.entries(L.mastery || {}).forEach(([id, m]) => {
+    const c = out.mastery[id];
+    if (!c) { out.mastery[id] = m; return; }
+    const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    out.mastery[id] = best;
+  });
+  out.stats = { ...(C.stats || {}) };
+  Object.entries(L.stats || {}).forEach(([id, st]) => {
+    const c = out.stats[id];
+    if (!c || st.ok + st.bad > c.ok + c.bad) out.stats[id] = st;
+  });
+  if (L.today && C.today && L.today.day === C.today.day) out.today = { day: C.today.day, count: max(L.today.count, C.today.count) };
+  out.resume = { ...(C.resume || {}), ...(L.resume || {}) };
+  if (L.profile && (L.profile.nick || L.profile.gender) && !(C.profile && (C.profile.nick || C.profile.gender))) out.profile = L.profile;
+  return out;
+}
 async function cloudLoad() {
   const u0 = user;
   try {
     const snap = await getDoc(progressRef(user.uid));
-    if (snap.exists() && snap.data().state) { S = mergeState(snap.data().state); persistLocal(); }
-    else { cloudReady = true; await cloudSave(); }
+    if (snap.exists() && snap.data().state) {
+      const C = snap.data().state;
+      const localIsMine = !S.owner || S.owner === u0.uid;
+      if (S.owner === u0.uid && (S.resetAt || 0) > (C.resetAt || 0)) { /* reset on this device wins */ }
+      else S = localIsMine ? mergeProgress(S, C) : mergeState(C);
+      S.owner = u0.uid; persistLocal(); cloudReady = true; await cloudSave();
+      if (currentView === 'home') renderHome(); updateWallet();
+    }
+    else { S.owner = u0.uid; cloudReady = true; await cloudSave(); }
     if (user === u0) cloudReady = true;
     try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() && pf.data().focus ? pf.data().focus.topic : null; if (currentView === 'home') renderHome(); } catch (e2) {}
   } catch (e) {
@@ -1847,7 +1882,7 @@ function handleReset() {
     clearTimeout(window.__rt); window.__rt = setTimeout(() => { if (resetArmed) { resetArmed = false; renderSettings(); } }, 6000);
     return;
   }
-  S = DEFAULT(); save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
+  S = DEFAULT(); S.resetAt = Date.now(); if (user) S.owner = user.uid; save(); updateWallet(); resetArmed = false; renderSettings(); toast('הַנְּתוּנִים אוּפְּסוּ');
 }
 
 /* ---------- session flow ---------- */

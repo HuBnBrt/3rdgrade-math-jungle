@@ -864,7 +864,7 @@ function genDigit(t) {
   if (Math.random() < .4) {
     const nn = n + diff;
     return {
-      body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> מְשַׁנִּים אֶת סִפְרַת ${PLACE[pv]} לְ-${e}.<br>מָה הַמִּסְפָּר הֶחָדָשׁ?</div>`,
+      body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> מְשַׁנִּים אֶת סִפְרַת ${PLACE[pv]} לְ-${e}.<br>מָה הַמִּסְפָּר הֶחָדָשׁ?</div>`,
       parts: [{ type: 'num', ans: nn }],
       hint: `סִפְרַת ${PLACE[pv]} הִיא הַסִּפְרָה ${old}. מַחְלִיפִים אוֹתָהּ בְּ-${e} וּשְׁאָר הַסְּפָרוֹת נִשְׁאָרוֹת.`,
       explain: `<span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(nn)}</span>.`
@@ -872,7 +872,7 @@ function genDigit(t) {
   }
   const amount = Math.abs(diff), grows = diff > 0;
   return {
-    body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> שׁוּנְּתָה הַסִּפְרָה ${old} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
+    body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> שׁוּנְּתָה הַסִּפְרָה ${old} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
     parts: [
       { type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' },
       { type: 'num', label: 'בְּכַמָּה', ans: amount }
@@ -942,7 +942,7 @@ function genDecomp(t) {
       const givenTxt = given.length > 1 ? given.slice(0, -1).join(', ') + ' וְ-' + given[given.length - 1] : given[0];
       const place = 10 ** (len - 1 - m), digit = comps[m] / place;
       const UN = { 1: 'יְחִידוֹת', 10: 'עֲשָׂרוֹת', 100: 'מֵאוֹת', 1000: 'אֲלָפִים' };
-      if (digit === 0) return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא 0: אֵין ${UN[place]} בְּמִסְפָּר. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
+      if (digit === 0) return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא 0: אֵין ${UN[place]} בַּמִּסְפָּר. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.filter(c => c).map(fmt).join(' + ')}</span>`;
       return `כְּבָר יֵשׁ ${givenTxt}, וְלָכֵן הֶחָסֵר הוּא ${fmt(comps[m])}: הַסִּפְרָה ${digit} נִמְצֵאת בַּמָּקוֹם ${PLACE[place]} וְשָׁווֶה ${fmt(comps[m])}. הַפֵּירוּק הַמָּלֵא: <span class="ltr">${fmt(n)} = ${comps.map(fmt).join(' + ')}</span>`;
     })()
   };
@@ -1333,7 +1333,7 @@ function qDigit(n, i, e, how) {
   const diff = (e - old) * pv, amount = Math.abs(diff), grows = diff > 0;
   const what = how === 'place' ? `אֶת סִפְרַת ${PLACE[pv]}` : `אֶת הַסִּפְרָה ${old}`;
   return {
-    body: `<div class="prompt">בְּמִסְפָּר <span class="ltr">${fmt(n)}</span> שִׁינּוּ ${what} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
+    body: `<div class="prompt">בַּמִּסְפָּר <span class="ltr">${fmt(n)}</span> שִׁינּוּ ${what} לְ-${e}.<br>הַאִם הַמִּסְפָּר הֶחָדָשׁ גָּדַל אוֹ קָטַן, וּבְכַמָּה?</div>`,
     parts: [{ type: 'buttons', opts: ['גָּדַל', 'קָטַן'], ans: grows ? 'גָּדַל' : 'קָטַן' }, { type: 'num', label: 'בְּכַמָּה', ans: amount }],
     hint: 'כְּדַאי לָשִׂים לֵב לְאֵיזֶה מָקוֹם שַׁיֶּיכֶת הַסִּפְרָה. הַהֶפְרֵשׁ מוּכְפָּל בְּעֵרֶךְ הַמָּקוֹם.',
     explain: `הַסִּפְרָה ${old} נִמְצֵאת בַּמָּקוֹם ${PLACE[pv]}. <span class="ltr">${fmt(n)}</span> הוֹפֵךְ לְ-<span class="ltr">${fmt(n + diff)}</span>, לָכֵן הַמִּסְפָּר ${grows ? 'גָּדַל' : 'קָטַן'} בְּ-${fmt(amount)}.`

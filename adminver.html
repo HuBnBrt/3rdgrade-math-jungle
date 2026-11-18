@@ -84,7 +84,10 @@ const esc = s => dec(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '
 const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
 const MIN = 3; // minimal answers to judge a topic
 
-let me = null, kids = [], admins = [], openUid = null;
+let me = null, kids = [], admins = [], openUid = null, loadedAt = null;
+// only the owner manages who may open the dashboard; teachers do not see that list at all
+const OWNER = 'benbritcrm@gmail.com';
+const isOwner = () => !!me && (me.email || '').toLowerCase() === OWNER;
 
 onAuthStateChanged(auth, async u => {
   me = u;
@@ -110,15 +113,17 @@ document.addEventListener('click', async e => {
   else if (t.dataset.focus) setFocus(t.dataset.uid, t.dataset.focus, true);
   else if (t.dataset.unfocus) setFocus(t.dataset.uid, t.dataset.unfocus, false);
   else if (t.dataset.clear) setFocus(t.dataset.clear, null);
-  else if (t.id === 'addAdmin') addAdmin();
-  else if (t.dataset.rmadmin) removeAdmin(t.dataset.rmadmin);
+  else if (t.id === 'addAdmin' && isOwner()) addAdmin();
+  else if (t.dataset.rmadmin && isOwner()) removeAdmin(t.dataset.rmadmin);
+  else if (t.id === 'refreshCard') { t.disabled = true; t.textContent = 'מרענן…'; try { await loadAll(); } catch (x) { alert('הרענון נכשל'); render(); } }
   else if (t.id === 'closeCard') { openUid = null; render(); }
 });
 
 async function loadAll() {
-  const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), getDocs(collection(db, 'admins'))]);
+  const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), isOwner() ? getDocs(collection(db, 'admins')) : Promise.resolve(null)]);
   kids = us.docs.map(d => ({ uid: d.id, ...d.data() })).filter(k => k.topics);
-  admins = ad.docs.map(d => d.id);
+  admins = ad ? ad.docs.map(d => d.id) : [];
+  loadedAt = new Date();
   render();
 }
 
@@ -171,9 +176,9 @@ function render() {
     <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך 10 התשובות האחרונות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
     <p class="muted">האחוז מראה את הידע עכשיו: 10 התשובות האחרונות בכל נושא, כך שטעויות ישנות שתוקנו לא מורידות את הציון. הסכום המצטבר של כל התשובות מופיע בריחוף על תא ובכרטיס הילד. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
   <div id="card">${k ? kidCard(k) : ''}</div>
-  <div class="box"><h2>מורשי ניהול</h2>
+  ${isOwner() ? `<div class="box"><h2>מורשי ניהול</h2>
     <div>${admins.map(a => `<div class="row" style="margin-bottom:4px"><span style="direction:ltr">${esc(a)}</span>${a !== (me.email || '').toLowerCase() ? `<button class="sm" data-rmadmin="${esc(a)}">הסרה</button>` : '<span class="muted">(אתה)</span>'}</div>`).join('')}</div>
-    <div class="row" style="margin-top:8px"><input type="email" id="newAdmin" placeholder="אימייל Google של מורה"><button id="addAdmin" class="pri sm">הוספת מורה</button></div></div>`;
+    <div class="row" style="margin-top:8px"><input type="email" id="newAdmin" placeholder="אימייל Google של מורה"><button id="addAdmin" class="pri sm">הוספת מורה</button></div></div>` : ''}`;
 }
 
 function kidCard(k) {
@@ -186,7 +191,7 @@ function kidCard(k) {
   const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
   const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
   const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
-  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>
+  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><span class="muted" style="font-size:12px">עודכן ${loadedAt ? loadedAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span><button id="refreshCard" class="sm">↻ רענון</button><button id="closeCard" class="sm">סגירה</button></div>
     <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה עכשיו: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>

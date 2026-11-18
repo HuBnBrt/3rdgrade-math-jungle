@@ -13,9 +13,13 @@ service cloud.firestore {
     match /users/{uid}/data/{docId} {
       allow read, write: if signedIn() && request.auth.uid == uid;
     }
+    // only the owner sees the list of dashboard users and adds or removes them; a teacher can only check her own entry
+    function isOwner() {
+      return signedIn() && request.auth.token.email.lower() == 'benbritcrm@gmail.com';
+    }
     match /admins/{email} {
       allow read: if signedIn() && request.auth.token.email.lower() == email;
-      allow read, write: if isAdmin();
+      allow read, write: if isOwner();
     }
   }
 }

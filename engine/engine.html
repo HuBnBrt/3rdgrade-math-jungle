@@ -265,7 +265,7 @@ main>section{flex:1;min-height:0;display:flex;flex-direction:column}
 #qcard>*{flex:none}
 #qcard .qhead{display:flex;align-items:center;justify-content:center;gap:12px;min-height:26px}
 #qcard .qhead{position:relative;padding:0 76px}
-@media (max-width:600px){#qcard .qhead{padding:0 0 0 72px}}
+@media (max-width:600px){#qcard .qhead{padding:0 34px 0 72px}}
 #qcard .qhead .timer{margin:0;padding:2px 12px;font-size:15px;position:absolute;left:0;top:50%;margin-top:-.75em;line-height:1.5}
 #qcard .question-board{flex:0 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;margin:0;overflow:hidden}
 #qcard .question-board svg.angle{max-height:26vh;width:auto;max-width:100%}
@@ -709,6 +709,10 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .owned-animal.stack span:nth-child(1){position:relative;z-index:3}.owned-animal.stack span:nth-child(2){z-index:2;filter:brightness(.92)}.owned-animal.stack span:nth-child(3){z-index:1;filter:brightness(.84)}
 .owned-animal.stack .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:4;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em Heebo,sans-serif;padding:0 .4em}
 /*{{@THEME_CSS}}*/
+.sound-btn{position:absolute;right:0;top:50%;margin-top:-.8em;background:rgba(0,0,0,.18);border:0;border-radius:99px;font-size:15px;line-height:1.6;padding:0 .45em;cursor:pointer}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999}
+.confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:conf-fall;animation-timing-function:cubic-bezier(.3,.6,.6,1);animation-fill-mode:forwards}
+@keyframes conf-fall{to{transform:translate(var(--dx),110vh) rotate(var(--r));opacity:.9}}
 </style>
 </head>
 <body>
@@ -1225,7 +1229,7 @@ function buyItem(id) {
   if (!it || S.coins < it.price || S.items[it.id]) return;
   S.coins -= it.price;
   S.items[it.id] = 1;
-  save(); updateWallet(); renderCamp();
+  save(); updateWallet(); renderCamp(); SFX.play('buy');
   toast(`${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף!`);
 }
 function handleReset() {
@@ -1453,6 +1457,60 @@ function fitFeedback() {
   let size = parseFloat(getComputedStyle(f).fontSize);
   while (f.scrollHeight > f.clientHeight + 1 && size > 11) { size -= 1; f.style.fontSize = size + 'px'; }
 }
+/* ---------- sounds and confetti ----------
+   Made with the browser's own audio (no files to load). Every sound respects the mute button. */
+const SFX = (() => {
+  let ctx = null;
+  const ac = () => {
+    if (!ctx) { const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; ctx = new A(); }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  };
+  const env = (c, t, d, g) => { const v = c.createGain(); v.gain.setValueAtTime(0.0001, t); v.gain.exponentialRampToValueAtTime(g, t + 0.015); v.gain.exponentialRampToValueAtTime(0.0001, t + d); v.connect(c.destination); return v; };
+  const note = (c, f, t, d, type = 'triangle', g = 0.16, f2) => {
+    const o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    o.connect(env(c, t, d, g)); o.start(t); o.stop(t + d + 0.05);
+  };
+  let noiseBuf = null;
+  const clap = (c, t, g) => {
+    if (!noiseBuf) { noiseBuf = c.createBuffer(1, c.sampleRate * 0.2, c.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    const n = c.createBufferSource(); n.buffer = noiseBuf;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1100 + Math.random() * 1400; f.Q.value = 0.9;
+    n.connect(f); f.connect(env(c, t, 0.09 + Math.random() * 0.05, g)); n.start(t); n.stop(t + 0.2);
+  };
+  const arp = (c, t, fs, step, d, type, g) => fs.forEach((f, i) => note(c, f, t + i * step, d, type, g));
+  const SOUNDS = {
+    correct: (c, t) => { note(c, 880, t, 0.12, 'sine', 0.2); note(c, 1318.5, t + 0.09, 0.25, 'sine', 0.2); },
+    wrong: (c, t) => note(c, 311, t, 0.32, 'triangle', 0.13, 207),
+    level: (c, t) => arp(c, t, [523.3, 659.3, 784, 1046.5], 0.08, 0.22, 'triangle', 0.15),
+    medal: (c, t) => { arp(c, t, [784, 988, 1175, 1568], 0.06, 0.3, 'sine', 0.12); note(c, 2093, t + 0.26, 0.5, 'sine', 0.06); },
+    trophy: (c, t) => { arp(c, t, [392, 523.3, 659.3], 0.13, 0.16, 'square', 0.07); note(c, 784, t + 0.39, 0.7, 'square', 0.08); note(c, 523.3, t + 0.39, 0.7, 'triangle', 0.1); },
+    buy: (c, t) => { note(c, 988, t, 0.08, 'square', 0.06); note(c, 1319, t + 0.07, 0.35, 'square', 0.06); arp(c, t + 0.15, [2093, 2637, 3136], 0.05, 0.15, 'sine', 0.05); },
+    gift: (c, t) => { for (let i = 0; i < 9; i++) note(c, 1200 + Math.random() * 1800, t + i * 0.055, 0.18, 'sine', 0.06); },
+    applause: (c, t) => { for (let i = 0; i < 70; i++) { const x = Math.random() * 2.2; clap(c, t + x, 0.35 * (1 - x / 2.6)); } },
+    finish: (c, t) => { arp(c, t, [523.3, 659.3, 784], 0.11, 0.18, 'triangle', 0.13); note(c, 1046.5, t + 0.33, 0.6, 'triangle', 0.14); SOUNDS.applause(c, t + 0.35); },
+    done: (c, t) => { note(c, 659.3, t, 0.18, 'sine', 0.13); note(c, 784, t + 0.14, 0.3, 'sine', 0.13); },
+    tap: (c, t) => note(c, 660, t, 0.06, 'sine', 0.06),
+  };
+  return {
+    on: () => !S.settings || S.settings.sound !== false,
+    play(name, delay = 0) { if (!this.on()) return; const c = ac(); if (!c || !SOUNDS[name]) return; try { SOUNDS[name](c, c.currentTime + 0.02 + delay); } catch (e) {} },
+  };
+})();
+function confetti() {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.createElement('div'); box.className = 'confetti'; box.setAttribute('aria-hidden', 'true');
+  const colors = ['#f44336', '#ffeb3b', '#4caf50', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#00bcd4'];
+  for (let i = 0; i < 110; i++) {
+    const p = document.createElement('i');
+    p.style.cssText = `left:${Math.random() * 100}%;background:${colors[i % colors.length]};animation-duration:${2.2 + Math.random() * 1.6}s;animation-delay:${Math.random() * 0.6}s;--dx:${(Math.random() * 2 - 1) * 120}px;--r:${Math.random() * 720 - 360}deg;width:${6 + Math.random() * 6}px;height:${8 + Math.random() * 8}px`;
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 4500);
+}
+
 // after moving on with Enter, the cursor waits in the new answer box
 let focusAnswer = false;
 function renderPlay() {
@@ -1474,6 +1532,7 @@ function renderPlay() {
     <div class="qhead">
       <div class="rank" style="color:#fff;font-size:16px">${session.kind === 'bonus' ? '🪙 ' : ''}שאלה ${qNum} מתוך ${session.total} · ${(CATS.find(c => c.id === Q.cat) || {}).name || 'אימון מתמטיקה'}</div>
       ${showTimer ? '<span id="timerBox" class="timer"></span>' : ''}
+      <button type="button" id="soundBtn" class="sound-btn" aria-label="${SFX.on() ? 'השתקת צלילים' : 'הפעלת צלילים'}" aria-pressed="${SFX.on()}">${SFX.on() ? '🔊' : '🔇'}</button>
     </div>
     <div class="bar"><span style="width:${pct}%"></span></div>
     <div class="question-board">${Q.body}</div>
@@ -1558,6 +1617,7 @@ function setupDraw(svg, p) {
 
 function record(ok) {
   const m = mast(Q.cat);
+  let sfx = ok ? 'correct' : 'wrong';
   session.done++;
   session.tc = session.tc || {}; session.tc[Q.cat] = (session.tc[Q.cat] || 0) + 1;
   if (!S.stats) S.stats = {};
@@ -1571,18 +1631,20 @@ function record(ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
     m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
-    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; sfx = 'level'; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
   } else {
     m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
-  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); toast('מדליית זהב הושגה!'); }
+  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); sfx = 'medal'; toast('מדליית זהב הושגה!'); }
   if (!m.trophy && m.score >= 70 && m.tier >= 3) {
     m.trophy = true;
     const nm = CATS.find(c => c.id === Q.cat).name;
     (session.trophies = session.trophies || []).push(nm);
     toast(`🏆 גביע! אלופים בנושא: ${plain(nm)}`);
+    sfx = 'trophy';
   }
+  SFX.play(sfx);
   save(); updateWallet();
 }
 
@@ -1625,6 +1687,10 @@ function endSession() {
   Q = null;
   $('#qcard').classList.add('summary');
   const canBonus = session.kind === 'base';
+  // end of practice: fanfare and applause (and confetti) for a good practice, a soft tune otherwise; then the chest opens
+  if (acc >= 0.5) SFX.play('finish'); else SFX.play('done');
+  if (acc >= 0.75) confetti();
+  SFX.play('gift', acc >= 0.5 ? 2.4 : 0.6);
   $('#qcard').innerHTML = `
     <div class="sum-gift">🎁</div>
     <div class="sum-title">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
@@ -1717,6 +1783,7 @@ document.addEventListener('click', e => {
   const pr = t.closest('[data-practice]');
   if (pr) { startSession('base', pr.dataset.practice); return; }
   if (t.closest('#startBtn')) { startSession('base'); return; }
+  if (t.closest('#soundBtn')) { S.settings.sound = !SFX.on(); save(); const b = $('#soundBtn'); if (b) { b.textContent = SFX.on() ? '🔊' : '🔇'; b.setAttribute('aria-pressed', SFX.on()); b.setAttribute('aria-label', SFX.on() ? 'השתקת צלילים' : 'הפעלת צלילים'); } SFX.play('tap'); return; }
   if (t.closest('#statToggle')) { S.settings.statsView = !S.settings.statsView; save(); renderHome(); return; }
   const act = t.closest('[data-act]');
   if (act && act.dataset.act === 'logout') { doLogout(); return; }

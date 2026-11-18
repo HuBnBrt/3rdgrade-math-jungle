@@ -730,6 +730,13 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   .home-top .hero-board{order:2;flex:1 1 0 !important;width:auto !important;min-width:0}
   .home-top .stat-toggle{order:3;gap:2px;padding:4px 8px;font-size:11px;line-height:1.1}
 }
+.modal .m-notes{text-align:right;margin:4px 0 0;padding-inline-start:1.2em;line-height:1.5}.modal .m-notes li{margin:2px 0}
+.dev-chip{display:inline-block;margin-inline-start:8px;padding:1px 8px;border-radius:99px;background:#ffe082;color:#5c3a21;font-size:.55em;vertical-align:middle}
+/* short screens: when the question does not fit, drop the extra tips and tighten the spacing */
+#qcard.tight .ord-tip,#qcard.tight .ord-label{display:none}
+#qcard.tight .opts{margin:4px 0;gap:6px}
+#qcard.tight .ordwrap .ghost-btn{margin-top:4px !important}
+#qcard.tight .parts .rank{margin:0 !important}#qcard.tight .parts input{padding-top:4px;padding-bottom:4px;min-height:0;height:auto}#qcard.tight .opt{padding-top:4px;padding-bottom:4px}#qcard.tight .question-board{padding-top:4px;padding-bottom:4px}
 /* nikud version: room for vowel marks */
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
 #qcard .prompt{line-height:1.7}
@@ -766,7 +773,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v95';
+// APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
+// APP_LABEL is the version people see. tools/release.py updates both.
+const APP_VERSION = 'v96';
+const APP_LABEL = '1.96';
+const IS_DEV = /updatever\.html$/.test(location.pathname);
+// what's new in this version, shown once after updating (filled when a version is published to everyone)
+const RELEASE_NOTES = ['הַכְּתָב בַּשְּׁאֵלוֹת מוּתְאָם תָּמִיד לַמִּסְגֶּרֶת שֶׁלּוֹ, וְנִשְׁאָר גָּדוֹל וְקָרִיא גַּם בְּמָסַכִּים קְטַנִּים.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -808,7 +821,7 @@ function maybePrompts() {
 async function checkUpdate() {
   try {
     // read the published page itself, bypassing every cache, so we only offer a version that is really there
-    const r = await fetch('./?fresh=' + Date.now(), { cache: 'no-store' });
+    const r = await fetch((IS_DEV ? location.pathname : './') + '?fresh=' + Date.now(), { cache: 'no-store' });
     const m = (await r.text()).match(/const APP_VERSION = 'v(\d+)'/);
     if (m && +m[1] > parseInt(APP_VERSION.slice(1), 10)) { pendingUpdate = m[1]; maybePrompts(); }
   } catch (e) {}
@@ -817,7 +830,15 @@ async function applyUpdate(v) {
   try { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } catch (e) {}
   location.replace(location.pathname + '?v=' + v + '&t=' + Date.now());
 }
-setTimeout(() => { checkUpdate(); maybePrompts(); }, 3500);
+function whatsNew() {
+  if (IS_DEV) return;
+  let last = null; try { last = localStorage.getItem('jungle-seen-version'); localStorage.setItem('jungle-seen-version', APP_VERSION); } catch (e) { return; }
+  const returning = last ? last !== APP_VERSION : (S.sessions || S.coins);
+  if (!returning || !RELEASE_NOTES.length) return;
+  showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: `מָה חָדָשׁ בַּגִּרְסָה ${APP_LABEL}`, text: `<ul class="m-notes">${RELEASE_NOTES.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יוֹפִי, מַמְשִׁיכִים!' });
+}
+setTimeout(() => { whatsNew(); checkUpdate(); maybePrompts(); }, 3500);
+if (IS_DEV) { const h = document.querySelector('header h1'); if (h) h.insertAdjacentHTML('beforeend', `<span class="dev-chip">🧪 בְּדִיקָה ${APP_LABEL}</span>`); }
 try { new Image().src = 'monkey-update.png'; } catch (e) {}
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { installAsked = false; checkUpdate(); setTimeout(maybePrompts, 1200); } });
 setInterval(checkUpdate, 10 * 60 * 1000);
@@ -1647,7 +1668,7 @@ async function cloudSave() {
   try {
     const topics = {};
     CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
 let teacherFocus = [];
@@ -1971,7 +1992,7 @@ function renderSettings() {
       <h2 style="margin-top:8px">אִיפּוּס</h2>
       <button type="button" class="ghost-btn" id="resetBtn" style="width:100%">אִיפּוּס נְתוּנִים</button>
     </div>
-    <div class="rank s-ver" style="text-align:center;margin:14px 0">גִּרְסַת הָאַפְּלִיקַצְיָה: ${APP_VERSION}</div>`;
+    <div class="rank s-ver" style="text-align:center;margin:14px 0">גִּרְסַת הָאַפְּלִיקַצְיָה: ${APP_LABEL}${IS_DEV ? ' (גִּרְסַת בְּדִיקָה)' : ''}</div>`;
 }
 
 /* ---------- shop & settings actions ---------- */
@@ -2180,6 +2201,24 @@ function fitBoard() {
     const max = bd.clientWidth - 28;
     while (el.getBoundingClientRect().width > max && size > 12) { size -= 1; el.style.fontSize = size + 'px'; }
   });
+  // the question text must always fit inside its board, and the card inside the screen: shrink step by step until it does
+  // big text shrinks first; nothing goes below 14px, so every line stays readable for children
+  const shrink = (root, over, min) => {
+    if (!over()) return;
+    const els = [root, ...root.querySelectorAll('*')].filter(e => !e.closest('svg') && [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()));
+    const base = els.map(e => parseFloat(getComputedStyle(e).fontSize));
+    for (let k = 0.95; k >= min && over(); k -= 0.05) els.forEach((e, i) => { e.style.fontSize = Math.max(Math.min(base[i], 14), base[i] * k).toFixed(1) + 'px'; });
+  };
+  const card = document.querySelector('#qcard'), parts = card && card.querySelector('.parts'), fb = card && card.querySelector('.fbslot');
+  const clipped = () => bd.scrollHeight > bd.clientHeight + 2;
+  const cardOver = () => card.scrollHeight > card.clientHeight + 2;
+  if (!card || (!clipped() && !cardOver())) return;
+  card.classList.add('tight');
+  // 1. give back part of the empty space kept for the feedback, so the question gets room before anything shrinks
+  if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 64) { h -= 4; fb.style.height = h + 'px'; } }
+  // 2. only then make the question text smaller, and last the answer area
+  shrink(bd, clipped, 0.5);
+  if (parts) shrink(parts, cardOver, 0.65);
 }
 function fitFeedback() {
   const f = document.querySelector('#qcard .feedback');
@@ -2196,7 +2235,7 @@ function renderPlay() {
   const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
   const showTimer = !locked && S.settings.timer === 'gentle';
 
-  $('#qcard').classList.remove('summary');
+  $('#qcard').classList.remove('summary', 'tight');
   const nk = (S.profile && S.profile.nick) ? ' ' + esc(S.profile.nick) : '';
   const praise = pick([`נָכוֹן מְאוֹד${nk}!`, `כָּל הַכָּבוֹד${nk}!`, `יָפֶה מְאוֹד${nk}!`, G('אַלּוּף', 'אַלּוּפָה', 'מְצוּיָּן') + nk + '!']);
   const oops = pick(['לֹא בְּדִיּוּק', 'כִּמְעַט', 'לֹא נוֹרָא']) + nk + '. ';
@@ -2224,7 +2263,7 @@ function renderPlay() {
         : `<button type="button" class="action-btn${S.settings.timer === 'challenge' ? ' timed' : ''}" id="checkBtn">בְּדִיקָה ✔️</button>`}
     </div>`;
 
-  fitFeedback(); fitBoard();
+  fitBoard(); fitFeedback();
   if (focusAnswer) { focusAnswer = false; const inp = document.querySelector('#qcard input:not([disabled])'); if (inp) inp.focus(); }
   const sv = document.querySelector('#qcard svg[data-draw]');
   if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);

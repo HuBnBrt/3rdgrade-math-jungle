@@ -32,7 +32,10 @@ main{padding:16px;max-width:1500px;margin:auto}
 table{border-collapse:collapse;width:100%}
 th,td{border:1px solid #e2e7e4;padding:4px 4px;text-align:center;white-space:nowrap}
 th{background:#eef2f0;font-weight:600;font-size:13px}
-th.t{white-space:normal;min-width:44px;line-height:1.15;font-size:12px}
+th.t{white-space:normal;line-height:1.15;font-size:12px;overflow-wrap:normal}
+/* heat table: equal topic columns that share the width, names on up to two lines */
+table.heat{table-layout:fixed;min-width:900px}
+table.heat th{white-space:normal}table.heat th.w-name{width:64px}table.heat th.w-all{width:46px}table.heat th.w-ses{width:52px}table.heat th.w-date{width:62px}table.heat th.t{font-size:11px;padding:4px 1px}
 td.c{font-weight:700;font-size:13px;line-height:1.1}
 td.name{text-align:right;font-weight:600;cursor:pointer;color:#1b5e3f}
 tr:hover td.name{text-decoration:underline}
@@ -161,7 +164,7 @@ function render() {
     <h2 style="margin-top:14px">נושאים לחיזוק בכיתה</h2>
     <div class="weak">${classWeak.length ? classWeak.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין עדיין מספיק נתונים</span>'}</div></div>
   <div class="box"><div class="row"><h2 style="margin:0;flex:1">טבלת חום – אחוז הצלחה בכל נושא</h2><button id="csvBtn" class="sm">ייצוא לאקסל (CSV)</button></div>
-    <div class="tablewrap"><table><thead><tr><th>ילד/ה</th><th>כללי</th>${head}<th>אימונים</th><th>כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
+    <div class="tablewrap"><table class="heat"><thead><tr><th class="w-name">ילד/ה</th><th class="w-all">כללי</th>${head}<th class="w-ses">אימונים</th><th class="w-date">כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
     <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך שאלות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
     <p class="muted">מחושב לפי תשובות נכונות ושגויות בפועל. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
   <div id="card">${k ? kidCard(k) : ''}</div>

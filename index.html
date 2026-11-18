@@ -738,7 +738,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const APP_VERSION = 'v87';
+const APP_VERSION = 'v88';
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -1285,16 +1285,16 @@ function genAngleDraw() {
   const text = { 'חַדָּה': 'יֵשׁ לְשַׂרְטֵט זָווִית חַדָּה', 'יְשָׁרָה': 'יֵשׁ לְשַׂרְטֵט זָווִית יְשָׁרָה', 'קֵהָה': 'יֵשׁ לְשַׂרְטֵט זָווִית קֵהָה' }[target];
   const check = v => {
     if (typeof v !== 'number') return false;
-    if (target === 'חַדָּה') return v > 5 && v < 85;
-    if (target === 'יְשָׁרָה') return v >= 85 && v <= 95;
-    return v > 95 && v < 175;
+    if (target === 'חַדָּה') return v > 0 && v < 90;
+    if (target === 'יְשָׁרָה') return v === 90;
+    return v > 90 && v < 180;
   };
   return {
     body: `<div class="prompt compact">${text}</div>`,
     drawInit: target === 'יְשָׁרָה' ? pick([30, 45, 135, 150]) : 90,
     parts: [{ type: 'draw', check, help: { 'חַדָּה': 'מְקָרְבִים אֶת הַקַּו הַיָּרוֹק אֶל הַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית קְטַנָּה יוֹתֵר מִפִּינָּה שֶׁל מְרוּבָּע.', 'יְשָׁרָה': 'מַעֲמִידִים אֶת הַקַּו הַיָּרוֹק בְּנִיצָּב לַקַּו הַשָּׁחוֹר, כָּךְ שֶׁיִּיווָּצְרוּ פִּינָּה שֶׁל מְרוּבָּע.', 'קֵהָה': 'מַרְחִיקִים אֶת הַקַּו הַיָּרוֹק מֵהַקַּו הַשָּׁחוֹר, עַד שֶׁהַזָּווִית גְּדוֹלָה מִפִּינָּה שֶׁל מְרוּבָּע אֲבָל עֲדַיִין לֹא קַו יָשָׁר.' }[target] }],
     hint: 'יֵשׁ לִגְרוֹר אֶת הַקָּצֶה הַצָּהוֹב לַמִּיקּוּם הַמַּתְאִים.',
-    explain: `שׂוּרְטְטָה זָווִית בְּעֵרֶךְ שֶׁל ${target}.`
+    explain: target === 'יְשָׁרָה' ? 'שׁוּרְטְטָה זָוִית יְשָׁרָה. הָרִיבּוּעַ הַקָּטָן בַּפִּנָּה מְסַמֵּן זָוִית יְשָׁרָה.' : `שׁוּרְטְטָה זָוִית ${target}.`
   };
 }
 
@@ -1622,10 +1622,11 @@ async function cloudSave() {
     await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_VERSION }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
-let teacherFocus = null;
+let teacherFocus = [];
+const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 function focusBar() {
-  const c = teacherFocus && CATS.find(x => x.id === teacherFocus);
-  return c ? `<div class="install-bar"><span>⭐ מוּמְלָץ לְתַרְגֵּל: <b>${c.name}</b></span><button type="button" class="big-green-btn" data-practice="${c.id}">לְתִרְגּוּל</button></div>` : '';
+  const cs = teacherFocus.map(id => CATS.find(x => x.id === id)).filter(Boolean);
+  return cs.length ? `<div class="install-bar"><span>⭐ מוּמְלָץ לְתַרְגֵּל: <b>${cs.map(c => c.name).join(', ')}</b></span><button type="button" class="big-green-btn" data-practice="${cs[0].id}">לְתִרְגּוּל</button></div>` : '';
 }
 // combine progress made on this device with progress saved in the account: nothing earned is lost
 function mergeProgress(L, C) {
@@ -1698,7 +1699,7 @@ async function cloudLoad() {
     }
     else { S.owner = u0.uid; cloudReady = true; await cloudSave(); }
     if (user === u0) cloudReady = true;
-    try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() && pf.data().focus ? pf.data().focus.topic : null; if (currentView === 'home') renderHome(); } catch (e2) {}
+    try { const pf = await getDoc(doc(db, 'users', u0.uid)); teacherFocus = pf.exists() ? focusList(pf.data().focus) : []; if (currentView === 'home') renderHome(); } catch (e2) {}
   } catch (e) {
     console.warn(e);
     toast('לֹא הִצְלַחְנוּ לִטְעוֹן מֵהֶעָנָן. מַמְשִׁיכִים עִם הַמֵּידָע שֶׁבַּמַּכְשִׁיר');
@@ -1803,11 +1804,11 @@ function renderHome() {
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
-        <div class="card cat-${c.id}${teacherFocus === c.id ? ' rec' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
+        <div class="card cat-${c.id}${teacherFocus.includes(c.id) ? ' rec' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
-          ${teacherFocus === c.id ? '<div class="rec-badge">הַמְלָצָה לְתִרְגּוּל</div>' : ''}
+          ${teacherFocus.includes(c.id) ? '<div class="rec-badge">הַמְלָצָה לְתִרְגּוּל</div>' : ''}
           <div class="topic-content" style="position:relative;z-index:2">
             <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>
             <div class="stars" title="רָמָה: ${TIERS[m.tier]}">${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span></div>
@@ -2094,7 +2095,7 @@ function partHTML(p, i) {
     return `<div class="ordwrap"><div class="ord-label">הַסֵּדֶר שֶׁבָּחַרְתָּ, מֵהַקָּטָן לַגָּדוֹל:</div><div class="seq">${slots}</div><div class="ord-label">הַמִּסְפָּרִים לִבְחִירָה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">לְהַתְחִיל מֵחָדָשׁ</button><div class="ord-tip">אֶפְשָׁר לִגְרוֹר מִסְפָּר לְכָל מִשְׁבֶּצֶת, וּלְהָזִיז מִסְפָּר מִמִּשְׁבֶּצֶת לְמִשְׁבֶּצֶת.</div></div>`;
   }
   if (p.type === 'draw') {
-    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><path id="sq" d="M184 170 V146 H160" fill="none" stroke="#163b2a" stroke-width="3" style="display:none"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
   }
   return '';
 }
@@ -2188,13 +2189,14 @@ function timeUp() {
 
 /* ---------- answers ---------- */
 function setupDraw(svg, p) {
-  const arm = svg.querySelector('#arm'), knob = svg.querySelector('#knob');
+  const arm = svg.querySelector('#arm'), knob = svg.querySelector('#knob'), sq = svg.querySelector('#sq');
   const cx = 160, cy = 170, L = 110;
   const place = d => {
     const r = d * Math.PI / 180;
     const x = (cx + L * Math.cos(r)).toFixed(1), y = (cy - L * Math.sin(r)).toFixed(1);
     arm.setAttribute('x2', x); arm.setAttribute('y2', y);
     knob.setAttribute('cx', x); knob.setAttribute('cy', y);
+    if (sq) sq.style.display = d === 90 ? '' : 'none';
   };
   place(p.v);
   if (Q.result !== undefined) return;
@@ -2202,7 +2204,9 @@ function setupDraw(svg, p) {
   const move = e => {
     const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
     const q = pt.matrixTransform(svg.getScreenCTM().inverse());
-    const d = Math.round(Math.max(0, Math.min(180, Math.atan2(cy - q.y, q.x - cx) * 180 / Math.PI)));
+    const raw = Math.max(0, Math.min(180, Math.atan2(cy - q.y, q.x - cx) * 180 / Math.PI));
+    // the line moves in 3-degree steps: it is either exactly right (90, with the square mark) or clearly not
+    const d = Math.round(raw / 3) * 3;
     p.v = d; place(d);
   };
   svg.addEventListener('pointerdown', e => { dragging = true; svg.setPointerCapture(e.pointerId); move(e); });
@@ -2251,13 +2255,14 @@ function check() {
   renderPlay();
 }
 
-function clearFocus() {
-  teacherFocus = null;
-  if (user) setDoc(doc(db, 'users', user.uid), { focus: null }, { merge: true }).catch(() => {});
+// a recommendation is done once the child practiced that topic; the others stay
+function clearFocus(done) {
+  teacherFocus = teacherFocus.filter(id => !done.includes(id));
+  if (user) setDoc(doc(db, 'users', user.uid), { focus: teacherFocus.length ? { topics: teacherFocus } : null }, { merge: true }).catch(() => {});
 }
 function endSession() {
   stopTimer();
-  if (teacherFocus && (session.only === teacherFocus || (session.tc && session.tc[teacherFocus] >= 2))) clearFocus();
+  { const done = teacherFocus.filter(id => session.only === id || (session.tc && session.tc[id] >= 2)); if (done.length) clearFocus(done); }
   if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
   if (!S.gear) S.gear = {};
   const acc = session.total ? session.correct / session.total : 0;

@@ -103,7 +103,8 @@ document.addEventListener('click', async e => {
   else if (t.id === 'outBtn') signOut(auth);
   else if (t.id === 'csvBtn') exportCsv();
   else if (t.dataset.uid && t.classList.contains('name')) { openUid = t.dataset.uid; render(); $('#card').scrollIntoView({ behavior: 'smooth' }); }
-  else if (t.dataset.focus) setFocus(t.dataset.uid, t.dataset.focus);
+  else if (t.dataset.focus) setFocus(t.dataset.uid, t.dataset.focus, true);
+  else if (t.dataset.unfocus) setFocus(t.dataset.uid, t.dataset.unfocus, false);
   else if (t.dataset.clear) setFocus(t.dataset.clear, null);
   else if (t.id === 'addAdmin') addAdmin();
   else if (t.dataset.rmadmin) removeAdmin(t.dataset.rmadmin);
@@ -169,21 +170,27 @@ function kidCard(k) {
   const none = list.filter(x => x.a === null);
   const solid = judged.filter(x => x.ok + x.bad >= MIN);
   const weak3 = solid.filter(x => x.a < .85).slice(0, 3);
-  const f = k.focus && k.focus.topic ? list.find(x => x.id === k.focus.topic) : null;
-  const line = x => `<tr><td style="text-align:right">${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td><button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button></td></tr>`;
+  const fl = focusList(k.focus), fs = fl.map(id => list.find(x => x.id === id)).filter(Boolean);
+  const line = x => `<tr><td style="text-align:right">${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
   return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><button id="closeCard" class="sm">סגירה</button></div>
     <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה כללי: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
-    ${f ? `<div class="focus">המלצה פעילה לילד: <b>${esc(f.name)}</b> <button class="sm" data-clear="${k.uid}">ביטול המלצה</button></div>` : ''}
+    ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `<b>${esc(f.name)}</b> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
     <h2 style="margin-top:14px">כל הנושאים – מהחלש לחזק</h2>
     <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה</th><th>נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;
 }
 
-async function setFocus(uid, topic) {
+// recommendations add up: adding one keeps the others; topic null clears them all
+const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
+async function setFocus(uid, topic, add) {
   try {
-    await updateDoc(doc(db, 'users', uid), { focus: topic ? { topic, by: me.email, at: Date.now() } : null });
-    const k = kids.find(x => x.uid === uid); if (k) k.focus = topic ? { topic } : null;
+    const k = kids.find(x => x.uid === uid);
+    const cur = focusList(k && k.focus);
+    const next = topic === null ? [] : add ? [...new Set([...cur, topic])] : cur.filter(x => x !== topic);
+    const focus = next.length ? { topics: next, by: me.email, at: Date.now() } : null;
+    await updateDoc(doc(db, 'users', uid), { focus });
+    if (k) k.focus = focus;
     render();
   } catch (e) { alert('לא ניתן לשמור את ההמלצה'); }
 }

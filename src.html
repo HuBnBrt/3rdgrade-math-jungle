@@ -797,8 +797,8 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v106';
-const APP_LABEL = '3.3';
+const APP_VERSION = 'v107';
+const APP_LABEL = '3.4';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -2556,7 +2556,7 @@ function endSession() {
   // end of practice: fanfare and applause (and confetti) for a good practice, a soft tune otherwise; then the chest opens
   if (acc >= 0.5) SFX.play('finish'); else SFX.play('done');
   if (acc >= 0.75) confetti();
-  SFX.play('gift', acc >= 0.5 ? 2.4 : 0.6);
+  SFX.play('gift', acc >= 0.5 ? 3.8 : 2.2);
   $('#qcard').innerHTML = `
     <div class="sum-gift">🎁</div>
     <div class="sum-title">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>

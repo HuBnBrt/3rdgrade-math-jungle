@@ -806,7 +806,7 @@ const APP_VERSION = 'v107';
 const APP_LABEL = '3.4';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = ['עִדְכּוּן וְהַחְלָפַת צְלִילִים.', 'בַּטֶּלֶפוֹן וּבַטַּאבְּלֶט מַקְלִידִים בְּעֶזְרַת מִקְלֶדֶת הַמִּסְפָּרִים שֶׁל הַמִּשְׂחָק, וְהַמָּסָךְ כְּבָר לֹא קוֹפֵץ.', 'גַּם בְּלִי הִתְחַבְּרוּת הַהִתְקַדְּמוּת נִשְׁמֶרֶת: כּוֹתְבִים כִּינּוּי בְּ״שָׁלוֹם אוֹרֵחַ״, וְהַמּוֹרָה תּוּכַל לִרְאוֹת אֶת הַהִתְקַדְּמוּת לְפִי הַכִּינּוּי.'];
+const RELEASE_NOTES = ['עִדְכּוּן וְהַחְלָפַת צְלִילִים.', 'בַּטֶּלֶפוֹן וּבַטַּאבְּלֶט מַקְלִידִים בְּעֶזְרַת מִקְלֶדֶת הַמִּסְפָּרִים שֶׁל הַמִּשְׂחָק, וְהַמָּסָךְ כְּבָר לֹא קוֹפֵץ.', 'guest: גַּם בְּלִי הִתְחַבְּרוּת הַהִתְקַדְּמוּת נִשְׁמֶרֶת: כּוֹתְבִים כִּינּוּי בְּ״שָׁלוֹם אוֹרֵחַ״.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -861,8 +861,10 @@ function whatsNew() {
   if (IS_DEV) return;
   let last = null; try { last = localStorage.getItem('jungle-seen-version'); localStorage.setItem('jungle-seen-version', APP_VERSION); } catch (e) { return; }
   const returning = last ? last !== APP_VERSION : (S.sessions || S.coins);
-  if (!returning || !RELEASE_NOTES.length) return;
-  showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: `מָה חָדָשׁ בַּגִּרְסָה ${APP_LABEL}`, text: `<ul class="m-notes">${RELEASE_NOTES.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יוֹפִי, מַמְשִׁיכִים!' });
+  // a note starting with "guest:" is only for children who are not signed in with Google
+  const notes = RELEASE_NOTES.filter(x => !x.startsWith('guest:') || !user).map(x => x.replace(/^guest:\s*/, ''));
+  if (!returning || !notes.length) return;
+  showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: `מָה חָדָשׁ בַּגִּרְסָה ${APP_LABEL}`, text: `<ul class="m-notes">${notes.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יוֹפִי, מַמְשִׁיכִים!' });
 }
 setTimeout(() => { whatsNew(); checkUpdate(); maybePrompts(); }, 3500);
 if (IS_DEV) { const h = document.querySelector('header h1'); if (h) h.insertAdjacentHTML('beforeend', `<span class="dev-chip">🧪 בְּדִיקָה ${APP_LABEL}</span>`); }

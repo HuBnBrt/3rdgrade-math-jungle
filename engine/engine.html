@@ -824,8 +824,10 @@ function whatsNew() {
   if (IS_DEV) return;
   let last = null; try { last = localStorage.getItem('{{LS_PREFIX}}seen-version'); localStorage.setItem('{{LS_PREFIX}}seen-version', APP_VERSION); } catch (e) { return; }
   const returning = last ? last !== APP_VERSION : (S.sessions || S.coins);
-  if (!returning || !RELEASE_NOTES.length) return;
-  showModal({ icon: '<img src="{{UPDATE_IMG}}" alt="" class="m-img">', title: `מה חדש בגרסה ${APP_LABEL}`, text: `<ul class="m-notes">${RELEASE_NOTES.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יופי, ממשיכים!' });
+  // a note starting with "guest:" is only for children who are not signed in with Google
+  const notes = RELEASE_NOTES.filter(x => !x.startsWith('guest:') || !user).map(x => x.replace(/^guest:\s*/, ''));
+  if (!returning || !notes.length) return;
+  showModal({ icon: '<img src="{{UPDATE_IMG}}" alt="" class="m-img">', title: `מה חדש בגרסה ${APP_LABEL}`, text: `<ul class="m-notes">${notes.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יופי, ממשיכים!' });
 }
 setTimeout(() => { whatsNew(); checkUpdate(); maybePrompts(); }, 3500);
 if (IS_DEV) { const h = document.querySelector('header h1'); if (h) h.insertAdjacentHTML('beforeend', `<span class="dev-chip">🧪 בדיקה ${APP_LABEL}</span>`); }

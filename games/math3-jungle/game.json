@@ -17,8 +17,10 @@
  "version": {
   "build": 107,
   "label": "3.4",
-  "published": "2.5",
-  "publishedBuild": 102
+  "published": "3.4",
+  "publishedBuild": 107
  },
- "release_notes": []
+ "release_notes": [
+  "עדכון והחלפת צלילים."
+ ]
 }

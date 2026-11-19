@@ -747,6 +747,23 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999}
 .confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:conf-fall;animation-timing-function:cubic-bezier(.3,.6,.6,1);animation-fill-mode:forwards}
 @keyframes conf-fall{to{transform:translate(var(--dx),110vh) rotate(var(--r));opacity:.9}}
+/* the guest's name field inside the greeting: looks like part of the sentence, with a dashed line that invites typing */
+.hero-bubble .greet{white-space:nowrap}
+.guest-nick{font:inherit;color:inherit;width:3.9em;max-width:40vw;border:0;border-bottom:2px dashed currentColor;background:transparent;padding:0 .1em;text-align:center;border-radius:0}
+.guest-nick::placeholder{color:#9aa79f;opacity:1}
+.guest-nick:focus{outline:none;border-bottom-style:solid;background:rgba(255,255,255,.6)}
+/* the game's own number keypad (phones and tablets) */
+#qcard .fbslot.kp{position:relative;min-height:68px}
+#qcard .fbslot.kp .keypad{direction:ltr;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:1fr 1fr;gap:5px;max-width:440px;margin:0 auto;width:100%;padding:2px 0}
+#qcard .kp-key{border:0;border-radius:12px;background:linear-gradient(#fffaf0,#f1e2c9);box-shadow:0 3px 0 #a87c4f;font:900 clamp(18px,3.4vh,26px) 'Noto Sans Hebrew',sans-serif;color:#3e2410;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:29px}
+#qcard .kp-key:active{transform:translateY(2px);box-shadow:0 1px 0 #a87c4f}
+#qcard .kp-key.kp-back{grid-row:span 2;grid-column:6;background:linear-gradient(#ffe9e0,#f5c9b8);box-shadow:0 3px 0 #b5694b}
+#qcard .fbslot.kp .hintbox{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#fffbe6;border-radius:12px;padding:4px 10px;text-align:center}
+#qcard .fbslot.kp .hintbox:empty{display:none}
+#qcard input.kp-on{outline:3px solid #f4b942;outline-offset:2px}
+@media (max-height:660px){#qcard .fbslot.kp{min-height:60px}#qcard .kp-key{min-height:26px;font-size:18px}}
+/* landscape phones: one wide row of keys */
+@media (orientation:landscape) and (max-height:480px){#qcard .fbslot.kp{min-height:40px}#qcard .fbslot.kp .keypad{grid-template-columns:repeat(11,1fr);grid-template-rows:1fr;max-width:620px}#qcard .kp-key.kp-back{grid-row:auto;grid-column:auto;order:99}#qcard .kp-key{min-height:32px}}
 /* nikud version: room for vowel marks */
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
 #qcard .prompt{line-height:1.7}
@@ -780,16 +797,16 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v102';
-const APP_LABEL = '2.5';
+const APP_VERSION = 'v107';
+const APP_LABEL = '3.4';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = ['יֵשׁ צְלִילִים! לִתְשׁוּבָה נְכוֹנָה, לַגָּבִיעַ, לַתֵּבָה וּלְסִיּוּם אִימּוּן – עִם מְחִיאוֹת כַּפַּיִם וְקוֹנְפֶטִי. אֶפְשָׁר לְהַשְׁתִּיק בַּכַּפְתּוֹר 🔊 שֶׁלְּיַד הַשְּׁאֵלָה.', 'בְּ־״הַמַּצָּב שֶׁלִּי״ הָאָחוּז מַרְאֶה מָה יוֹדְעִים עַכְשָׁיו, לְפִי 10 הַתְּשׁוּבוֹת הָאַחֲרוֹנוֹת – טָעוּת שֶׁתּוּקְּנָה כְּבָר לֹא מוֹרִידָה אֶת הַצִּיּוּן.'];
+const RELEASE_NOTES = ['עִדְכּוּן וְהַחְלָפַת צְלִילִים.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -867,8 +884,12 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const GOOGLE_CLIENT_ID = '984154992852-n6het6uoa54l5fu7607if8cub9ct5amk.apps.googleusercontent.com';
-let user = null;
+let user = null;       // signed in with Google
 let cloudReady = false;
+// a guest (not signed in with Google) gets an anonymous cloud identity, so the teacher can see guests too.
+// it lives on this device only: another device or a cleared browser is a new guest.
+let guest = null;
+let guestTimer = null;
 
 /* ---------- helpers ---------- */
 const KEY = 'jungle-math-v4';
@@ -1664,20 +1685,41 @@ try {
   if (raw) S = mergeState(JSON.parse(raw));
 } catch (e) {}
 
-function persistLocal() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// every copy of the progress carries an id; the same copy met again (e.g. uploaded as a guest, then loaded) is never added twice
+function persistLocal() { if (!S.syncId) S.syncId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 const progressRef = uid => doc(db, 'users', uid, 'data', 'progress');
 let saveTimer = null;
 function save() {
   persistLocal();
   if (user && cloudReady) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
+  else if (!user && guest) { clearTimeout(guestTimer); guestTimer = setTimeout(guestSave, 800); }
+}
+function topicSummary() {
+  const topics = {};
+  CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+  return topics;
+}
+// the names a guest used on this device (newest last), so the teacher can tell who it is
+function noteNick() {
+  const n = ((S.profile && S.profile.nick) || '').trim();
+  if (!n) return;
+  const h = (S.profile.nickHist || []).filter(x => x !== n);
+  h.push(n); S.profile.nickHist = h.slice(-5);
+}
+async function guestSave() {
+  if (user || !guest) return;
+  noteNick();
+  try {
+    await setDoc(progressRef(guest.uid), { state: S, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', guest.uid), { guest: true, nick: (S.profile && S.profile.nick) || '', nickHist: (S.profile && S.profile.nickHist) || [], gender: (S.profile && S.profile.gender) || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics: topicSummary(), version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
+  } catch (e) { console.warn('guest save', e); }
 }
 async function cloudSave() {
   if (!user) return;
   try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
   catch (e) { console.warn(e); toast('הַשְּׁמִירָה בֶּעָנָן לֹא הִצְלִיחָה'); return; }
   try {
-    const topics = {};
-    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    const topics = topicSummary();
     await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
@@ -1772,7 +1814,8 @@ async function cloudLoad() {
     const snap = await getDoc(progressRef(user.uid));
     if (snap.exists() && snap.data().state) {
       const C = snap.data().state;
-      if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
+      if (!S.owner && C.syncId && C.syncId === S.syncId) S = mergeProgress(S, C); // the very same progress (already uploaded from this device): keep, do not add
+      else if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
       else if (S.owner !== u0.uid) S = mergeState(C);
       else if ((S.resetAt || 0) > (C.resetAt || 0)) { /* signed-in reset on this device wins */ }
       else S = mergeProgress(S, C); // same account: keep anything saved here while offline
@@ -1847,6 +1890,7 @@ function mountGoogleButtons() {
 async function onGoogleCredential(resp) {
   try {
     authError = '';
+    if (guest) { const g = guest; try { await setDoc(doc(db, 'users', g.uid), { mergedInto: true }, { merge: true }); } catch (e2) {} }
     await signInWithCredential(auth, GoogleAuthProvider.credential(resp.credential));
     toast('הִתְחַבַּרְתָּ בְּהַצְלָחָה!');
   } catch (e) {
@@ -1933,7 +1977,7 @@ function renderHome() {
     ${installBar()}
     <div class="home-top">
       <div class="hero-bubble">
-        🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
+        <span class="greet">🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : `שָׁלוֹם <input id="guestNick" class="guest-nick" type="text" maxlength="14" placeholder="אוֹרֵחַ" aria-label="הַכִּינּוּי שֶׁלְּךָ" value="${esc((S.profile && S.profile.nick) || '')}" autocomplete="off">!`}</span>
         <small>אִימּוּנִים הַיּוֹם: ${doneToday}</small>
       </div>
       <div class="hero-board">
@@ -2198,7 +2242,7 @@ function partHTML(p, i) {
       extra = ok ? '<span class="part-fix ok">✅ נָכוֹן!</span>' : '<span class="part-fix no">❌ לֹא נָכוֹן</span>';
     }
     extra = `<div class="pmark">${extra}</div>`;
-    return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
+    return `<div class="row" style="flex-direction:column;gap:0"><label style="font-weight:900;font-size:20px">${p.label ? `<span dir="rtl" style="unicode-bidi:isolate">${esc(p.label)}:</span> ` : ''}<input class="${cls}${st}" data-p="${i}" inputmode="${TOUCH_KEYPAD ? 'none' : p.type === 'num' ? 'numeric' : 'text'}"${ph} value="${esc(p.v ?? '')}" ${locked ? 'readonly' : ''}>${mark}</label>${extra}</div>`;
   }
   if (p.type === 'order') {
     const slots = p.items.map((_, k) => p.v[k] !== null ? `<span class="filled" data-p="${i}" data-slot="${k}">${fmt(p.v[k])}</span>` : `<span class="empty" data-p="${i}" data-slot="${k}">${k + 1}</span>`).join('');
@@ -2235,7 +2279,7 @@ function fitBoard() {
   if (!card || (!clipped() && !cardOver())) return;
   card.classList.add('tight');
   // 1. give back part of the empty space kept for the feedback, so the question gets room before anything shrinks
-  if (fb) { let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > 52) { h -= 4; fb.style.height = h + 'px'; } }
+  if (fb) { const minH = !fb.classList.contains('kp') ? 52 : matchMedia('(orientation:landscape) and (max-height:480px)').matches ? 40 : matchMedia('(max-height:660px)').matches ? 60 : 68; let h = fb.getBoundingClientRect().height; while ((clipped() || cardOver()) && h > minH) { h -= 4; fb.style.height = h + 'px'; } }
   // 2. only then make the question text smaller, and last the answer area
   shrink(bd, clipped, 0.5);
   // last resort for a drawing (number line): trim its height a little, never below a readable size
@@ -2286,9 +2330,22 @@ const SFX = (() => {
     done: (c, t) => { note(c, 659.3, t, 0.18, 'sine', 0.13); note(c, 784, t + 0.14, 0.3, 'sine', 0.13); },
     tap: (c, t) => note(c, 660, t, 0.06, 'sine', 0.06),
   };
+  // recorded sounds: sounds/<name>.mp3 next to the page is used when it exists; otherwise the built-in sound plays
+  const files = {}, FILES = ['correct', 'wrong', 'level', 'medal', 'trophy', 'buy', 'gift', 'finish', 'done', 'tap'];
+  const load = c => FILES.forEach(n => {
+    if (n in files) return; files[n] = null;
+    fetch(`sounds/${n}.mp3`).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => new Promise((ok, no) => { const p = c.decodeAudioData(b, ok, no); if (p && p.catch) p.catch(no); })).then(buf => { files[n] = buf; }).catch(() => {});
+  });
+  const playFile = (c, buf, t) => { const src = c.createBufferSource(); src.buffer = buf; const v = c.createGain(); v.gain.value = 0.9; src.connect(v); v.connect(c.destination); src.start(t); };
   return {
     on: () => !S.settings || S.settings.sound !== false,
-    play(name, delay = 0) { if (!this.on()) return; const c = ac(); if (!c || !SOUNDS[name]) return; try { SOUNDS[name](c, c.currentTime + 0.02 + delay); } catch (e) {} },
+    play(name, delay = 0) {
+      if (!this.on()) return; const c = ac(); if (!c) return; load(c);
+      const t = c.currentTime + 0.02 + delay;
+      try { if (files[name]) playFile(c, files[name], t); else if (SOUNDS[name]) SOUNDS[name](c, t); } catch (e) {}
+    },
+    // the files load on the first tap anywhere, so the very first sound can already use them
+    warm() { if (this.on()) { const c = ac(); if (c) load(c); } },
   };
 })();
 function confetti() {
@@ -2304,10 +2361,30 @@ function confetti() {
   setTimeout(() => box.remove(), 4500);
 }
 
+// phones and tablets: the device keyboard never opens (it pushed the screen up); a small keypad of the game sits in
+// the space kept for the feedback, so nothing moves. Computers keep the normal keyboard.
+const TOUCH_KEYPAD = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+let kpTarget = null;
+function keypadHTML() {
+  const k = d => `<button type="button" class="kp-key" data-k="${d}">${d}</button>`;
+  return `<div class="keypad" role="group" aria-label="מִקְלֶדֶת מִסְפָּרִים">${[1, 2, 3, 4, 5].map(k).join('')}<button type="button" class="kp-key kp-back" data-k="back" aria-label="מְחִיקָה">⌫</button>${[6, 7, 8, 9, 0].map(k).join('')}</div>`;
+}
+function kpInputs() { return [...document.querySelectorAll('#qcard input[data-p]:not([readonly])')]; }
+function kpMark(el) { kpInputs().forEach(i => i.classList.toggle('kp-on', i === el)); kpTarget = el; }
+function kpPress(key) {
+  const list = kpInputs(); if (!list.length) return;
+  let el = kpTarget && list.includes(kpTarget) ? kpTarget : (list.find(i => !i.value) || list[0]);
+  kpMark(el);
+  el.value = key === 'back' ? el.value.slice(0, -1) : (el.value + key).slice(0, 9);
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  SFX.play('tap');
+}
+
 // after moving on with Enter, the cursor waits in the new answer box
 let focusAnswer = false;
 function renderPlay() {
   const locked = Q.result !== undefined;
+  const useKeypad = TOUCH_KEYPAD && !locked && Q.parts.some(p => p.type === 'num' || p.type === 'text');
   const pct = Math.round((session.done / session.total) * 100);
   const qNum = Math.min(session.total, session.done + (locked ? 0 : 1));
   const parts = Q.parts.map((p, i) => partHTML(p, i)).join('');
@@ -2330,11 +2407,11 @@ function renderPlay() {
     <div class="bar"><span style="width:${pct}%"></span></div>
     <div class="question-board">${Q.body}</div>
     <div class="parts${Q.parts.length > 1 && Q.parts.every(p => p.type === 'num') ? ' multi' : ''}">${parts}</div>
-    <div class="fbslot">${locked ? `
+    <div class="fbslot${useKeypad ? ' kp' : ''}">${locked ? `
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
         <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${wordsNote}${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
-      </div>` : `<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
+      </div>` : `${useKeypad ? keypadHTML() : ''}<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}
       ${locked
@@ -2343,6 +2420,7 @@ function renderPlay() {
     </div>`;
 
   fitBoard(); fitFeedback();
+  if (TOUCH_KEYPAD && Q.result === undefined) { const first = kpInputs()[0]; if (first) kpMark(first); }
   if (focusAnswer) { focusAnswer = false; const inp = document.querySelector('#qcard input:not([disabled])'); if (inp) inp.focus(); }
   const sv = document.querySelector('#qcard svg[data-draw]');
   if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
@@ -2483,7 +2561,7 @@ function endSession() {
   // end of practice: fanfare and applause (and confetti) for a good practice, a soft tune otherwise; then the chest opens
   if (acc >= 0.5) SFX.play('finish'); else SFX.play('done');
   if (acc >= 0.75) confetti();
-  SFX.play('gift', acc >= 0.5 ? 2.4 : 0.6);
+  SFX.play('gift', acc >= 0.5 ? 3.8 : 2.2);
   $('#qcard').innerHTML = `
     <div class="sum-gift">🎁</div>
     <div class="sum-title">${session.kind === 'bonus' ? 'מִשְׂחַק הַבּוֹנוּס הוּשְׁלַם!' : 'הָאִימּוּן הוּשְׁלַם בְּהַצְלָחָה!'}</div>
@@ -2518,6 +2596,9 @@ function handlePlayClick(t) {
 
 /* ---------- global events ---------- */
 document.addEventListener('input', e => { if (e.target && e.target.id === 'nickInput') { S.profile.nick = e.target.value.trim().slice(0, 20); save(); } });
+// the greeting field: saves when the child presses Enter or leaves the field
+document.addEventListener('change', e => { if (e.target && e.target.id === 'guestNick') { if (!S.profile) S.profile = {}; S.profile.nick = e.target.value.trim().slice(0, 14); save(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'guestNick') { e.preventDefault(); e.target.blur(); } }, true);
 /* ---------- drag numbers between the bank and the slots (mouse and touch) ---------- */
 let drag = null, dragJustEnded = false;
 document.addEventListener('pointerdown', e => {
@@ -2575,6 +2656,7 @@ document.addEventListener('click', e => {
   if (nav) { showView(nav.dataset.go); return; }
   const pr = t.closest('[data-practice]');
   if (pr) { startSession('base', pr.dataset.practice); return; }
+  SFX.warm();
   if (t.closest('#startBtn')) { startSession('base'); return; }
   if (t.closest('#soundBtn')) { S.settings.sound = !SFX.on(); save(); const b = $('#soundBtn'); if (b) { b.textContent = SFX.on() ? '🔊' : '🔇'; b.setAttribute('aria-pressed', SFX.on()); b.setAttribute('aria-label', SFX.on() ? 'הַשְׁתָּקַת צְלִילִים' : 'הַפְעָלַת צְלִילִים'); } SFX.play('tap'); return; }
   if (t.closest('#statToggle')) { S.settings.statsView = !S.settings.statsView; save(); renderHome(); return; }
@@ -2592,6 +2674,13 @@ document.addEventListener('click', e => {
   if (t.closest('#resetBtn')) { handleReset(); return; }
   if (t.closest('#qcard')) handlePlayClick(t);
 });
+document.addEventListener('pointerdown', e => {
+  const key = e.target.closest && e.target.closest('.kp-key');
+  if (key) { e.preventDefault(); kpPress(key.dataset.k); return; }
+  const hb = e.target.closest && e.target.closest('.fbslot.kp .hintbox');
+  if (hb) { hb.textContent = ''; if (Q) Q.note = ''; }
+});
+document.addEventListener('focusin', e => { if (TOUCH_KEYPAD && e.target.matches && e.target.matches('#qcard input[data-p]')) kpMark(e.target); });
 document.addEventListener('input', e => {
   const el = e.target;
   if (!Q || el.tagName !== 'INPUT' || el.dataset.p === undefined) return;
@@ -2608,9 +2697,12 @@ document.addEventListener('keydown', e => {
 
 /* ---------- auth state ---------- */
 onAuthStateChanged(auth, u => {
-  user = u; cloudReady = false;
+  if (u && u.isAnonymous) { guest = u; user = null; cloudReady = false; save(); return; }
+  user = u; guest = null; cloudReady = false;
   updateWallet(); refreshCurrentView();
   if (u) cloudLoad().then(() => { updateWallet(); refreshCurrentView(); });
+  // no Google account: continue as a guest with an anonymous identity (if anonymous sign-in is turned on in Firebase)
+  else signInAnonymously(auth).catch(e => console.warn('guest identity unavailable', e.code || e));
 });
 
 /* ---------- start ---------- */

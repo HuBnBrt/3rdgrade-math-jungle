@@ -806,7 +806,7 @@ const APP_VERSION = 'v107';
 const APP_LABEL = '3.4';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = [];
+const RELEASE_NOTES = ['עִדְכּוּן וְהַחְלָפַת צְלִילִים.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

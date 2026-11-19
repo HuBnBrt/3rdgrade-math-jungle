@@ -6,8 +6,8 @@
 
 ## 1. מה יש לנו היום
 
-- **האפליקציה החיה (להורים):** https://hubnbrt.github.io/3rdgrade-math-jungle/ – פורסמה להורי ג'4 ב-18.11.2026 (1.96); גרסה 2.5 פורסמה באותו ערב.
-- **דף הבדיקה:** https://hubnbrt.github.io/3rdgrade-math-jungle/updatever.html – כל שיפור נכנס לכאן קודם (כרגע 3.0).
+- **האפליקציה החיה (להורים):** https://hubnbrt.github.io/3rdgrade-math-jungle/ – פורסמה להורי ג'4 ב-18.11.2026 (1.96); גרסה 2.5 פורסמה באותו ערב; גרסה 3.4 פורסמה ב-19.11.
+- **דף הבדיקה:** https://hubnbrt.github.io/3rdgrade-math-jungle/updatever.html – כל שיפור נכנס לכאן קודם.
 - **דשבורד מורה/מנהל:** `admin.html` (כניסה נסתרת דרך העץ 🌴 בכותרת). מנהל: BenBritCRM@gmail.com. גרסת הבדיקה של הדשבורד: `adminver.html`.
 - **מאגר קוד:** GitHub `HuBnBrt/3rdgrade-math-jungle`, ענף `main`, מתפרסם אוטומטית ב-GitHub Pages.
 - **שרת נתונים:** Firebase, פרויקט `jungle-math-kids` (התחברות Google + Firestore). **כל המשחקים העתידיים ישתמשו באותו פרויקט Firebase** – ילד אחד, חשבון אחד, כמה מקצועות; הרשאות מורה לפי מקצוע.

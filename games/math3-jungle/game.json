@@ -15,12 +15,10 @@
   "UPDATE_IMG": "monkey-update.png"
  },
  "version": {
-  "build": 107,
-  "label": "3.4",
+  "build": 108,
+  "label": "4.0",
   "published": "3.4",
   "publishedBuild": 107
  },
- "release_notes": [
-  "עדכון והחלפת צלילים."
- ]
+ "release_notes": []
 }

@@ -84,7 +84,7 @@ const esc = s => dec(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '
 const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
 const MIN = 3; // minimal answers to judge a topic
 
-let me = null, kids = [], admins = [], openUid = null, loadedAt = null;
+let me = null, kids = [], guests = [], admins = [], openUid = null, loadedAt = null;
 // only the owner manages who may open the dashboard; teachers do not see that list at all
 const OWNER = 'benbritcrm@gmail.com';
 const isOwner = () => !!me && (me.email || '').toLowerCase() === OWNER;
@@ -121,7 +121,12 @@ document.addEventListener('click', async e => {
 
 async function loadAll() {
   const [us, ad] = await Promise.all([getDocs(collection(db, 'users')), isOwner() ? getDocs(collection(db, 'admins')) : Promise.resolve(null)]);
-  kids = us.docs.map(d => ({ uid: d.id, ...d.data() })).filter(k => k.topics);
+  const all = us.docs.map(d => ({ uid: d.id, ...d.data() })).filter(k => k.topics);
+  kids = all.filter(k => !k.guest);
+  // guests: children who did not sign in with Google (one device each). Shown apart and left out of the class numbers;
+  // a guest who later signed in moved into the account, and a guest not seen for 30 days is hidden
+  const month = 30 * 864e5;
+  guests = all.filter(k => k.guest && !k.mergedInto && k.lastSeen && k.lastSeen.toDate && Date.now() - k.lastSeen.toDate().getTime() < month);
   admins = ad ? ad.docs.map(d => d.id) : [];
   loadedAt = new Date();
   render();
@@ -163,7 +168,7 @@ function render() {
   const rows = sorted.map(k => `<tr><td class="name" data-uid="${k.uid}" title="${esc(k.nick || k.name || k.email || '')}">${esc(shortName(k))}</td>
       <td>${pct(kidAcc(k))}</td>${tp.map(([id]) => { const t = (k.topics || {})[id]; const a = acc(t); return `<td class="c ${cls(a)}${a !== null && few(t) ? ' few' : ''}" title="${t ? 'עכשיו (10 אחרונות): ' + recent(t).ok + '/' + recent(t).n + ' · מצטבר: ' + t.ok + ' נכון / ' + t.bad + ' שגוי' : 'לא תורגל'}">${pct(a)}${a !== null ? `<small>${recent(t).ok}/${recent(t).n}</small>` : ''}</td>`; }).join('')}
       <td>${k.sessions || 0}</td><td title="${when(k.lastSeen)}">${whenShort(k.lastSeen)}</td></tr>`).join('');
-  const k = kids.find(x => x.uid === openUid);
+  const k = kids.find(x => x.uid === openUid) || guests.find(x => x.uid === openUid);
   $('#main').innerHTML = `
   <div class="box"><div class="kpis">
     <div class="kpi"><b>${kids.length}</b><span>ילדים רשומים</span></div>
@@ -175,6 +180,12 @@ function render() {
     <div class="tablewrap"><table class="heat"><thead><tr><th class="w-name">ילד/ה</th><th class="w-all">כללי</th>${head}<th class="w-ses">אימונים</th><th class="w-date">כניסה אחרונה</th></tr></thead><tbody>${rows || '<tr><td colspan="30">אין עדיין נתונים</td></tr>'}</tbody></table></div>
     <div class="legend"><span><i class="c1"></i>מתחת ל-50%</span><span><i class="c2"></i>50–69%</span><span><i class="c3"></i>70–84%</span><span><i class="c4"></i>85% ומעלה</span><span><i class="c0"></i>לא תורגל</span><span>מספר קטן = נכונות מתוך 10 התשובות האחרונות · תא דהוי = פחות מ-${MIN} תשובות, עדיין לא מייצג</span></div>
     <p class="muted">האחוז מראה את הידע עכשיו: 10 התשובות האחרונות בכל נושא, כך שטעויות ישנות שתוקנו לא מורידות את הציון. הסכום המצטבר של כל התשובות מופיע בריחוף על תא ובכרטיס הילד. לחיצה על שם ילד פותחת כרטיס אישי.</p></div>
+  ${guests.length ? `<div class="box"><h2>אורחים (בלי חשבון, כל אחד במכשיר אחד)</h2>
+    <p class="muted">ילדים שלא התחברו עם Google. אותו ילד במחשב אחר יופיע כאורח נוסף, ולכן הם לא נכללים במספרים של הכיתה. אורח שלא נכנס 30 יום מוסתר.</p>
+    <div class="tablewrap"><table><thead><tr><th>כינוי</th><th>הצלחה עכשיו</th><th>אימונים</th><th>כניסה אחרונה</th></tr></thead><tbody>${guests.slice().sort((a, b) => (b.lastSeen ? b.lastSeen.toDate() : 0) - (a.lastSeen ? a.lastSeen.toDate() : 0)).map(g => {
+      const prev = (g.nickHist || []).filter(n => n && n !== g.nick).reverse();
+      return `<tr><td class="name" data-uid="${g.uid}" title="${prev.length ? 'שמות קודמים: ' + esc(prev.join(', ')) : ''}">👤 ${esc(dec(g.nick || 'אורח'))}${prev.length ? ` <small class="muted">(קודם: ${esc(prev.slice(0, 2).join(', '))})</small>` : ''}</td><td>${pct(kidAcc(g))}</td><td>${g.sessions || 0}</td><td title="${when(g.lastSeen)}">${whenShort(g.lastSeen)}</td></tr>`;
+    }).join('')}</tbody></table></div></div>` : ''}
   <div id="card">${k ? kidCard(k) : ''}</div>
   ${isOwner() ? `<div class="box"><h2>מורשי ניהול</h2>
     <div>${admins.map(a => `<div class="row" style="margin-bottom:4px"><span style="direction:ltr">${esc(a)}</span>${a !== (me.email || '').toLowerCase() ? `<button class="sm" data-rmadmin="${esc(a)}">הסרה</button>` : '<span class="muted">(אתה)</span>'}</div>`).join('')}</div>
@@ -191,7 +202,7 @@ function kidCard(k) {
   const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
   const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
   const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
-  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${esc(k.nick || k.name || k.email)} <span class="muted">${esc(k.email || '')}</span></h2><span class="muted" style="font-size:12px">עודכן ${loadedAt ? loadedAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span><button id="refreshCard" class="sm">↻ רענון</button><button id="closeCard" class="sm">סגירה</button></div>
+  return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${k.guest ? '👤 אורח: ' + esc(dec(k.nick || 'בלי כינוי')) + ' <span class="muted">(בלי חשבון, במכשיר אחד)</span>' : esc(k.nick || k.name || k.email) + ' <span class="muted">' + esc(k.email || '') + '</span>'}</h2><span class="muted" style="font-size:12px">עודכן ${loadedAt ? loadedAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span><button id="refreshCard" class="sm">↻ רענון</button><button id="closeCard" class="sm">סגירה</button></div>
     <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה עכשיו: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
@@ -205,7 +216,7 @@ function kidCard(k) {
 const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 async function setFocus(uid, topic, add) {
   try {
-    const k = kids.find(x => x.uid === uid);
+    const k = kids.find(x => x.uid === uid) || guests.find(x => x.uid === uid);
     const cur = focusList(k && k.focus);
     const next = topic === null ? [] : add ? [...new Set([...cur, topic])] : cur.filter(x => x !== topic);
     const focus = next.length ? { topics: next, by: me.email, at: Date.now() } : null;

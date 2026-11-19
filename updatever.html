@@ -747,6 +747,11 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9999}
 .confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:conf-fall;animation-timing-function:cubic-bezier(.3,.6,.6,1);animation-fill-mode:forwards}
 @keyframes conf-fall{to{transform:translate(var(--dx),110vh) rotate(var(--r));opacity:.9}}
+/* the guest's name field inside the greeting: looks like part of the sentence, with a dashed line that invites typing */
+.hero-bubble .greet{white-space:nowrap}
+.guest-nick{font:inherit;color:inherit;width:3.9em;max-width:40vw;border:0;border-bottom:2px dashed currentColor;background:transparent;padding:0 .1em;text-align:center;border-radius:0}
+.guest-nick::placeholder{color:#9aa79f;opacity:1}
+.guest-nick:focus{outline:none;border-bottom-style:solid;background:rgba(255,255,255,.6)}
 /* nikud version: room for vowel marks */
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.3 !important}
 #qcard .prompt{line-height:1.7}
@@ -780,13 +785,13 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v104';
-const APP_LABEL = '3.1';
+const APP_VERSION = 'v105';
+const APP_LABEL = '3.2';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -867,8 +872,12 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const GOOGLE_CLIENT_ID = '984154992852-n6het6uoa54l5fu7607if8cub9ct5amk.apps.googleusercontent.com';
-let user = null;
+let user = null;       // signed in with Google
 let cloudReady = false;
+// a guest (not signed in with Google) gets an anonymous cloud identity, so the teacher can see guests too.
+// it lives on this device only: another device or a cleared browser is a new guest.
+let guest = null;
+let guestTimer = null;
 
 /* ---------- helpers ---------- */
 const KEY = 'jungle-math-v4';
@@ -1670,14 +1679,34 @@ let saveTimer = null;
 function save() {
   persistLocal();
   if (user && cloudReady) { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 400); }
+  else if (!user && guest) { clearTimeout(guestTimer); guestTimer = setTimeout(guestSave, 800); }
+}
+function topicSummary() {
+  const topics = {};
+  CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+  return topics;
+}
+// the names a guest used on this device (newest last), so the teacher can tell who it is
+function noteNick() {
+  const n = ((S.profile && S.profile.nick) || '').trim();
+  if (!n) return;
+  const h = (S.profile.nickHist || []).filter(x => x !== n);
+  h.push(n); S.profile.nickHist = h.slice(-5);
+}
+async function guestSave() {
+  if (user || !guest) return;
+  noteNick();
+  try {
+    await setDoc(progressRef(guest.uid), { state: S, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, 'users', guest.uid), { guest: true, nick: (S.profile && S.profile.nick) || '', nickHist: (S.profile && S.profile.nickHist) || [], gender: (S.profile && S.profile.gender) || '', lastSeen: serverTimestamp(), sessions: S.sessions || 0, coins: S.coins || 0, topics: topicSummary(), version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
+  } catch (e) { console.warn('guest save', e); }
 }
 async function cloudSave() {
   if (!user) return;
   try { await setDoc(progressRef(user.uid), { state: S, updatedAt: serverTimestamp() }); }
   catch (e) { console.warn(e); toast('הַשְּׁמִירָה בֶּעָנָן לֹא הִצְלִיחָה'); return; }
   try {
-    const topics = {};
-    CATS.forEach(c => { const m = mast(c.id), st = (S.stats || {})[c.id] || { ok: 0, bad: 0, h: '' }; topics[c.id] = { name: plain(c.name), score: m.score, tier: m.tier, trophy: !!m.trophy, ok: st.ok, bad: st.bad, h: st.h }; });
+    const topics = topicSummary();
     await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
@@ -1847,6 +1876,7 @@ function mountGoogleButtons() {
 async function onGoogleCredential(resp) {
   try {
     authError = '';
+    if (guest) { const g = guest; try { await setDoc(doc(db, 'users', g.uid), { mergedInto: true }, { merge: true }); } catch (e2) {} }
     await signInWithCredential(auth, GoogleAuthProvider.credential(resp.credential));
     toast('הִתְחַבַּרְתָּ בְּהַצְלָחָה!');
   } catch (e) {
@@ -1933,7 +1963,7 @@ function renderHome() {
     ${installBar()}
     <div class="home-top">
       <div class="hero-bubble">
-        🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : 'בְּרוּכִים הַבָּאִים לַגּ\'וּנְגֶּל!'}
+        <span class="greet">🐵 ${user ? 'שָׁלוֹם ' + firstName() + '!' : `שָׁלוֹם <input id="guestNick" class="guest-nick" type="text" maxlength="14" placeholder="אוֹרֵחַ" aria-label="הַכִּינּוּי שֶׁלְּךָ" value="${esc((S.profile && S.profile.nick) || '')}" autocomplete="off">!`}</span>
         <small>אִימּוּנִים הַיּוֹם: ${doneToday}</small>
       </div>
       <div class="hero-board">
@@ -2531,6 +2561,9 @@ function handlePlayClick(t) {
 
 /* ---------- global events ---------- */
 document.addEventListener('input', e => { if (e.target && e.target.id === 'nickInput') { S.profile.nick = e.target.value.trim().slice(0, 20); save(); } });
+// the greeting field: saves when the child presses Enter or leaves the field
+document.addEventListener('change', e => { if (e.target && e.target.id === 'guestNick') { if (!S.profile) S.profile = {}; S.profile.nick = e.target.value.trim().slice(0, 14); save(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'guestNick') { e.preventDefault(); e.target.blur(); } }, true);
 /* ---------- drag numbers between the bank and the slots (mouse and touch) ---------- */
 let drag = null, dragJustEnded = false;
 document.addEventListener('pointerdown', e => {
@@ -2622,9 +2655,12 @@ document.addEventListener('keydown', e => {
 
 /* ---------- auth state ---------- */
 onAuthStateChanged(auth, u => {
-  user = u; cloudReady = false;
+  if (u && u.isAnonymous) { guest = u; user = null; cloudReady = false; save(); return; }
+  user = u; guest = null; cloudReady = false;
   updateWallet(); refreshCurrentView();
   if (u) cloudLoad().then(() => { updateWallet(); refreshCurrentView(); });
+  // no Google account: continue as a guest with an anonymous identity (if anonymous sign-in is turned on in Firebase)
+  else signInAnonymously(auth).catch(e => console.warn('guest identity unavailable', e.code || e));
 });
 
 /* ---------- start ---------- */

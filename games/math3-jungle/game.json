@@ -15,8 +15,8 @@
   "UPDATE_IMG": "monkey-update.png"
  },
  "version": {
-  "build": 104,
-  "label": "3.1",
+  "build": 105,
+  "label": "3.2",
   "published": "2.5",
   "publishedBuild": 102
  },

@@ -1685,7 +1685,8 @@ try {
   if (raw) S = mergeState(JSON.parse(raw));
 } catch (e) {}
 
-function persistLocal() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// every copy of the progress carries an id; the same copy met again (e.g. uploaded as a guest, then loaded) is never added twice
+function persistLocal() { if (!S.syncId) S.syncId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 const progressRef = uid => doc(db, 'users', uid, 'data', 'progress');
 let saveTimer = null;
 function save() {
@@ -1813,7 +1814,8 @@ async function cloudLoad() {
     const snap = await getDoc(progressRef(user.uid));
     if (snap.exists() && snap.data().state) {
       const C = snap.data().state;
-      if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
+      if (!S.owner && C.syncId && C.syncId === S.syncId) S = mergeProgress(S, C); // the very same progress (already uploaded from this device): keep, do not add
+      else if (!S.owner) { const had = S.coins || Object.keys(S.sheetOk || {}).length || Object.keys(S.stats || {}).length; S = addProgress(S, C); if (had) toast('הַהִתְקַדְּמוּת מֵהַמַּכְשִׁיר נוֹסְפָה לַחֶשְׁבּוֹן 👍'); }
       else if (S.owner !== u0.uid) S = mergeState(C);
       else if ((S.resetAt || 0) > (C.resetAt || 0)) { /* signed-in reset on this device wins */ }
       else S = mergeProgress(S, C); // same account: keep anything saved here while offline

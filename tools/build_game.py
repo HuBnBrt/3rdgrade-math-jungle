@@ -25,6 +25,7 @@ css = rd(os.path.join(game, 'theme.css')) if os.path.exists(os.path.join(game, '
 out = out.replace('\n/*{{@THEME_CSS}}*/', ('\n' + css.rstrip('\n')) if css.strip() else '', 1)
 v = g['version']
 out = out.replace('{{BUILD}}', 'v%d' % v['build']).replace('{{LABEL}}', v['label'])
+out = out.replace('{{NOTES_BUILD}}', str(g.get('notes_build', 0)))
 out = out.replace('{{RELEASE_NOTES}}', json.dumps(g.get('release_notes', []), ensure_ascii=False).replace('", "', "', '").replace('["', "['").replace('"]', "']"))
 for k, v in g['tokens'].items():
     out = out.replace('{{' + k + '}}', v)

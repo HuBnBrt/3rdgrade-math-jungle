@@ -906,7 +906,9 @@ const APP_VERSION = 'v111';
 const APP_LABEL = '5.0';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = [];
+const RELEASE_NOTES = ['⭐ בהצעת אדיר, הוספנו שתי דרגות נוספות אחרי ארד, כסף וזהב – יהלום וקשת!', '📊 הכוכבים והפס מראים מה יודעים עכשיו: תשובה נכונה מקדמת, וטעות מחזירה קצת אחורה.', '🏆 גביע זהב וגביע קשת בכל נושא. מי שיורד בדרגה – הגביע מתאבק, ומבריק שוב כשחוזרים אליה.', '💡 על נושאים שכדאי לחזק מופיע כפתור צבעוני \"המלצה לתרגול\".', '🎯 הכפתור הגדול \"אימון מכל הנושאים\": 8 שאלות מעורבבות, ואפשר להמשיך מאיפה שעצרו.', '🦁 בחנות אפשר לקנות שוב את אותה חיה, וכל פעם היא מקבלת אביזר משודרג: כסף, זהב, יהלום ואפילו קשת.'];
+// the build these notes were written for: an urgent fix published later keeps them only for children who have not seen them yet
+const NOTES_BUILD = 110;
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -967,6 +969,7 @@ function whatsNew() {
   const returning = last ? last !== APP_VERSION : (S.sessions || S.coins);
   // a note starting with "guest:" is only for children who are not signed in with Google
   const notes = RELEASE_NOTES.filter(x => !x.startsWith('guest:') || !user).map(x => x.replace(/^guest:\s*/, ''));
+  if (NOTES_BUILD && last && +String(last).replace(/\D/g, '') >= NOTES_BUILD) return;
   if (!returning || !notes.length) return;
   showModal({ icon: '<img src="monkey-update.png" alt="" class="m-img">', title: `מה חדש בגרסה ${APP_LABEL}`, text: `<ul class="m-notes">${notes.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יופי, ממשיכים!' });
 }

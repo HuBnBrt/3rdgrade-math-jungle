@@ -875,6 +875,8 @@ const APP_LABEL = '{{LABEL}}';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = {{RELEASE_NOTES}};
+// the build these notes were written for: an urgent fix published later keeps them only for children who have not seen them yet
+const NOTES_BUILD = {{NOTES_BUILD}};
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -935,6 +937,7 @@ function whatsNew() {
   const returning = last ? last !== APP_VERSION : (S.sessions || S.coins);
   // a note starting with "guest:" is only for children who are not signed in with Google
   const notes = RELEASE_NOTES.filter(x => !x.startsWith('guest:') || !user).map(x => x.replace(/^guest:\s*/, ''));
+  if (NOTES_BUILD && last && +String(last).replace(/\D/g, '') >= NOTES_BUILD) return;
   if (!returning || !notes.length) return;
   showModal({ icon: '<img src="{{UPDATE_IMG}}" alt="" class="m-img">', title: `מה חדש בגרסה ${APP_LABEL}`, text: `<ul class="m-notes">${notes.map(x => `<li>${x}</li>`).join('')}</ul>`, ok: 'יופי, ממשיכים!' });
 }

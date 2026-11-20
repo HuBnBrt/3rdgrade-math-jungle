@@ -708,8 +708,9 @@ header h1{font-size:calc(var(--s)*1.15)}
 @media (min-width:600px){#view-settings{position:relative}#view-settings .s-ver{position:absolute;bottom:0;left:6px;margin:0 !important}
   #view-settings .s-signs .rank{display:flex;flex-direction:column;gap:.6em}}
 @container (min-height:97px){.cats .card .topic-content{justify-content:flex-start;padding-top:calc(var(--u)*3);gap:calc(var(--u)*2.5)}}
-/* squarish cards (upright tablets): stars and rank side by side, so everything can be bigger */
-@container (min-aspect-ratio:1/1) and (max-aspect-ratio:8/5){
+/* squarish cards (upright tablets): stars and rank side by side, so everything can be bigger.
+   only on big cards: small squarish phone cards (e.g. Galaxy S25 Ultra) have no room for the badge */
+@container (min-aspect-ratio:1/1) and (max-aspect-ratio:8/5) and (min-height:105px){
   .cats .card *{--u:min(1.75cqh,2.3cqw)}
   .cats .card .topic-content{flex-direction:row;flex-wrap:wrap;align-content:center;justify-content:center;column-gap:calc(var(--u)*3);row-gap:calc(var(--u)*1.5);padding-top:0}
   .cats .card .topic-title{flex:0 0 100%}
@@ -901,11 +902,11 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v110';
-const APP_LABEL = '4.2';
+const APP_VERSION = 'v111';
+const APP_LABEL = '5.0';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = ['⭐ בהצעת אדיר, הוספנו שתי דרגות נוספות אחרי ארד, כסף וזהב – יהלום וקשת!', '📊 הכוכבים והפס מראים מה יודעים עכשיו: תשובה נכונה מקדמת, וטעות מחזירה קצת אחורה.', '🏆 גביע זהב וגביע קשת בכל נושא. מי שיורד בדרגה – הגביע מתאבק, ומבריק שוב כשחוזרים אליה.', '💡 על נושאים שכדאי לחזק מופיע כפתור צבעוני \"המלצה לתרגול\".', '🎯 הכפתור הגדול \"אימון מכל הנושאים\": 8 שאלות מעורבבות, ואפשר להמשיך מאיפה שעצרו.', '🦁 בחנות אפשר לקנות שוב את אותה חיה, וכל פעם היא מקבלת אביזר משודרג: כסף, זהב, יהלום ואפילו קשת.'];
+const RELEASE_NOTES = [];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });

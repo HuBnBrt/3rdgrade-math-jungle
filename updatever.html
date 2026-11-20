@@ -812,6 +812,13 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .pet .h-rbw{background:conic-gradient(#ff5252,#ffd740,#69f0ae,#448aff,#b388ff,#ff5252);-webkit-mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%);mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%)}
 @keyframes halo{0%{opacity:.55;transform:scale(.94)}100%{opacity:1;transform:scale(1.04)}}
 .shop .card{position:relative}
+/* the animal just bought pops in with a sparkle; nothing else restarts */
+@keyframes petpop{0%{transform:scale(.3) rotate(-12deg);opacity:0}55%{transform:scale(1.3) rotate(6deg);opacity:1}75%{transform:scale(.92)}100%{transform:scale(1)}}
+.shop .card .ic.pop{animation:petpop .8s cubic-bezier(.3,1.4,.5,1)}
+.shop .card .ic.pop::after{content:'✨';position:absolute;inset-inline-start:-.15em;top:-.1em;font-size:.55em;animation:sparkle 1s ease-out forwards}
+.shop .card .ic{position:relative}
+@keyframes sparkle{0%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.3)}100%{opacity:0;transform:scale(1) translateY(-.4em)}}
+.collection-shelf .owned-animal.pop{animation:petpop .8s cubic-bezier(.3,1.4,.5,1)}
 /* the 'in the collection' tag: always one line; on a narrow card only the count (or a tick) */
 .shop .card .in-col .ck{display:none}
 @container (max-width:120px){.shop .card .in-col .w{display:none}.shop .card .in-col .ck{display:inline}.shop .card .in-col{inset-inline-end:2px;top:2px}}
@@ -2150,21 +2157,21 @@ const petHTML = (it, k) => { const t = (k - 1) % 5, acc = PET_ACC[t];
 const stackHTML = (parts, title, cls = '') => parts.length === 1
   ? `<div class="owned-animal${cls}" title="${title}">${parts[0]}</div>`
   : `<div class="owned-animal stk${cls}" title="${title} ×${parts.length}">${parts.slice(0, 3).map(x => `<span class="sk">${x}</span>`).join('')}${parts.length > 3 ? `<b class="stack-n">${parts.length}</b>` : ''}</div>`;
-function renderCamp() {
-  const shop = ITEMS.map((it, ix) => {
-    const owned = Math.min(S.items[it.id] || 0, PET_MAX), next = owned + 1, price = it.price * next;
-    const full = owned >= PET_MAX, canAfford = !full && S.coins >= price;
-    return `
-      <div class="card" style="--ar:${(2.8 + (ix * 0.41) % 1.3).toFixed(2)}s;--ad:-${((ix * 0.77) % 3).toFixed(2)}s">
-        ${owned ? `<span class="in-col"><span class="w">בָּאוֹסֶף</span>${owned > 1 ? ` <span class="n" dir="ltr">×${owned}</span>` : '<span class="ck">✓</span>'}</span>` : ''}
+// one shop card's content and its button (buying refreshes only these, so nothing else on the screen restarts)
+const shopBtn = (it) => { const owned = Math.min(S.items[it.id] || 0, PET_MAX), price = it.price * (owned + 1), full = owned >= PET_MAX, canAfford = !full && S.coins >= price;
+  return full ? '<button type="button" class="ghost-btn" disabled>הָאוֹסֶף מָלֵא ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>${!canAfford ? 'אֵין מַטְבְּעוֹת' : owned ? (it.g === 'f' ? 'עוֹד אַחַת' : 'עוֹד אֶחָד') : 'לִקְנִיָּיה'}</button>`; };
+const shopCardInner = (it) => { const owned = Math.min(S.items[it.id] || 0, PET_MAX), next = owned + 1, full = owned >= PET_MAX;
+  return `${owned ? `<span class="in-col"><span class="w">בָּאוֹסֶף</span>${owned > 1 ? ` <span class="n" dir="ltr">×${owned}</span>` : '<span class="ck">✓</span>'}</span>` : ''}
         <div class="ic">${petHTML(it, full ? PET_MAX : next)}</div>
         <b class="big nm">${it.name}</b>
-        ${full ? '' : `<div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${price} 🪙</div>`}
-        ${full ? '<button type="button" class="ghost-btn" disabled>הָאוֹסֶף מָלֵא ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
-          ${!canAfford ? 'אֵין מַטְבְּעוֹת' : owned ? (it.g === 'f' ? 'עוֹד אַחַת' : 'עוֹד אֶחָד') : 'לִקְנִיָּיה'}
-        </button>`}
-      </div>`;
-  }).join('');
+        ${full ? '' : `<div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price * next} 🪙</div>`}
+        ${shopBtn(it)}`; };
+const petPile = it => { const n = Math.min(S.items[it.id] || 0, PET_MAX); return n ? stackHTML(Array.from({ length: n }, (_, k) => petHTML(it, n - k)), it.name).replace('class="owned-animal', `data-pile="${it.id}" class="owned-animal`) : ''; };
+function renderCamp() {
+  const shop = ITEMS.map((it, ix) => `
+      <div class="card" data-it="${it.id}" style="--ar:${(2.8 + (ix * 0.41) % 1.3).toFixed(2)}s;--ad:-${((ix * 0.77) % 3).toFixed(2)}s">
+        ${shopCardInner(it)}
+      </div>`).join('');
 
   const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => stackHTML(Array(gearCount(S.gear[g.id])).fill(g.icon), `${g.name} (${RARITY[g.r]})`)).join('');
   // trophies: all gold ones together, all rainbow ones together; dusty ones in a pile of their own
@@ -2174,7 +2181,7 @@ function renderCamp() {
     + (r1.length ? stackHTML(r1.map(() => '<span class="rbw-cup">🏆</span>'), 'גְּבִיעֵי קֶשֶׁת: ' + r1.join(', ')) : '')
     + (g0.length ? stackHTML(g0.map(() => '🏆'), 'גְּבִיעֵי זָהָב מְאוּבָּקִים: ' + g0.join(', '), ' dusty') : '')
     + (r0.length ? stackHTML(r0.map(() => '🏆'), 'גְּבִיעֵי קֶשֶׁת מְאוּבָּקִים: ' + r0.join(', '), ' dusty') : '');
-  const petShelf = ITEMS.filter(it => S.items[it.id] > 0).map(it => { const n = Math.min(S.items[it.id], PET_MAX); return stackHTML(Array.from({ length: n }, (_, k) => petHTML(it, n - k)), it.name); }).join('');
+  const petShelf = ITEMS.map(petPile).join('');
   const collection = trophyShelf || gearShelf || petShelf
     ? trophyShelf + gearShelf + petShelf
     : '<div class="rank" style="color:#fff">סִיּוּם אִימּוּנִים פּוֹתֵחַ תֵּיבוֹת עִם צִיּוּד הִישָּׂרְדוּת!</div>';
@@ -2214,7 +2221,18 @@ function buyItem(id) {
   if (!it || owned >= PET_MAX || S.coins < price) return;
   S.coins -= price;
   S.items[it.id] = owned + 1;
-  save(); updateWallet(); renderCamp(); SFX.play('buy');
+  save(); updateWallet(); SFX.play('buy');
+  // refresh only the bought card (with a pop) and the buttons; on the shelf only this animal's pile changes
+  const card = document.querySelector(`.shop .card[data-it="${it.id}"]`), shelf = document.querySelector('.collection-shelf');
+  if (!card || !shelf) { renderCamp(); return; }
+  card.innerHTML = shopCardInner(it); card.querySelector('.ic').classList.add('pop');
+  ITEMS.forEach(x => { if (x.id === it.id) return; const b = document.querySelector(`.shop .card[data-it="${x.id}"] button`); if (b) b.outerHTML = shopBtn(x); });
+  const tmp = document.createElement('div'); tmp.innerHTML = petPile(it); const pile = tmp.firstElementChild;
+  pile.classList.add('pop'); pile.style.setProperty('--i', shelf.children.length);
+  pile.addEventListener('animationend', () => pile.classList.remove('pop'), { once: true });
+  const old = shelf.querySelector(`[data-pile="${it.id}"]`);
+  if (old) { pile.style.setProperty('--i', old.style.getPropertyValue('--i')); old.replaceWith(pile); }
+  else { if (!shelf.querySelector('.owned-animal')) shelf.innerHTML = ''; shelf.appendChild(pile); }
   toast(owned ? `עוֹד ${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף – ${it.g === 'f' ? 'מְשׁוּדְרֶגֶת' : 'מְשׁוּדְרָג'}!` : `${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף!`);
 }
 function handleReset() {

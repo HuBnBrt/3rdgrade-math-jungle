@@ -6,7 +6,7 @@
 
 ## 1. מה יש לנו היום
 
-- **האפליקציה החיה (להורים):** https://hubnbrt.github.io/3rdgrade-math-jungle/ – פורסמה להורי ג'4 ב-18.11.2026 (1.96); גרסה 2.5 פורסמה באותו ערב; גרסה 3.4 פורסמה ב-19.11.
+- **האפליקציה החיה (להורים):** https://hubnbrt.github.io/3rdgrade-math-jungle/ – פורסמה להורי ג'4 ב-18.11.2026 (1.96); גרסה 2.5 פורסמה באותו ערב; גרסה 3.4 פורסמה ב-19.11; גרסה 4.2 (חמש דרגות, חיות משודרגות) פורסמה ב-20.11.
 - **דף הבדיקה:** https://hubnbrt.github.io/3rdgrade-math-jungle/updatever.html – כל שיפור נכנס לכאן קודם.
 - **דשבורד מורה/מנהל:** `admin.html` (כניסה נסתרת דרך העץ 🌴 בכותרת). מנהל: BenBritCRM@gmail.com. גרסת הבדיקה של הדשבורד: `adminver.html`.
 - **מאגר קוד:** GitHub `HuBnBrt/3rdgrade-math-jungle`, ענף `main`, מתפרסם אוטומטית ב-GitHub Pages.

@@ -404,10 +404,66 @@ header .chip{order:2;flex:none}
 .cats .card .stars .off{filter:grayscale(1) opacity(.35)}
 .cats .card .stars .lvl{font-size:.85em}
 .cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
+.rk-none .rankbadge{background:#f3e7d3;color:#5c3a21;border-color:#a1887f}
 .rk-bronze .rankbadge{background:#e6b98a;color:#6b3e14;border-color:#8b5a2b}
 .rk-silver .rankbadge{background:#eceff1;color:#455a64;border-color:#90a4ae}
 .rk-gold .rankbadge{background:#ffe082;color:#7a5200;border-color:#f9a825}
 .cats .card.rk-silver{border-color:#78909c;background:linear-gradient(180deg,#dcc9b4,#b8946e)}
+.rk-diamond .rankbadge{background:#d9f3ff;color:#0b5c7a;border-color:#4fc3f7}
+.rk-rainbow .rankbadge{background:linear-gradient(90deg,#ffd1d1,#fff3b0,#c8f7c5,#c5e3ff,#e3ccff);color:#4a2a6a;border-color:#b388ff}
+.cats .card.rk-diamond{border-color:#4fc3f7;background:linear-gradient(180deg,#d7eef7,#9cc9db);box-shadow:inset 0 0 16px rgba(200,240,255,.7),0 5px 0 #3a7f99,0 8px 10px rgba(0,0,0,.15)}
+.cats .card.rk-rainbow{border-color:#b388ff;background:linear-gradient(160deg,#ffe0e0,#fff6c9 25%,#dcf8d6 50%,#d6ecff 75%,#eadcff);box-shadow:inset 0 0 16px rgba(255,255,255,.7),0 5px 0 #7e57c2,0 8px 10px rgba(0,0,0,.15)}
+/* locked future stars (diamond, rainbow): grey and see-through until gold */
+.cats .card .stars .st,.cats .card .stars .st-lock{display:inline-block;width:1.25em;height:1.2em;vertical-align:-.2em}
+.cats .card .stars .st{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.4 1.2 21.2 21.2'%3E%3Cpath d='M12 2.6l2.9 6 6.5.8-4.8 4.5 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5-4.8-4.5 6.5-.8z'/%3E%3C/svg%3E") center/100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.4 1.2 21.2 21.2'%3E%3Cpath d='M12 2.6l2.9 6 6.5.8-4.8 4.5 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5-4.8-4.5 6.5-.8z'/%3E%3C/svg%3E") center/100% no-repeat}
+.cats .card .stars .st.sil{background:#1a0f05;opacity:.24}
+.cats .card .stars .st.sil.dk{opacity:.42}
+.cats .card .stars .st[class*=m-]{background-size:200% 200%!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.cats .card .stars .st-lock{position:relative}
+.cats .card .stars .st-lock span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95em;line-height:1}
+/* metals: a moving diagonal shine, shared by the stars and the bar */
+/* the shine sweeps back and forth (no jump at the end); every card has its own pace (--ar, --ad) */
+.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{background-size:300% 300%!important;animation:metal var(--ar,3.2s) ease-in-out var(--ad,0s) infinite alternate}
+.m-bronze{background:linear-gradient(135deg,#7a3f15 0%,#c47a3d 35%,#ffd2a6 50%,#c47a3d 65%,#7a3f15 100%)}
+.m-silver{background:linear-gradient(135deg,#8f9aa1 0%,#d5dce0 35%,#ffffff 50%,#d5dce0 65%,#8f9aa1 100%)}
+.m-gold{background:linear-gradient(135deg,#b77d00 0%,#ffc61a 35%,#fff6b0 50%,#ffc61a 65%,#b77d00 100%)}
+.m-dia{background:linear-gradient(135deg,#0057b8 0%,#00b0ff 35%,#e6fbff 50%,#00b0ff 65%,#0057b8 100%)}
+.m-rbw{background:linear-gradient(135deg,#ff5252,#ffd740 20%,#69f0ae 40%,#448aff 60%,#b388ff 80%,#ff5252)}
+@keyframes metal{0%{background-position:100% 100%}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{animation:none}}
+/* the bar in thirds: each third fills in its metal; it ends square at a mark when full */
+.cats .card .bar.prog.thirds .bseg{position:absolute;top:0;bottom:0;border-radius:0;border-start-end-radius:99px;border-end-end-radius:99px}
+.cats .card .bar.prog.thirds .bseg.full{border-start-end-radius:0;border-end-end-radius:0}
+.cats .card .bar.prog.thirds .bseg:first-child{border-start-start-radius:99px;border-end-start-radius:99px}
+.cats .card .bar.prog span{position:relative}
+/* the rainbow trophy floats beside the gold one, a little behind in its swing */
+.cats .card .trophy-mark.two{inset-inline-start:auto;inset-inline-end:-8px;animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
+.trophy-mark.dusty,.owned-animal.dusty{filter:grayscale(1) sepia(.3) brightness(.7) contrast(1.15)!important;animation:none!important}
+/* dusty trophy: grey, cracked, with a big cobweb on its inner side (toward the middle of the card, away from the corner leaves) */
+.trophy-mark.dusty::after,.owned-animal.dusty::after{content:'🕸️';position:absolute;font-size:.75em;top:.15em;inset-inline-end:-.45em;opacity:.95}
+.cats .card .trophy-mark.two.dusty::after{inset-inline-end:auto;inset-inline-start:-.45em}
+.trophy-mark.dusty::before,.owned-animal.dusty::before{content:'';position:absolute;top:8%;bottom:42%;left:28%;right:28%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M17 3 L21 11 L15 17 L22 24 L18 31' fill='none' stroke='%23231208' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3Cpath d='M21 11 L27 14 M15 17 L10 19 M22 24 L27 27' fill='none' stroke='%23231208' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;pointer-events:none}
+.owned-animal.dusty{position:relative}
+.cats .card .trophy-mark.dusty{z-index:13}
+@keyframes cup-shine{0%,100%{filter:drop-shadow(0 0 0 #fff)}50%{filter:drop-shadow(0 0 10px #fff59d) brightness(1.4)}}
+.cats .card .trophy-mark.shine:not(.rainbow){animation:float 3s ease-in-out infinite alternate,cup-shine .7s ease-in-out 4}
+/* big button: two fixed lines; an orange glow while a practice is waiting to be finished */
+#startBtn{position:relative;container-type:inline-size;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+#startBtn .bt{white-space:nowrap;font-size:min(1em,9cqw)}
+.home-top .hero-board{min-width:0}
+#startBtn .bs{font-size:max(14px,min(.58em,5.6cqw));font-weight:700;opacity:.92;white-space:nowrap;margin-top:.1em}
+@keyframes run-glow{0%,100%{box-shadow:0 0 0 3px rgba(255,167,38,.55),0 0 6px 3px rgba(255,152,0,.35)}50%{box-shadow:0 0 0 4px #ffa726,0 0 16px 7px rgba(255,152,0,.8)}}
+#startBtn.running::after{content:'';position:absolute;inset:-5px;border-radius:15px;pointer-events:none;animation:run-glow 1.8s ease-in-out infinite}
+/* topic buttons are quieter (white with a green outline) so the one big green button leads */
+.cats .card .practice-btn:not(.stat-n){background:#fff;color:#2e7d32;box-shadow:inset 0 0 0 2px #43a047,0 2px 0 #1d6b36}
+.cats .card .practice-btn.recbtn:not(.stat-n){background:#ffcdd2;color:#b71c1c;box-shadow:inset 0 0 0 2px #c62828,0 2px 0 #7a1f0e}
+/* teacher's recommendation in purple, the app's in red */
+.cats .card .practice-btn.recbtn.rec-t:not(.stat-n){background:#e1bee7;color:#6a1b9a;box-shadow:inset 0 0 0 2px #8e24aa,0 2px 0 #4a148c}
+.cats .card .practice-btn:not(.stat-n):active{box-shadow:inset 0 0 0 2px #43a047,0 1px 0 #1d6b36}
+/* second stage bar (after gold): starts gold, diamond and rainbow marks */
+/* the rainbow trophy: a shiny, colour-shifting cup */
+@keyframes rainbow-cup{0%{filter:hue-rotate(0deg) saturate(1.6) drop-shadow(0 0 4px #fff)}50%{filter:hue-rotate(180deg) saturate(2) drop-shadow(0 0 7px #fff)}100%{filter:hue-rotate(360deg) saturate(1.6) drop-shadow(0 0 4px #fff)}}
+.trophy-mark.rainbow,.rainbow-trophy{animation:rainbow-cup 3s linear infinite}
 .cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
 .bar.prog{position:relative}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
@@ -492,7 +548,7 @@ header .chip{order:2;flex:none}
   #qcard .opts .opt,#qcard .opts.ord .opt{font-size:17px;padding:3px 2px}
   #qcard .seq{min-height:0;padding:3px}#qcard .seq span{font-size:17px;padding:3px 2px}
   #qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:20px !important}
-  #qcard .parts svg[data-draw]{height:min(34vh,150px)}
+  #qcard .parts .drawwrap svg[data-draw]{max-height:min(46vh,190px);min-height:80px}
   .draw-help{font-size:12px;margin-top:2px}.draw-help b:first-child{display:none}
   .sum-gift{display:none}.sum-title{font-size:20px}.sum-box{padding:3px 8px}.sum-box p{font-size:14px;margin:1px 0}
   .sum-actions{flex-direction:row}.sum-actions>*{flex:1;font-size:14px !important;padding:5px 6px !important}
@@ -585,7 +641,9 @@ header h1{font-size:calc(var(--s)*1.15)}
 #qcard .ordwrap .opts.ord .opt.used{visibility:hidden;pointer-events:none}
 #qcard .parts:has(.drawwrap){display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 #qcard .drawwrap{flex:1 1 auto;min-height:0}
-#qcard .parts .drawwrap svg[data-draw]{flex:0 1 auto;min-height:70px;max-height:none;height:min(44vh,60vw,calc(var(--q)*18))}
+#qcard .drawwrap{display:flex;flex-direction:column;align-items:center}
+/* the drawing board takes the free room of the card (it was a small fixed size on tablets) */
+#qcard .parts .drawwrap svg[data-draw]{flex:none;min-height:110px;height:110px;max-height:min(62vh,480px);width:auto;max-width:100%;aspect-ratio:320/220}
 #qcard .drawwrap .draw-help{flex:none}
 #qcard .question-board:has(.prompt.compact){min-height:0;flex:none;padding:calc(var(--q)*.45) 14px}
 #qcard .question-board:has(.prompt.compact) .prompt{margin:0}
@@ -732,7 +790,10 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   .home-top .hero-board{order:2;flex:1 1 0 !important;width:auto !important;min-width:0}
   .home-top .stat-toggle{order:3;gap:2px;padding:4px 8px;font-size:11px;line-height:1.1}
 }
-.modal .m-notes{text-align:right;margin:4px 0 0;padding-inline-start:1.2em;line-height:1.5}.modal .m-notes li{margin:2px 0}
+.modal .m-notes{text-align:right;margin:4px 0 0;padding-inline-start:1.2em;line-height:1.5}
+.modal .m-notes{font-size:var(--mf,17px)}
+/* landscape phones: a wide window with the notes in two columns */
+@media (orientation:landscape) and (max-height:560px){.modal{max-width:min(760px,94vw);padding:10px 16px}.modal .m-notes{column-count:2;column-gap:22px}.modal .m-notes li{break-inside:avoid}.modal h2{margin:2px 0}}.modal .m-notes li{margin:2px 0}
 .dev-chip{display:inline-block;margin-inline-start:8px;padding:1px 8px;border-radius:99px;background:#ffe082;color:#5c3a21;font-size:.55em;vertical-align:middle}
 /* short screens: when the question does not fit, drop the extra tips and tighten the spacing */
 #qcard.tight .ord-tip,#qcard.tight .ord-label{display:none}
@@ -740,6 +801,39 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard.tight .ordwrap .ghost-btn{margin-top:4px !important}
 #qcard.tight .parts .rank{margin:0 !important}#qcard.tight .parts input{padding-top:4px;padding-bottom:4px;min-height:0;height:auto}#qcard.tight .opt{padding-top:4px;padding-bottom:4px}#qcard.tight .question-board{padding-top:4px;padding-bottom:4px}
 /* the same item more than once: copies stand close together, one behind the other, and float as one */
+/* pets: the animal, its accessory (from the 2nd copy) and a halo (from the 6th) */
+.pet{position:relative;display:inline-block;line-height:1}
+.pet .em{position:relative;z-index:2;display:inline-block}
+.pet .acc{position:absolute;z-index:3;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
+.pet .acc-crown{width:.55em;height:.42em;top:-.2em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .acc-neck{width:.55em;height:.42em;top:.62em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .acc-bow{width:.42em;height:.3em;top:.72em;left:.3em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .halo{position:absolute;inset:-.22em;border-radius:50%;z-index:1;animation:halo var(--ar,2.4s) ease-in-out var(--ad,0s) infinite alternate}
+.pet .h-bronze{background:radial-gradient(circle,#e08b3e 0%,rgba(224,139,62,.55) 40%,transparent 70%)}
+.pet .h-silver{background:radial-gradient(circle,#ffffff 0%,rgba(220,230,235,.7) 40%,transparent 70%)}
+.pet .h-gold{background:radial-gradient(circle,#ffe066 0%,rgba(255,200,40,.65) 40%,transparent 70%)}
+.pet .h-dia{background:radial-gradient(circle,#b3f0ff 0%,rgba(0,176,255,.6) 40%,transparent 70%)}
+.pet .h-rbw{background:conic-gradient(#ff5252,#ffd740,#69f0ae,#448aff,#b388ff,#ff5252);-webkit-mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%);mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%)}
+@keyframes halo{0%{opacity:.55;transform:scale(.94)}100%{opacity:1;transform:scale(1.04)}}
+.shop .card{position:relative}
+/* the animal just bought pops in with a sparkle; nothing else restarts */
+@keyframes petpop{0%{transform:scale(.3) rotate(-12deg);opacity:0}55%{transform:scale(1.3) rotate(6deg);opacity:1}75%{transform:scale(.92)}100%{transform:scale(1)}}
+.shop .card .ic.pop{animation:petpop .8s cubic-bezier(.3,1.4,.5,1)}
+.shop .card .ic.pop::after{content:'✨';position:absolute;inset-inline-start:-.15em;top:-.1em;font-size:.55em;animation:sparkle 1s ease-out forwards}
+.shop .card .ic{position:relative}
+@keyframes sparkle{0%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.3)}100%{opacity:0;transform:scale(1) translateY(-.4em)}}
+.collection-shelf .owned-animal.pop{animation:petpop .8s cubic-bezier(.3,1.4,.5,1)}
+/* the 'in the collection' tag: always one line; on a narrow card only the count (or a tick) */
+.shop .card .in-col .ck{display:none}
+@container (max-width:120px){.shop .card .in-col .w{display:none}.shop .card .in-col .ck{display:inline}.shop .card .in-col{inset-inline-end:2px;top:2px}}
+.shop .card .in-col{position:absolute;top:4px;inset-inline-end:4px;z-index:3;white-space:nowrap;background:#2e7d32;color:#fff;border-radius:99px;font:900 clamp(10px,8cqh,13px)/1.4 'Noto Sans Hebrew',sans-serif;padding:0 .55em}
+/* a pile: one behind the other, overlapping, each casting a shadow on the one behind it */
+.owned-animal.stk{display:inline-flex;position:relative}
+.owned-animal.stk .sk{position:relative;display:inline-block;filter:drop-shadow(-.08em .05em .04em rgba(0,0,0,.45))}
+.owned-animal.stk .sk+.sk{margin-inline-start:-.72em}
+.owned-animal.stk .sk:nth-child(1){z-index:3}.owned-animal.stk .sk:nth-child(2){z-index:2;filter:brightness(.88) drop-shadow(-.08em .05em .04em rgba(0,0,0,.45))}.owned-animal.stk .sk:nth-child(3){z-index:1;filter:brightness(.76)}
+.owned-animal.stk .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:5;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em 'Noto Sans Hebrew',sans-serif;padding:0 .4em}
+.rbw-cup{display:inline-block;animation:rainbow-cup 3s linear infinite}
 .owned-animal.stack{display:inline-flex;position:relative}.owned-animal.stack span+span{margin-inline-start:-.6em}
 .owned-animal.stack span:nth-child(1){position:relative;z-index:3}.owned-animal.stack span:nth-child(2){z-index:2;filter:brightness(.92)}.owned-animal.stack span:nth-child(3){z-index:1;filter:brightness(.84)}
 .owned-animal.stack .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:4;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em 'Noto Sans Hebrew',sans-serif;padding:0 .4em}
@@ -758,8 +852,18 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .kp-key{border:0;border-radius:12px;background:linear-gradient(#fffaf0,#f1e2c9);box-shadow:0 3px 0 #a87c4f;font:900 clamp(18px,3.4vh,26px) 'Noto Sans Hebrew',sans-serif;color:#3e2410;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:29px}
 #qcard .kp-key:active{transform:translateY(2px);box-shadow:0 1px 0 #a87c4f}
 #qcard .kp-key.kp-back{grid-row:span 2;grid-column:6;background:linear-gradient(#ffe9e0,#f5c9b8);box-shadow:0 3px 0 #b5694b}
-#qcard .fbslot.kp .hintbox{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#fffbe6;border-radius:12px;padding:4px 10px;text-align:center}
-#qcard .fbslot.kp .hintbox:empty{display:none}
+/* hint next to the keypad: on a wide (landscape) screen the keypad sits on the right and the hint on the left;
+   upright, the hint covers the keypad as a card with a close mark (tap anywhere on it to close) */
+#qcard .fbslot.kp .hintbox{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:#fffbe6;color:#3e2410;text-shadow:none;border:2px solid #f4b942;border-radius:12px;padding:4px 10px 4px 34px;text-align:center;line-height:1.35;overflow:hidden}
+#qcard .fbslot.kp .hintbox:not(:empty)::after{content:"✕";position:absolute;top:4px;left:8px;font-size:18px;font-weight:900;color:#8b5a2b}
+@media (orientation:landscape){
+  #qcard .fbslot.kp{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:12px;align-items:stretch}
+  #qcard .fbslot.kp .keypad{margin:0}
+  #qcard .fbslot.kp .hintbox{position:static;padding:4px 10px}
+  #qcard .fbslot.kp .hintbox:empty{display:block;visibility:hidden}
+  #qcard .fbslot.kp .hintbox:not(:empty)::after{display:none}
+}
+@media (orientation:portrait){#qcard .fbslot.kp .hintbox:empty{display:none}}
 #qcard input.kp-on{outline:3px solid #f4b942;outline-offset:2px}
 @media (max-height:660px){#qcard .fbslot.kp{min-height:60px}#qcard .kp-key{min-height:26px;font-size:18px}}
 /* landscape phones: one wide row of keys */
@@ -802,11 +906,11 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v107';
-const APP_LABEL = '3.4';
+const APP_VERSION = 'v110';
+const APP_LABEL = '4.2';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = ['עִדְכּוּן וְהַחְלָפַת צְלִילִים.', 'בַּטֶּלֶפוֹן וּבַטַּאבְּלֶט מַקְלִידִים בְּעֶזְרַת מִקְלֶדֶת הַמִּסְפָּרִים שֶׁל הַמִּשְׂחָק, וְהַמָּסָךְ כְּבָר לֹא קוֹפֵץ.', 'guest: גַּם בְּלִי הִתְחַבְּרוּת הַהִתְקַדְּמוּת נִשְׁמֶרֶת: כּוֹתְבִים כִּינּוּי בְּ״שָׁלוֹם אוֹרֵחַ״.'];
+const RELEASE_NOTES = ['⭐ בְּהַצָּעַת אַדִּיר, הוֹסַפְנוּ שְׁתֵּי דְּרָגוֹת נוֹסָפוֹת אַחֲרֵי אָרָד, כֶּסֶף וְזָהָב – יַהֲלוֹם וְקֶשֶׁת!', '📊 הַכּוֹכָבִים וְהַפַּס מַרְאִים מָה יוֹדְעִים עַכְשָׁיו: תְּשׁוּבָה נְכוֹנָה מְקַדֶּמֶת, וְטָעוּת מַחֲזִירָה קְצָת אֲחוֹרָה.', '🏆 גְּבִיעַ זָהָב וּגְבִיעַ קֶשֶׁת בְּכָל נוֹשֵׂא. מִי שֶׁיּוֹרֵד בְּדַרְגָּה – הַגָּבִיעַ מִתְאַבֵּק, וּמַבְרִיק שׁוּב כְּשֶׁחוֹזְרִים אֵלֶיהָ.', '💡 עַל נוֹשְׂאִים שֶׁכְּדַאי לְחַזֵּק מוֹפִיעַ כַּפְתּוֹר צִבְעוֹנִי \"הַמְלָצָה לְתִרְגּוּל\".', '🎯 הַכַּפְתּוֹר הַגָּדוֹל \"אִימּוּן מִכָּל הַנּוֹשְׂאִים\": 8 שְׁאֵלוֹת מְעוֹרְבָּבוֹת, וְאֶפְשָׁר לְהַמְשִׁיךְ מֵאֵיפֹה שֶׁעָצְרוּ.', '🦁 בַּחֲנוּת אֶפְשָׁר לִקְנוֹת שׁוּב אֶת אוֹתָהּ חַיָּה, וְכָל פַּעַם הִיא מְקַבֶּלֶת אַבְזָר מְשׁוּדְרָג: כֶּסֶף, זָהָב, יַהֲלוֹם וַאֲפִילּוּ קֶשֶׁת.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -831,6 +935,10 @@ function showModal({ icon, title, text, ok, cancel, onOk, onNo }) {
   d.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="m-ic">${icon}</div><h2>${title}</h2><p>${text}</p><div class="m-act"><button type="button" class="big-green-btn" data-m="ok">${ok}</button>${cancel ? `<button type="button" class="ghost-btn" data-m="no">${cancel}</button>` : ''}</div></div>`;
   d.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.remove(); modalOpen = false; if (b.dataset.m === 'ok') { if (onOk) onOk(); } else if (onNo) onNo(); });
   document.body.appendChild(d);
+  // the window always fits the screen (no scrolling): first drop the picture, then shrink the text, never under 14px
+  const m = d.querySelector('.modal'), fits = () => m.offsetHeight <= innerHeight * 0.96;
+  if (!fits()) { const im = m.querySelector('.m-img'); if (im) im.style.display = 'none'; }
+  for (let f = 17; !fits() && f >= 14; f--) m.style.setProperty('--mf', f + 'px');
 }
 function maybePrompts() {
   if (modalOpen || currentView === 'play') return;
@@ -907,21 +1015,41 @@ const parseNum = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return 
 const perms = a => a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
 const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const TIERS = [null, 'מַתְחִילִים', 'מִתְקַדְּמִים', 'אַלּוּפִים'];
+// level words follow the child's chosen gender (plural when not chosen)
 const PLACE = { 1: 'הַיְּחִידוֹת', 10: 'הָעֲשָׂרוֹת', 100: 'הַמֵּאוֹת', 1000: 'הָאֲלָפִים' };
 const angleClass = d => d < 90 ? 'חַדָּה' : d === 90 ? 'יְשָׁרָה' : d < 180 ? 'קֵהָה' : 'שְׁטוּחָה';
-const rank = s => s >= 70 ? 'זָהָב' : s >= 40 ? 'כֶּסֶף' : 'אָרָד';
+const rank = s => ['בַּדֶּרֶךְ לָאָרָד', 'אָרָד', 'כֶּסֶף', 'זָהָב', 'יַהֲלוֹם', 'קֶשֶׁת'][levelOf(s)];
+/* five levels per topic (an idea of Adir's): bronze, silver, gold, then a second stage - diamond and rainbow.
+   a topic starts empty (0). Points: +5 right, -4 wrong, up to 160 (rainbow; no hidden points above it).
+   the bar is in thirds: before gold - the way to bronze (30), silver (60), gold (90);
+   from gold - gold done, the way to diamond (125), the way to rainbow (160). Mistakes take it back in the same order. */
+const TOP = 160;
+const levelOf = s => s >= 160 ? 5 : s >= 125 ? 4 : s >= 90 ? 3 : s >= 60 ? 2 : s >= 30 ? 1 : 0;
+const LEVEL_ICON = ['🌱', '🥉', '🥈', '🥇', '💎', '🌈'];
+const LEVEL_CLASS = ['none', 'bronze', 'silver', 'gold', 'diamond', 'rainbow'];
+const STAR_TIER = ['', 'bronze', 'silver', 'gold', 'dia', 'rbw'];
+// the three thirds of the bar: [metal, fill 0..1]
+// a topic that has reached gold keeps the gold-diamond-rainbow bar while it slides back to silver (its gold third recedes);
+// only below silver does the bronze-silver-gold bar return
+const barThirds = (s, wasGold) => s >= 90 || (wasGold && s >= 60)
+  ? [['gold', Math.min(1, (s - 60) / 30)], ['dia', Math.max(0, Math.min(1, (s - 90) / 35))], ['rbw', Math.max(0, Math.min(1, (s - 125) / 35))]]
+  : [['bronze', Math.min(1, s / 30)], ['silver', Math.max(0, Math.min(1, (s - 30) / 30))], ['gold', Math.max(0, Math.min(1, (s - 60) / 30))]];
+// stars: earned = in its level's colour with a moving diagonal shine; in reach = dark silhouette; diamond/rainbow before gold = a lock in the star's place
+// a topic that dropped from gold keeps diamond/rainbow open: a slightly darker silhouette instead of the lock
+const starHTML = (i, lv, wasGold) => i <= lv ? `<span class="st m-${STAR_TIER[i]}"></span>` : i > 3 && lv < 3 ? (wasGold ? '<span class="st sil dk"></span>' : '<span class="st-lock"><span>🔒</span></span>') : '<span class="st sil"></span>';
 
+// acc: the accessory an animal wears from its second copy on (crown / neck = necklace with a pendant / bow)
 const ITEMS = [
-  { id: 'lion', name: 'אַרְיֵה', icon: '🦁', price: 15 },
-  { id: 'elephant', name: 'פִּיל', icon: '🐘', price: 15 },
-  { id: 'leopard', name: 'נָמֵר', icon: '🐆', price: 20 },
-  { id: 'giraffe', g: 'f', name: 'גִ\'ירָפָה', icon: '🦒', price: 25 },
-  { id: 'monkey', name: 'קוֹף', icon: '🐒', price: 10 },
-  { id: 'parrot', name: 'תּוּכִּי', icon: '🦜', price: 10 },
-  { id: 'zebra', g: 'f', name: 'זֶבְּרָה', icon: '🦓', price: 10 },
-  { id: 'koala', g: 'f', name: 'קוֹאָלָה', icon: '🐨', price: 20 },
-  { id: 'frog', g: 'f', name: 'צְפַרְדֵּעַ', icon: '🐸', price: 8 },
-  { id: 'croc', name: 'תַּנִּין', icon: '🐊', price: 20 }
+  { id: 'lion', name: 'אַרְיֵה', icon: '🦁', price: 15, acc: 'crown' },
+  { id: 'elephant', name: 'פִּיל', icon: '🐘', price: 15, acc: 'neck' },
+  { id: 'leopard', name: 'נָמֵר', icon: '🐆', price: 20, acc: 'bow' },
+  { id: 'giraffe', g: 'f', name: 'גִ\'ירָפָה', icon: '🦒', price: 25, acc: 'neck' },
+  { id: 'monkey', name: 'קוֹף', icon: '🐒', price: 10, acc: 'neck' },
+  { id: 'parrot', name: 'תּוּכִּי', icon: '🦜', price: 10, acc: 'crown' },
+  { id: 'zebra', g: 'f', name: 'זֶבְּרָה', icon: '🦓', price: 10, acc: 'bow' },
+  { id: 'koala', g: 'f', name: 'קוֹאָלָה', icon: '🐨', price: 20, acc: 'crown' },
+  { id: 'frog', g: 'f', name: 'צְפַרְדֵּעַ', icon: '🐸', price: 8, acc: 'bow' },
+  { id: 'croc', name: 'תַּנִּין', icon: '🐊', price: 20, acc: 'crown' }
 ];
 
 const GEAR = [
@@ -1014,9 +1142,10 @@ function genNoCalc(t) {
 
 function genDecomp(t) {
   const len = t === 1 ? 3 : 4;
-  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
-  const comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i));
-  const m = rnd(0, len - 1);
+  // at least two non-zero digits, and the blank is never a 0 (no "300 = 300 + ___ + 0")
+  let n, comps;
+  do { n = len === 3 ? rnd(100, 999) : rnd(1000, 9999); comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i)); } while (comps.filter(Boolean).length < 2);
+  const m = pick(comps.map((c, j) => c ? j : -1).filter(j => j >= 0));
   const shown = comps.map((c, j) => j === m ? '___' : fmt(c)).join(' + ');
   return {
     body: `<div class="prompt">יֵשׁ לְהַשְׁלִים אֶת הַפֵּירוּק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
@@ -1291,7 +1420,8 @@ function numLineWrite(t) {
   const step = t === 1 ? 10 : pick([10, 100]);
   const span = step * 10;
   const start = step === 10 ? rnd(1, t === 1 ? 9 : 90) * 100 : rnd(1, 8) * 1000;
-  const idx = rnd(1, 9), val = start + idx * step;
+  // never the middle mark: it has its number written under it
+  const idx = pick([1, 2, 3, 4, 6, 7, 8, 9]), val = start + idx * step;
   const x0 = 30, x1 = 290, y = 80;
   let ticks = '';
   for (let i = 0; i <= 10; i++) {
@@ -1722,30 +1852,41 @@ async function cloudSave() {
   catch (e) { console.warn(e); toast('הַשְּׁמִירָה בֶּעָנָן לֹא הִצְלִיחָה'); return; }
   try {
     const topics = topicSummary();
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), autoRecs: autoShownList(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בְּדִיקָה' : '') }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
 let teacherFocus = [];
 // the app recommends one weak topic by itself, only when the teacher has no active recommendation
 const recentAcc = st => { const r = String((st && st.h) || '').slice(-6); return r.length ? [...r].filter(x => x === '1').length / r.length : null; };
+// system recommendations (🌺): up to 2 topics, the weakest first. A topic comes in under 70% of its last 10 answers,
+// or when it is sliding (the last 5 answers have 2+ fewer right than the 5 before); it goes out at 80% and rests 3 days
+const last10 = st => String((st && st.h) || '').slice(-10);
+const accOf = h => h.length ? [...h].filter(x => x === '1').length / h.length : null;
+const sliding = h => h.length >= 10 && [...h.slice(5)].filter(x => x === '1').length <= [...h.slice(0, 5)].filter(x => x === '1').length - 2;
 function updateAutoRec() {
-  const now = Date.now(), DAY = 864e5, before = JSON.stringify(S.autoRec || null);
+  const now = Date.now(), DAY = 864e5;
   if (!S.recCool) S.recCool = {};
-  const a = S.autoRec;
-  if (a) { const r = recentAcc((S.stats || {})[a.topic]); if (r !== null && r > 0.75) { S.recCool[a.topic] = now; S.autoRec = null; } }
-  if (!S.autoRec && !teacherFocus.length) {
-    let best = null;
+  if (S.autoRec && !S.autoRecs) S.autoRecs = [S.autoRec];
+  delete S.autoRec;
+  const before = JSON.stringify(S.autoRecs || []);
+  S.autoRecs = (S.autoRecs || []).filter(a => { const r = accOf(last10((S.stats || {})[a.topic])); if (r !== null && r >= 0.8) { S.recCool[a.topic] = now; return false; } return true; });
+  // under 50% a topic must be practiced: no 3-day rest, and it shows even next to a teacher's recommendation
+  if (S.autoRecs.length < 2) {
+    const have = S.autoRecs.map(a => a.topic);
+    const cands = [];
     CATS.forEach(c => {
       const st = (S.stats || {})[c.id];
-      if (!st || (st.ok || 0) + (st.bad || 0) < 6 || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)) return;
-      const r = recentAcc(st);
-      if (r !== null && r < 0.6 && (!best || r < best.r)) best = { id: c.id, r };
+      if (have.includes(c.id) || !st || (st.ok || 0) + (st.bad || 0) < 6) return;
+      const h = last10(st), r = accOf(h);
+      if (r === null || (r >= 0.5 && (teacherFocus.length || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)))) return;
+      if (r < 0.8 && (r < 0.7 || sliding(h))) cands.push({ id: c.id, r });
     });
-    if (best) S.autoRec = { topic: best.id, at: now };
+    cands.sort((a, b) => a.r - b.r).slice(0, 2 - S.autoRecs.length).forEach(c => S.autoRecs.push({ topic: c.id, at: now }));
   }
-  return JSON.stringify(S.autoRec || null) !== before;
+  return JSON.stringify(S.autoRecs) !== before;
 }
-const autoShown = () => (!teacherFocus.length && S.autoRec) ? S.autoRec.topic : null;
+const autoShownList = () => (S.autoRecs || []).filter(a => !teacherFocus.length || (accOf(last10((S.stats || {})[a.topic])) ?? 1) < 0.5).map(a => a.topic);
+const autoShown = () => autoShownList()[0] || null;
 const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 function focusBar() {
   const cs = teacherFocus.map(id => CATS.find(x => x.id === id)).filter(Boolean);
@@ -1761,7 +1902,8 @@ function mergeProgress(L, C) {
   out.coins = max(L.coins, C.coins);
   out.sessions = max(L.sessions, C.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(L.medals || [])])];
-  out.items = { ...(L.items || {}), ...(C.items || {}) };
+  // animals can be owned more than once: keep the bigger count
+  out.items = {}; for (const k of new Set([...Object.keys(L.items || {}), ...Object.keys(C.items || {})])) out.items[k] = max((L.items || {})[k], (C.items || {})[k]);
   out.gear = maxGear(L.gear, C.gear);
   out.sheetOk = { ...(L.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
@@ -1769,7 +1911,7 @@ function mergeProgress(L, C) {
     const c = out.mastery[id];
     if (!c) { out.mastery[id] = m; return; }
     const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
-    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy); best.trophy2 = !!(m.trophy2 || c.trophy2);
     out.mastery[id] = best;
   });
   out.stats = { ...(C.stats || {}) };
@@ -1789,7 +1931,7 @@ function addProgress(G, C) {
   out.coins = n(C.coins) + n(G.coins);
   out.sessions = n(C.sessions) + n(G.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(G.medals || [])])];
-  out.items = { ...(G.items || {}), ...(C.items || {}) };
+  out.items = {}; for (const k of new Set([...Object.keys(G.items || {}), ...Object.keys(C.items || {})])) out.items[k] = Math.min(10, n((G.items || {})[k]) + n((C.items || {})[k]));
   out.gear = maxGear(G.gear, C.gear);
   out.sheetOk = { ...(G.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
@@ -1797,7 +1939,7 @@ function addProgress(G, C) {
     const c = out.mastery[id];
     if (!c) { out.mastery[id] = m; return; }
     const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
-    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy); best.trophy2 = !!(m.trophy2 || c.trophy2);
     out.mastery[id] = best;
   });
   out.stats = { ...(C.stats || {}) };
@@ -1832,13 +1974,13 @@ async function cloudLoad() {
     toast('לֹא הִצְלַחְנוּ לִטְעוֹן מֵהֶעָנָן. מַמְשִׁיכִים עִם הַמֵּידָע שֶׁבַּמַּכְשִׁיר');
   }
 }
-function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
+function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 0, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
 
 /* ---------- session / view state ---------- */
 let Q = null, session = null, lastCat = null, currentView = 'home';
 let timerInt = null, toastTimer = null, resetArmed = false;
 
-function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).filter(m => m.trophy).length; }
+function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).reduce((n, m) => n + (m.trophy && m.score >= 90 ? 1 : 0) + (m.trophy2 && m.score >= 160 ? 1 : 0), 0); }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
@@ -1855,6 +1997,7 @@ const firstName = () => {
 };
 /*NIKUD-ON*/
 const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
+const levelWord = l => ['בַּדֶּרֶךְ לָאָרָד', G('מַתְחִיל', 'מַתְחִילָה', 'מַתְחִילִים'), G('מִתְקַדֵּם', 'מִתְקַדֶּמֶת', 'מִתְקַדְּמִים'), G('אַלּוּף', 'אַלּוּפָה', 'אַלּוּפִים'), G('מַדְהִים', 'מַדְהִימָה', 'מַדְהִימִים'), G('אַדִּיר', 'אַדִּירָה', 'אַדִּירִים')][l];
 let authError = '';
 function loginBlock() {
   if (user) return '';
@@ -1935,39 +2078,47 @@ function refreshCurrentView() {
 const heat = a => a === null ? 'none' : a >= .85 ? 'g' : a >= .7 ? 'lg' : a >= .5 ? 'y' : 'r';
 function renderHome() {
   if (updateAutoRec()) save();
-  const statsView = !!S.settings.statsView, auto = autoShown();
+  const statsView = !!S.settings.statsView, auto = autoShownList();
   const today = new Date().toDateString();
   const doneToday = S.today.day === today ? S.today.count : 0;
+  const rsB = S.resume && S.resume.base;
   const cards = CATS.map((c, i) => {
     const m = mast(c.id);
-    const recBy = teacherFocus.includes(c.id) ? 't' : auto === c.id ? 'a' : '';
+    const recBy = teacherFocus.includes(c.id) ? 't' : auto.includes(c.id) ? 'a' : '';
     // the child sees what they know now: the last 10 answers in the topic (old mistakes fade out); the dashboard keeps the full totals
     const recent = String(((S.stats || {})[c.id] || {}).h || '').slice(-10), n = recent.length, st = { ok: [...recent].filter(x => x === '1').length }, a = n >= 3 ? st.ok / n : null;
     // the numbers view reuses the very same elements (originals kept invisible underneath), so nothing on the card moves
-    const starsIn = `${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span>`;
-    const rankIn = `${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}`;
+    const lv = levelOf(m.score), rsT = S.resume && S.resume[c.id];
+    // five stars: the last two stay grey and see-through until gold opens them
+    // stars in reach are solid grey; the next stage's stars (diamond, rainbow) are a dashed outline until gold
+    const starsIn = [1, 2, 3, 4, 5].map(i => starHTML(i, lv, m.trophy)).join('');
+    // the badge shows the level icon and the child's level word (the five stars need the whole row)
+    const rankIn = `${LEVEL_ICON[lv]} ${levelWord(lv)}`;
+    // trophies are never taken away: below their level they turn dusty (with cobwebs) until the child gets back
+    const shine = m.shine ? ' shine' : '';
+    const trophyHTML = (m.trophy ? `<div class="trophy-mark${m.score < 90 ? ' dusty' : shine}" title="גְּבִיעַ זָהָב">🏆</div>` : '') + (m.trophy2 ? `<div class="trophy-mark rainbow two${m.score < 160 ? ' dusty' : shine}" title="גְּבִיעַ הַקֶּשֶׁת">🏆</div>` : '');
+    const ticks = '<i style="inset-inline-start:33.333%"></i><i style="inset-inline-start:66.667%"></i>';
     const pctTxt = a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–';
     const body = statsView ? `
             <div class="stars stat-cap"><span class="keep">${starsIn}</span><span class="ov"><span class="cap">הַצְלָחָה לָאַחֲרוֹנָה</span><span class="pc">${pctTxt}</span></span></div>
             <div class="rankbadge stat-pct heat-${heat(a)}"><span class="keep">${rankIn}</span><span class="ov">${a !== null ? Math.round(a * 100) + '%' : '–'}</span></div>
-            ${m.trophy ? '<div class="trophy-mark" title="גָּבִיעַ: אַלּוּפִים בַּנּוֹשֵׂא">🏆</div>' : ''}
+            ${trophyHTML}
           </div>
           <div class="bar prog heat-${heat(a)}" style="position:relative;z-index:2"><span style="width:${a === null ? 0 : Math.round(a * 100)}%"></span></div>
           <button type="button" class="practice-btn stat-n" tabindex="-1" aria-hidden="true">${n ? st.ok + ' מִתּוֹךְ ' + n + ' אַחֲרוֹנוֹת' : 'עוֹד לֹא תּוּרְגַּל'}</button>` : `
-            <div class="stars" title="רָמָה: ${TIERS[m.tier]}">${starsIn}</div>
+            <div class="stars" title="דַּרְגַּת ${rank(m.score)}">${starsIn}</div>
             <div class="rankbadge">${rankIn}</div>
-            ${m.trophy ? '<div class="trophy-mark" title="גָּבִיעַ: אַלּוּפִים בַּנּוֹשֵׂא">🏆</div>' : ''}
+            ${trophyHTML}
           </div>
-          <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
-          <button type="button" class="practice-btn" data-practice="${c.id}">תִּרְגּוּל נוֹשֵׂא זֶה</button>`;
+          <div class="bar prog thirds" style="position:relative;z-index:2">${barThirds(m.score, m.trophy).map(([mt, f], k) => f > 0 ? `<b class="bseg m-${mt}${f >= 1 ? ' full' : ''}" style="inset-inline-start:${k * 33.333}%;width:${f * 33.333}%"></b>` : '').join('')}${ticks}</div>
+          <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'הַמְלָצָה אֱנוֹשִׁית' : 'הַמְלָצָה שֶׁל הַמַּעֲרֶכֶת'}"` : ''}>${rsT ? `הֶמְשֵׁךְ (${rsT.done + 1}/${rsT.total})` : recBy ? 'הַמְלָצָה לְתִרְגּוּל' : 'תִּרְגּוּל נוֹשֵׂא זֶה'}</button>`;
     return `
-      <div class="slot">
+      <div class="slot" style="--ar:${(2.8 + (i * 0.37) % 1.3).toFixed(2)}s;--ad:-${((i * 0.83) % 3).toFixed(2)}s">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
-        <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
+        <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${LEVEL_CLASS[levelOf(m.score)]}">
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
-          ${recBy ? `<div class="rec-badge">${recBy === 't' ? '🍎' : '🌺'} הַמְלָצָה לְתִרְגּוּל</div>` : ''}
           <div class="topic-content" style="position:relative;z-index:2">
             <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>${body}
         </div>
@@ -1983,11 +2134,12 @@ function renderHome() {
         <small>אִימּוּנִים הַיּוֹם: ${doneToday}</small>
       </div>
       <div class="hero-board">
-        <button type="button" class="big-green-btn" id="startBtn">${S.resume && S.resume.base ? 'הֶמְשֵׁךְ אִימּוּן' : 'הַתְחָלַת אִימּוּן'}</button>
+        <button type="button" class="big-green-btn${rsB ? ' running' : ''}" id="startBtn"><span class="bt">${rsB ? '▶ הֶמְשֵׁךְ אִימּוּן' : '🎯 אִימּוּן מִכָּל הַנּוֹשְׂאִים'}</span><small class="bs">${rsB ? `שְׁאֵלָה ${rsB.done + 1} מִתּוֹךְ ${rsB.total}` : '8 שְׁאֵלוֹת מְעוֹרְבָּבוֹת'}</small></button>
       </div>
       <button type="button" id="statToggle" class="stat-toggle${statsView ? ' on' : ''}" role="switch" aria-checked="${statsView}"><span>📊 הַמַּצָּב שֶׁלִּי</span><i></i></button>
     </div>
     <div class="grid cats">${cards}</div>`;
+  let shone = false; for (const k in S.mastery) if (S.mastery[k].shine) { delete S.mastery[k].shine; shone = true; } if (shone) save();
   fitTitles();
 }
 
@@ -2006,30 +2158,45 @@ function fitTitles() {
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
 
-function renderCamp() {
-  const shop = ITEMS.map(it => {
-    const canAfford = S.coins >= it.price;
-    const owned = S.items[it.id] || 0;
-    return `
-      <div class="card">
-        <div class="ic">${it.icon}</div>
+/* animals can be bought again, each copy upgraded (like Roblox): the 2nd wears its accessory in silver, the 3rd gold,
+   4th diamond, 5th rainbow; copies 6-10 also get a glowing halo (bronze, silver, gold, diamond, rainbow). Price = base x copy number. */
+const PET_MAX = 10;
+const PET_ACC = [null, 'silver', 'gold', 'dia', 'rbw'], PET_HALO = ['bronze', 'silver', 'gold', 'dia', 'rbw'];
+const petHTML = (it, k) => { const t = (k - 1) % 5, acc = PET_ACC[t];
+  return `<span class="pet">${k > 5 ? `<i class="halo h-${PET_HALO[t]}"></i>` : ''}<span class="em">${it.icon}</span>${acc ? `<i class="acc acc-${it.acc || 'crown'} m-${acc}"></i>` : ''}</span>`; };
+// copies of one thing stand one behind the other, overlapping, the front one casting a shadow on the next
+const stackHTML = (parts, title, cls = '') => parts.length === 1
+  ? `<div class="owned-animal${cls}" title="${title}">${parts[0]}</div>`
+  : `<div class="owned-animal stk${cls}" title="${title} ×${parts.length}">${parts.slice(0, 3).map(x => `<span class="sk">${x}</span>`).join('')}${parts.length > 3 ? `<b class="stack-n">${parts.length}</b>` : ''}</div>`;
+// one shop card's content and its button (buying refreshes only these, so nothing else on the screen restarts)
+const shopBtn = (it) => { const owned = Math.min(S.items[it.id] || 0, PET_MAX), price = it.price * (owned + 1), full = owned >= PET_MAX, canAfford = !full && S.coins >= price;
+  return full ? '<button type="button" class="ghost-btn" disabled>הָאוֹסֶף מָלֵא ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>${!canAfford ? 'אֵין מַטְבְּעוֹת' : owned ? (it.g === 'f' ? 'עוֹד אַחַת' : 'עוֹד אֶחָד') : 'לִקְנִיָּיה'}</button>`; };
+const shopCardInner = (it) => { const owned = Math.min(S.items[it.id] || 0, PET_MAX), next = owned + 1, full = owned >= PET_MAX;
+  return `${owned ? `<span class="in-col"><span class="w">בָּאוֹסֶף</span>${owned > 1 ? ` <span class="n" dir="ltr">×${owned}</span>` : '<span class="ck">✓</span>'}</span>` : ''}
+        <div class="ic">${petHTML(it, full ? PET_MAX : next)}</div>
         <b class="big nm">${it.name}</b>
-        <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
-        ${owned ? '<button type="button" class="ghost-btn" disabled>בָּאוֹסֶף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
-          ${canAfford ? 'לִקְנִיָּיה' : 'אֵין מַטְבְּעוֹת'}
-        </button>`}
-      </div>`;
-  }).join('');
+        ${full ? '' : `<div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price * next} 🪙</div>`}
+        ${shopBtn(it)}`; };
+const petPile = it => { const n = Math.min(S.items[it.id] || 0, PET_MAX); return n ? stackHTML(Array.from({ length: n }, (_, k) => petHTML(it, n - k)), it.name).replace('class="owned-animal', `data-pile="${it.id}" class="owned-animal`) : ''; };
+function renderCamp() {
+  const shop = ITEMS.map((it, ix) => `
+      <div class="card" data-it="${it.id}" style="--ar:${(2.8 + (ix * 0.41) % 1.3).toFixed(2)}s;--ad:-${((ix * 0.77) % 3).toFixed(2)}s">
+        ${shopCardInner(it)}
+      </div>`).join('');
 
-  const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
-  const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => { const n = gearCount(S.gear[g.id]); return n > 1
-    ? `<div class="owned-animal stack" title="${g.name} (${RARITY[g.r]}) ×${n}">${Array.from({ length: Math.min(n, 3) }, () => `<span>${g.icon}</span>`).join('')}${n > 3 ? `<b class="stack-n">${n}</b>` : ''}</div>`
-    : `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`; }).join('');
-  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
-  const collection = ownedItems.length || trophyShelf || gearShelf
-    ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+  const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => stackHTML(Array(gearCount(S.gear[g.id])).fill(g.icon), `${g.name} (${RARITY[g.r]})`)).join('');
+  // trophies: all gold ones together, all rainbow ones together; dusty ones in a pile of their own
+  const tr = (f, lim) => CATS.filter(c => mast(c.id)[f]).reduce((a, c) => (a[mast(c.id).score >= lim ? 0 : 1].push(c.name), a), [[], []]);
+  const [g1, g0] = tr('trophy', 90), [r1, r0] = tr('trophy2', 160);
+  const trophyShelf = (g1.length ? stackHTML(g1.map(() => '🏆'), 'גְּבִיעֵי זָהָב: ' + g1.join(', ')) : '')
+    + (r1.length ? stackHTML(r1.map(() => '<span class="rbw-cup">🏆</span>'), 'גְּבִיעֵי קֶשֶׁת: ' + r1.join(', ')) : '')
+    + (g0.length ? stackHTML(g0.map(() => '🏆'), 'גְּבִיעֵי זָהָב מְאוּבָּקִים: ' + g0.join(', '), ' dusty') : '')
+    + (r0.length ? stackHTML(r0.map(() => '🏆'), 'גְּבִיעֵי קֶשֶׁת מְאוּבָּקִים: ' + r0.join(', '), ' dusty') : '');
+  const petShelf = ITEMS.map(petPile).join('');
+  const collection = trophyShelf || gearShelf || petShelf
+    ? trophyShelf + gearShelf + petShelf
     : '<div class="rank" style="color:#fff">סִיּוּם אִימּוּנִים פּוֹתֵחַ תֵּיבוֹת עִם צִיּוּד הִישָּׂרְדוּת!</div>';
-  const waved = collection.replace(/class="owned-animal"/g, (() => { let i = 0; return () => `class="owned-animal" style="--i:${i++}"`; })());
+  const waved = collection.replace(/class="owned-animal([^"]*)"/g, (() => { let i = 0; return (m0, c) => `class="owned-animal${c}" style="--i:${i++}"`; })());
 
   $('#view-camp').innerHTML = `
     <h2 class="camp-title">🏕️ חֲנוּת הַמַּחֲנֶה</h2>
@@ -2061,11 +2228,23 @@ function renderSettings() {
 /* ---------- shop & settings actions ---------- */
 function buyItem(id) {
   const it = ITEMS.find(x => x.id === id);
-  if (!it || S.coins < it.price || S.items[it.id]) return;
-  S.coins -= it.price;
-  S.items[it.id] = 1;
-  save(); updateWallet(); renderCamp(); SFX.play('buy');
-  toast(`${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף!`);
+  const owned = (it && S.items[it.id]) || 0, price = it ? it.price * (owned + 1) : 0;
+  if (!it || owned >= PET_MAX || S.coins < price) return;
+  S.coins -= price;
+  S.items[it.id] = owned + 1;
+  save(); updateWallet(); SFX.play('buy');
+  // refresh only the bought card (with a pop) and the buttons; on the shelf only this animal's pile changes
+  const card = document.querySelector(`.shop .card[data-it="${it.id}"]`), shelf = document.querySelector('.collection-shelf');
+  if (!card || !shelf) { renderCamp(); return; }
+  card.innerHTML = shopCardInner(it); card.querySelector('.ic').classList.add('pop');
+  ITEMS.forEach(x => { if (x.id === it.id) return; const b = document.querySelector(`.shop .card[data-it="${x.id}"] button`); if (b) b.outerHTML = shopBtn(x); });
+  const tmp = document.createElement('div'); tmp.innerHTML = petPile(it); const pile = tmp.firstElementChild;
+  pile.classList.add('pop'); pile.style.setProperty('--i', shelf.children.length);
+  pile.addEventListener('animationend', () => pile.classList.remove('pop'), { once: true });
+  const old = shelf.querySelector(`[data-pile="${it.id}"]`);
+  if (old) { pile.style.setProperty('--i', old.style.getPropertyValue('--i')); old.replaceWith(pile); }
+  else { if (!shelf.querySelector('.owned-animal')) shelf.innerHTML = ''; shelf.appendChild(pile); }
+  toast(owned ? `עוֹד ${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף – ${it.g === 'f' ? 'מְשׁוּדְרֶגֶת' : 'מְשׁוּדְרָג'}!` : `${plain(it.name)} ${it.g === 'f' ? 'הִצְטָרְפָה' : 'הִצְטָרֵף'} לָאוֹסֶף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
@@ -2252,7 +2431,7 @@ function partHTML(p, i) {
     return `<div class="ordwrap"><div class="ord-label">הַסֵּדֶר שֶׁבָּחַרְתָּ, מֵהַקָּטָן לַגָּדוֹל:</div><div class="seq">${slots}</div><div class="ord-label">הַמִּסְפָּרִים לִבְחִירָה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">לְהַתְחִיל מֵחָדָשׁ</button><div class="ord-tip">אֶפְשָׁר לִגְרוֹר מִסְפָּר לְכָל מִשְׁבֶּצֶת, וּלְהָזִיז מִסְפָּר מִמִּשְׁבֶּצֶת לְמִשְׁבֶּצֶת.</div></div>`;
   }
   if (p.type === 'draw') {
-    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><path id="sq" d="M184 170 V146 H160" fill="none" stroke="#163b2a" stroke-width="3" style="display:none"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><path id="sq" d="M184 170 V146 H160" fill="none" stroke="#163b2a" stroke-width="3" style="display:none"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg></div>`;
   }
   return '';
 }
@@ -2365,6 +2544,8 @@ function confetti() {
 
 // phones and tablets: the device keyboard never opens (it pushed the screen up); a small keypad of the game sits in
 // the space kept for the feedback, so nothing moves. Computers keep the normal keyboard.
+// how to draw: shown in the space kept for the feedback (until the answer is checked), so the drawing board gets the room
+const DRAW_HELP = '<span class="draw-help"><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</span>';
 const TOUCH_KEYPAD = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
 let kpTarget = null;
 function keypadHTML() {
@@ -2413,7 +2594,7 @@ function renderPlay() {
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
         <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${wordsNote}${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
-      </div>` : `${useKeypad ? keypadHTML() : ''}<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
+      </div>` : `${useKeypad ? keypadHTML() : ''}<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : Q.parts.some(p => p.type === 'draw') ? DRAW_HELP : ''}</div>`}</div>
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}
       ${locked
@@ -2425,7 +2606,14 @@ function renderPlay() {
   if (TOUCH_KEYPAD && Q.result === undefined) { const first = kpInputs()[0]; if (first) kpMark(first); }
   if (focusAnswer) { focusAnswer = false; const inp = document.querySelector('#qcard input:not([disabled])'); if (inp) inp.focus(); }
   const sv = document.querySelector('#qcard svg[data-draw]');
-  if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  if (sv) {
+    // the drawing board grows into the free room under the card (up to a comfortable size), so it is big on tablets
+    const card = $('#qcard'), host = card.parentElement;
+    const cs = getComputedStyle(host), free = host.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - card.offsetHeight - 16;
+    const h = sv.getBoundingClientRect().height, cap = Math.min(innerHeight * 0.62, 480);
+    if (free > 4 && h < cap) sv.style.height = Math.min(cap, h + free) + 'px';
+    setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  }
   tick();
 }
 
@@ -2491,6 +2679,7 @@ function setupDraw(svg, p) {
 function record(ok) {
   const m = mast(Q.cat);
   let sfx = ok ? 'correct' : 'wrong';
+  const lvBefore = levelOf(m.score), had1 = !!m.trophy, had2 = !!m.trophy2;
   session.done++;
   session.tc = session.tc || {}; session.tc[Q.cat] = (session.tc[Q.cat] || 0) + 1;
   if (!S.stats) S.stats = {};
@@ -2503,18 +2692,30 @@ function record(ok) {
   if (ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
-    m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
-    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; sfx = 'level'; toast(`עָלִית לְרָמַת ${TIERS[m.tier]} בַּנּוֹשֵׂא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
+    m.streak++; m.wrong = 0; m.score = Math.min(TOP, m.score + 5);
+    // the question difficulty (tier) still rises quietly after 3 right answers in a row
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; }
   } else {
-    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
+    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 4);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
-  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); sfx = 'medal'; toast('מֶדַלְיַית זָהָב הוּשְׂגָה!'); }
-  if (!m.trophy && m.score >= 70 && m.tier >= 3) {
+  const nm = CATS.find(c => c.id === Q.cat).name, lvAfter = levelOf(m.score);
+  if (lvAfter > lvBefore) { sfx = 'level'; toast(`${LEVEL_ICON[lvAfter]} דַּרְגַּת ${rank(m.score)}! ${levelWord(lvAfter)} בַּנּוֹשֵׂא: ${plain(nm)}`); }
+  if (!m.medal && m.score >= 90) { m.medal = true; S.medals.push(Q.cat); }
+  // gold trophy when the first stage is done (gold), a shiny rainbow trophy at the top level
+  if (!m.trophy && m.score >= 90) {
     m.trophy = true;
-    const nm = CATS.find(c => c.id === Q.cat).name;
     (session.trophies = session.trophies || []).push(nm);
-    toast(`🏆 גָּבִיעַ! אַלּוּפִים בַּנּוֹשֵׂא: ${plain(nm)}`);
+    toast(`🏆 גָּבִיעַ זָהָב! ${G('אַלּוּף', 'אַלּוּפָה', 'אַלּוּפִים')} בַּנּוֹשֵׂא: ${plain(nm)}`);
+    sfx = 'trophy';
+  }
+  // a dusty trophy shines again when the child gets back to its level
+  if (had1 && lvBefore < 3 && lvAfter >= 3) { m.shine = true; sfx = 'trophy'; toast(`✨ גְּבִיעַ הַזָּהָב מַבְרִיק שׁוּב! ${plain(nm)}`); }
+  if (had2 && lvBefore < 5 && lvAfter >= 5) { m.shine = true; sfx = 'trophy'; toast(`✨🌈 גְּבִיעַ הַקֶּשֶׁת מַבְרִיק שׁוּב! ${plain(nm)}`); }
+  if (!m.trophy2 && m.score >= 160) {
+    m.trophy2 = true;
+    (session.trophies = session.trophies || []).push(nm + ' 🌈');
+    toast(`🏆🌈 גְּבִיעַ הַקֶּשֶׁת! ${G('אַדִּיר', 'אַדִּירָה', 'אַדִּירִים')} בַּנּוֹשֵׂא: ${plain(nm)}`);
     sfx = 'trophy';
   }
   SFX.play(sfx);
@@ -2538,11 +2739,13 @@ function clearFocus(done) {
 }
 function endSession() {
   stopTimer();
-  { const done = teacherFocus.filter(id => session.only === id || (session.tc && session.tc[id] >= 2)); if (done.length) clearFocus(done); }
+  { const done = teacherFocus.filter(id => (session.only === id || (session.tc && session.tc[id] >= 2)) && (accOf(last10((S.stats || {})[id])) || 0) >= 0.75); if (done.length) clearFocus(done); }
   if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
   updateAutoRec();
   if (!S.gear) S.gear = {};
   const acc = session.total ? session.correct / session.total : 0;
+  // the chest opens only for a practice with at least half right
+  const earned = acc >= 0.5;
   const rr = Math.random();
   const wantR = acc >= 0.875 ? (rr < 0.45 ? 2 : rr < 0.85 ? 1 : 0) : acc >= 0.6 ? (rr < 0.1 ? 2 : rr < 0.5 ? 1 : 0) : (rr < 0.03 ? 1 : 0);
   // new items first; once the collection is complete, items come again and stand together on the shelf
@@ -2550,7 +2753,7 @@ function endSession() {
   const from = left.length ? left : GEAR;
   const pool = from.filter(g => g.r === wantR);
   const gift = pick(pool.length ? pool : from), giftN = gearCount(S.gear[gift.id]) + 1;
-  S.gear[gift.id] = giftN;
+  if (earned) S.gear[gift.id] = giftN;
   if (session.kind === 'base') {
     const today = new Date().toDateString();
     if (S.today.day !== today) S.today = { day: today, count: 0 };
@@ -2559,19 +2762,18 @@ function endSession() {
   save(); updateWallet();
   Q = null;
   $('#qcard').classList.add('summary');
-  const canBonus = session.kind === 'base';
-  // end of practice: fanfare and applause (and confetti) for a good practice, a soft tune otherwise; then the chest opens
-  if (acc >= 0.5) SFX.play('finish'); else SFX.play('done');
-  if (acc >= 0.75) confetti();
-  SFX.play('gift', acc >= 0.5 ? 3.8 : 2.2);
+  const canBonus = session.kind === 'base' && earned;
+  // end of practice: fanfare, applause and confetti from 75%; a soft tune below that; the chest (and its sound) only from 50%
+  if (acc >= 0.75) { SFX.play('finish'); confetti(); } else SFX.play('done');
+  if (earned) SFX.play('gift', acc >= 0.75 ? 3.8 : 2.2);
   $('#qcard').innerHTML = `
-    <div class="sum-gift">🎁</div>
-    <div class="sum-title">${session.kind === 'bonus' ? 'מִשְׂחַק הַבּוֹנוּס הוּשְׁלַם!' : 'הָאִימּוּן הוּשְׁלַם בְּהַצְלָחָה!'}</div>
+    <div class="sum-gift">${earned ? '🎁' : '💪'}</div>
+    <div class="sum-title">${!earned ? 'הָאִימּוּן הִסְתַּיֵּים' : session.kind === 'bonus' ? 'מִשְׂחַק הַבּוֹנוּס הוּשְׁלַם!' : 'הָאִימּוּן הוּשְׁלַם בְּהַצְלָחָה!'}</div>
     <div class="sum-box">
       <p>${session.coins === 0 ? 'לֹא הִתְקַבְּלוּ מַטְבְּעוֹת הַפַּעַם' : session.coins === 1 ? 'הִתְקַבֵּל מַטְבֵּעַ אֶחָד 🪙' : 'הִתְקַבְּלוּ ' + session.coins + ' מַטְבְּעוֹת 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זָכִיתָ בְּגָבִיעַ בַּנּוֹשֵׂא: ${session.trophies.join(', ')}!</p>` : ''}
       ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כָּל הַכָּבוֹד אַלּוּף! 🏆', 'כָּל הַכָּבוֹד אַלּוּפָה! 🏆', 'כָּל הַכָּבוֹד! 🏆')}</p>` : ''}
-      <p>נִפְתְּחָה תֵּיבָה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${giftN > 1 ? `– ${gift.g === 'f' ? 'עוֹד אַחַת' : gift.g === 'p' ? 'עוֹד זוּג' : 'עוֹד אֶחָד'} לָאוֹסֶף! עַכְשָׁיו יֵשׁ ${giftN}.` : `${gift.g === 'f' ? 'הִתְווַסְּפָה' : gift.g === 'p' ? 'הִתְווַסְּפוּ' : 'הִתְווַסֵּף'} לְצִיּוּד שֶׁלְּךָ!`}</p>
+      ${earned ? `<p>נִפְתְּחָה תֵּיבָה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${giftN > 1 ? `– ${gift.g === 'f' ? 'עוֹד אַחַת' : gift.g === 'p' ? 'עוֹד זוּג' : 'עוֹד אֶחָד'} לָאוֹסֶף! עַכְשָׁיו יֵשׁ ${giftN}.` : `${gift.g === 'f' ? 'הִתְווַסְּפָה' : gift.g === 'p' ? 'הִתְווַסְּפוּ' : 'הִתְווַסֵּף'} לְצִיּוּד שֶׁלְּךָ!`}</p>` : `<p>${G('כְּדַאי לְתַרְגֵּל שׁוּב – בַּפַּעַם הַבָּאָה זֶה יֵלֵךְ לְךָ טוֹב יוֹתֵר!', 'כְּדַאי לְתַרְגֵּל שׁוּב – בַּפַּעַם הַבָּאָה זֶה יֵלֵךְ טוֹב יוֹתֵר! 💪', 'כְּדַאי לְתַרְגֵּל שׁוּב – בַּפַּעַם הַבָּאָה זֶה יֵלֵךְ טוֹב יוֹתֵר!')}</p><p class="muted-line">הַתֵּיבָה נִפְתַּחַת כְּשֶׁלְּפָחוֹת חֲצִי מֵהַתְּשׁוּבוֹת נְכוֹנוֹת.</p>`}
     </div>
     <div class="sum-actions">
       ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אִימּוּן בּוֹנוּס (מַטְבְּעוֹת כְּפוּלִים)</button>` : ''}

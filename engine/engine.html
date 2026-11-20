@@ -371,6 +371,7 @@ header .chip{order:2;flex:none}
 .cats .card .stars .off{filter:grayscale(1) opacity(.35)}
 .cats .card .stars .lvl{font-size:.85em}
 .cats .card .rankbadge{display:inline-block;margin-top:3px;padding:1px 12px;border-radius:99px;font-weight:900;font-size:clamp(10px,10cqh,15px);border:2px solid;white-space:nowrap}
+.rk-none .rankbadge{background:#f3e7d3;color:#5c3a21;border-color:#a1887f}
 .rk-bronze .rankbadge{background:#e6b98a;color:#6b3e14;border-color:#8b5a2b}
 .rk-silver .rankbadge{background:#eceff1;color:#455a64;border-color:#90a4ae}
 .rk-gold .rankbadge{background:#ffe082;color:#7a5200;border-color:#f9a825}
@@ -380,17 +381,25 @@ header .chip{order:2;flex:none}
 .cats .card.rk-diamond{border-color:#4fc3f7;background:linear-gradient(180deg,#d7eef7,#9cc9db);box-shadow:inset 0 0 16px rgba(200,240,255,.7),0 5px 0 #3a7f99,0 8px 10px rgba(0,0,0,.15)}
 .cats .card.rk-rainbow{border-color:#b388ff;background:linear-gradient(160deg,#ffe0e0,#fff6c9 25%,#dcf8d6 50%,#d6ecff 75%,#eadcff);box-shadow:inset 0 0 16px rgba(255,255,255,.7),0 5px 0 #7e57c2,0 8px 10px rgba(0,0,0,.15)}
 /* locked future stars (diamond, rainbow): grey and see-through until gold */
-.cats .card .stars .off{filter:grayscale(1) brightness(.95);opacity:1}
-.cats .card .stars .lockstar{position:relative;display:inline-block}
-.cats .card .stars .lockstar .sil{filter:brightness(0) opacity(.32)}
-.cats .card .stars .lockstar i{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);font-size:.62em;font-style:normal;line-height:1}
-/* after gold: green ends square at the first mark; the way to diamond is pale glassy blue with a slow shimmer; the way to rainbow is colourful */
-.cats .card .bar.prog span.gold-done{border-radius:0;border-start-start-radius:99px;border-end-start-radius:99px}
-.cats .card .bar.prog .dia,.cats .card .bar.prog .rbw{position:absolute;top:0;bottom:0;border-radius:0;border-start-end-radius:99px;border-end-end-radius:99px}
-.cats .card .bar.prog .dia{inset-inline-start:40%;background:linear-gradient(90deg,#b3e5fc 0%,#e1f5fe 20%,#ffffff 30%,#e1f5fe 40%,#b3e5fc 60%,#81d4fa 100%);background-size:250% 100%;animation:glass 4s ease-in-out infinite}
-.cats .card .bar.prog .dia.full{border-radius:0}
-.cats .card .bar.prog .rbw{inset-inline-start:70%;background:linear-gradient(270deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#b388ff)}
-@keyframes glass{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+.cats .card .stars .st,.cats .card .stars .st-lock{display:inline-block;width:1.25em;height:1.2em;vertical-align:-.2em}
+.cats .card .stars .st{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.4 1.2 21.2 21.2'%3E%3Cpath d='M12 2.6l2.9 6 6.5.8-4.8 4.5 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5-4.8-4.5 6.5-.8z'/%3E%3C/svg%3E") center/100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.4 1.2 21.2 21.2'%3E%3Cpath d='M12 2.6l2.9 6 6.5.8-4.8 4.5 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5-4.8-4.5 6.5-.8z'/%3E%3C/svg%3E") center/100% no-repeat}
+.cats .card .stars .st.sil{background:#1a0f05;opacity:.24}
+.cats .card .stars .st[class*=m-]{background-size:200% 200%!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.cats .card .stars .st-lock{position:relative}
+.cats .card .stars .st-lock span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95em;line-height:1}
+/* metals: a moving diagonal shine, shared by the stars and the bar */
+.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{background-size:300% 300%!important;animation:metal 3.2s linear infinite}
+.m-bronze{background:linear-gradient(135deg,#7a3f15 0%,#c47a3d 35%,#ffd2a6 50%,#c47a3d 65%,#7a3f15 100%)}
+.m-silver{background:linear-gradient(135deg,#8f9aa1 0%,#d5dce0 35%,#ffffff 50%,#d5dce0 65%,#8f9aa1 100%)}
+.m-gold{background:linear-gradient(135deg,#b77d00 0%,#ffc61a 35%,#fff6b0 50%,#ffc61a 65%,#b77d00 100%)}
+.m-dia{background:linear-gradient(135deg,#0057b8 0%,#00b0ff 35%,#e6fbff 50%,#00b0ff 65%,#0057b8 100%)}
+.m-rbw{background:linear-gradient(135deg,#ff5252,#ffd740 20%,#69f0ae 40%,#448aff 60%,#b388ff 80%,#ff5252)}
+@keyframes metal{0%{background-position:100% 100%}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{animation:none}}
+/* the bar in thirds: each third fills in its metal; it ends square at a mark when full */
+.cats .card .bar.prog.thirds .bseg{position:absolute;top:0;bottom:0;border-radius:0;border-start-end-radius:99px;border-end-end-radius:99px}
+.cats .card .bar.prog.thirds .bseg.full{border-start-end-radius:0;border-end-end-radius:0}
+.cats .card .bar.prog.thirds .bseg:first-child{border-start-start-radius:99px;border-end-start-radius:99px}
 .cats .card .bar.prog span{position:relative}
 /* the rainbow trophy floats beside the gold one, a little behind in its swing */
 .cats .card .trophy-mark.two{inset-inline-start:auto;inset-inline-end:-8px;animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
@@ -754,6 +763,32 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard.tight .ordwrap .ghost-btn{margin-top:4px !important}
 #qcard.tight .parts .rank{margin:0 !important}#qcard.tight .parts input{padding-top:4px;padding-bottom:4px;min-height:0;height:auto}#qcard.tight .opt{padding-top:4px;padding-bottom:4px}#qcard.tight .question-board{padding-top:4px;padding-bottom:4px}
 /* the same item more than once: copies stand close together, one behind the other, and float as one */
+/* pets: the animal, its accessory (from the 2nd copy) and a halo (from the 6th) */
+.pet{position:relative;display:inline-block;line-height:1}
+.pet .em{position:relative;z-index:2;display:inline-block}
+.pet .acc{position:absolute;z-index:3;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
+.pet .acc-crown{width:.55em;height:.42em;top:-.2em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .acc-neck{width:.55em;height:.42em;top:.62em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .acc-bow{width:.42em;height:.3em;top:.72em;left:.3em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat}
+.pet .halo{position:absolute;inset:-.22em;border-radius:50%;z-index:1;animation:halo 2.4s ease-in-out infinite alternate}
+.pet .h-bronze{background:radial-gradient(circle,#e08b3e 0%,rgba(224,139,62,.55) 40%,transparent 70%)}
+.pet .h-silver{background:radial-gradient(circle,#ffffff 0%,rgba(220,230,235,.7) 40%,transparent 70%)}
+.pet .h-gold{background:radial-gradient(circle,#ffe066 0%,rgba(255,200,40,.65) 40%,transparent 70%)}
+.pet .h-dia{background:radial-gradient(circle,#b3f0ff 0%,rgba(0,176,255,.6) 40%,transparent 70%)}
+.pet .h-rbw{background:conic-gradient(#ff5252,#ffd740,#69f0ae,#448aff,#b388ff,#ff5252);-webkit-mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%);mask:radial-gradient(circle,transparent 38%,#000 48%,transparent 70%)}
+@keyframes halo{0%{opacity:.55;transform:scale(.94)}100%{opacity:1;transform:scale(1.04)}}
+.shop .card{position:relative}
+/* the 'in the collection' tag: always one line; on a narrow card only the count (or a tick) */
+.shop .card .in-col .ck{display:none}
+@container (max-width:120px){.shop .card .in-col .w{display:none}.shop .card .in-col .ck{display:inline}.shop .card .in-col{inset-inline-end:2px;top:2px}}
+.shop .card .in-col{position:absolute;top:4px;inset-inline-end:4px;z-index:3;white-space:nowrap;background:#2e7d32;color:#fff;border-radius:99px;font:900 clamp(10px,8cqh,13px)/1.4 Heebo,sans-serif;padding:0 .55em}
+/* a pile: one behind the other, overlapping, each casting a shadow on the one behind it */
+.owned-animal.stk{display:inline-flex;position:relative}
+.owned-animal.stk .sk{position:relative;display:inline-block;filter:drop-shadow(-.08em .05em .04em rgba(0,0,0,.45))}
+.owned-animal.stk .sk+.sk{margin-inline-start:-.72em}
+.owned-animal.stk .sk:nth-child(1){z-index:3}.owned-animal.stk .sk:nth-child(2){z-index:2;filter:brightness(.88) drop-shadow(-.08em .05em .04em rgba(0,0,0,.45))}.owned-animal.stk .sk:nth-child(3){z-index:1;filter:brightness(.76)}
+.owned-animal.stk .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:5;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em Heebo,sans-serif;padding:0 .4em}
+.rbw-cup{display:inline-block;animation:rainbow-cup 3s linear infinite}
 .owned-animal.stack{display:inline-flex;position:relative}.owned-animal.stack span+span{margin-inline-start:-.6em}
 .owned-animal.stack span:nth-child(1){position:relative;z-index:3}.owned-animal.stack span:nth-child(2){z-index:2;filter:brightness(.92)}.owned-animal.stack span:nth-child(3){z-index:1;filter:brightness(.84)}
 .owned-animal.stack .stack-n{position:absolute;bottom:-2px;inset-inline-start:-4px;z-index:4;background:#fff;color:#5c3a21;border-radius:99px;font:900 .32em Heebo,sans-serif;padding:0 .4em}
@@ -930,17 +965,22 @@ const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
 // level words follow the child's chosen gender (plural when not chosen)
 const PLACE = { 1: 'היחידות', 10: 'העשרות', 100: 'המאות', 1000: 'האלפים' };
 const angleClass = d => d < 90 ? 'חדה' : d === 90 ? 'ישרה' : d < 180 ? 'קהה' : 'שטוחה';
-const rank = s => ['', 'ארד', 'כסף', 'זהב', 'יהלום', 'קשת'][levelOf(s)];
+const rank = s => ['בדרך לארד', 'ארד', 'כסף', 'זהב', 'יהלום', 'קשת'][levelOf(s)];
 /* five levels per topic (an idea of Adir's): bronze, silver, gold, then a second stage - diamond and rainbow.
-   score 0-200: stage 1 runs to gold (70); stage 2 starts at gold, with diamond and rainbow at the same 40% / 70% marks */
-const levelOf = s => s >= 161 ? 5 : s >= 122 ? 4 : s >= 70 ? 3 : s >= 40 ? 2 : 1;
-const LEVEL_ICON = ['', '🥉', '🥈', '🥇', '💎', '🌈'];
-const LEVEL_CLASS = ['', 'bronze', 'silver', 'gold', 'diamond', 'rainbow'];
-const stageBar = s => s >= 70 ? Math.min(100, (s - 70) / 130 * 100) : s;
-// after gold: 0-40% green (gold done), 40-70% the way to diamond, 70-100% the way to rainbow
-const rainbowEnd = s => s >= 161 ? 100 : s >= 122 ? 70 + (s - 122) / 39 * 30 : 40 + (s - 70) / 52 * 30;
-// a star for later (diamond, rainbow before gold): a dark star silhouette with a small lock on it
-const STAR_SVG = '<span class="lockstar" aria-hidden="true"><span class="sil">⭐</span><i>🔒</i></span>';
+   a topic starts empty (0). Points: +5 right, -4 wrong, up to 160 (rainbow; no hidden points above it).
+   the bar is in thirds: before gold - the way to bronze (30), silver (60), gold (90);
+   from gold - gold done, the way to diamond (125), the way to rainbow (160). Mistakes take it back in the same order. */
+const TOP = 160;
+const levelOf = s => s >= 160 ? 5 : s >= 125 ? 4 : s >= 90 ? 3 : s >= 60 ? 2 : s >= 30 ? 1 : 0;
+const LEVEL_ICON = ['🌱', '🥉', '🥈', '🥇', '💎', '🌈'];
+const LEVEL_CLASS = ['none', 'bronze', 'silver', 'gold', 'diamond', 'rainbow'];
+const STAR_TIER = ['', 'bronze', 'silver', 'gold', 'dia', 'rbw'];
+// the three thirds of the bar: [metal, fill 0..1]
+const barThirds = s => s >= 90
+  ? [['gold', 1], ['dia', Math.min(1, (s - 90) / 35)], ['rbw', Math.max(0, Math.min(1, (s - 125) / 35))]]
+  : [['bronze', Math.min(1, s / 30)], ['silver', Math.max(0, Math.min(1, (s - 30) / 30))], ['gold', Math.max(0, Math.min(1, (s - 60) / 30))]];
+// stars: earned = in its level's colour with a moving diagonal shine; in reach = dark silhouette; diamond/rainbow before gold = a lock in the star's place
+const starHTML = (i, lv) => i <= lv ? `<span class="st m-${STAR_TIER[i]}"></span>` : i > 3 && lv < 3 ? '<span class="st-lock"><span>🔒</span></span>' : '<span class="st sil"></span>';
 
 /*{{@THEME}}*/
 
@@ -1021,20 +1061,22 @@ function updateAutoRec() {
   delete S.autoRec;
   const before = JSON.stringify(S.autoRecs || []);
   S.autoRecs = (S.autoRecs || []).filter(a => { const r = accOf(last10((S.stats || {})[a.topic])); if (r !== null && r >= 0.8) { S.recCool[a.topic] = now; return false; } return true; });
-  if (!teacherFocus.length && S.autoRecs.length < 2) {
+  // under 50% a topic must be practiced: no 3-day rest, and it shows even next to a teacher's recommendation
+  if (S.autoRecs.length < 2) {
     const have = S.autoRecs.map(a => a.topic);
     const cands = [];
     CATS.forEach(c => {
       const st = (S.stats || {})[c.id];
-      if (have.includes(c.id) || !st || (st.ok || 0) + (st.bad || 0) < 6 || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)) return;
+      if (have.includes(c.id) || !st || (st.ok || 0) + (st.bad || 0) < 6) return;
       const h = last10(st), r = accOf(h);
-      if (r !== null && r < 0.8 && (r < 0.7 || sliding(h))) cands.push({ id: c.id, r });
+      if (r === null || (r >= 0.5 && (teacherFocus.length || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)))) return;
+      if (r < 0.8 && (r < 0.7 || sliding(h))) cands.push({ id: c.id, r });
     });
     cands.sort((a, b) => a.r - b.r).slice(0, 2 - S.autoRecs.length).forEach(c => S.autoRecs.push({ topic: c.id, at: now }));
   }
   return JSON.stringify(S.autoRecs) !== before;
 }
-const autoShownList = () => teacherFocus.length ? [] : (S.autoRecs || []).map(a => a.topic);
+const autoShownList = () => (S.autoRecs || []).filter(a => !teacherFocus.length || (accOf(last10((S.stats || {})[a.topic])) ?? 1) < 0.5).map(a => a.topic);
 const autoShown = () => autoShownList()[0] || null;
 const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 function focusBar() {
@@ -1051,7 +1093,8 @@ function mergeProgress(L, C) {
   out.coins = max(L.coins, C.coins);
   out.sessions = max(L.sessions, C.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(L.medals || [])])];
-  out.items = { ...(L.items || {}), ...(C.items || {}) };
+  // animals can be owned more than once: keep the bigger count
+  out.items = {}; for (const k of new Set([...Object.keys(L.items || {}), ...Object.keys(C.items || {})])) out.items[k] = max((L.items || {})[k], (C.items || {})[k]);
   out.gear = maxGear(L.gear, C.gear);
   out.sheetOk = { ...(L.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
@@ -1079,7 +1122,7 @@ function addProgress(G, C) {
   out.coins = n(C.coins) + n(G.coins);
   out.sessions = n(C.sessions) + n(G.sessions);
   out.medals = [...new Set([...(C.medals || []), ...(G.medals || [])])];
-  out.items = { ...(G.items || {}), ...(C.items || {}) };
+  out.items = {}; for (const k of new Set([...Object.keys(G.items || {}), ...Object.keys(C.items || {})])) out.items[k] = Math.min(10, n((G.items || {})[k]) + n((C.items || {})[k]));
   out.gear = maxGear(G.gear, C.gear);
   out.sheetOk = { ...(G.sheetOk || {}), ...(C.sheetOk || {}) };
   out.mastery = { ...(C.mastery || {}) };
@@ -1122,13 +1165,13 @@ async function cloudLoad() {
     toast('לא הצלחנו לטעון מהענן. ממשיכים עם המידע שבמכשיר');
   }
 }
-function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
+function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 0, tier: 1, streak: 0, wrong: 0, medal: false, trophy: false }; return S.mastery[id]; }
 
 /* ---------- session / view state ---------- */
 let Q = null, session = null, lastCat = null, currentView = 'home';
 let timerInt = null, toastTimer = null, resetArmed = false;
 
-function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).reduce((n, m) => n + (m.trophy && m.score >= 70 ? 1 : 0) + (m.trophy2 && m.score >= 161 ? 1 : 0), 0); }
+function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).reduce((n, m) => n + (m.trophy && m.score >= 90 ? 1 : 0) + (m.trophy2 && m.score >= 160 ? 1 : 0), 0); }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
@@ -1145,7 +1188,7 @@ const firstName = () => {
 };
 /*NIKUD-ON*/
 const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
-const levelWord = l => [null, G('מתחיל', 'מתחילה', 'מתחילים'), G('מתקדם', 'מתקדמת', 'מתקדמים'), G('אלוף', 'אלופה', 'אלופים'), G('מדהים', 'מדהימה', 'מדהימים'), G('אדיר', 'אדירה', 'אדירים')][l];
+const levelWord = l => ['בדרך לארד', G('מתחיל', 'מתחילה', 'מתחילים'), G('מתקדם', 'מתקדמת', 'מתקדמים'), G('אלוף', 'אלופה', 'אלופים'), G('מדהים', 'מדהימה', 'מדהימים'), G('אדיר', 'אדירה', 'אדירים')][l];
 let authError = '';
 function loginBlock() {
   if (user) return '';
@@ -1239,13 +1282,13 @@ function renderHome() {
     const lv = levelOf(m.score), rsT = S.resume && S.resume[c.id];
     // five stars: the last two stay grey and see-through until gold opens them
     // stars in reach are solid grey; the next stage's stars (diamond, rainbow) are a dashed outline until gold
-    const starsIn = [1, 2, 3, 4, 5].map(i => i <= lv ? '⭐' : i > 3 && lv < 3 ? STAR_SVG : '<span class="off">⭐</span>').join('');
+    const starsIn = [1, 2, 3, 4, 5].map(i => starHTML(i, lv)).join('');
     // the badge shows the level icon and the child's level word (the five stars need the whole row)
     const rankIn = `${LEVEL_ICON[lv]} ${levelWord(lv)}`;
     // trophies are never taken away: below their level they turn dusty (with cobwebs) until the child gets back
     const shine = m.shine ? ' shine' : '';
-    const trophyHTML = (m.trophy ? `<div class="trophy-mark${m.score < 70 ? ' dusty' : shine}" title="גביע זהב">🏆</div>` : '') + (m.trophy2 ? `<div class="trophy-mark rainbow two${m.score < 161 ? ' dusty' : shine}" title="גביע הקשת">🏆</div>` : '');
-    const ticks = '<i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i>';
+    const trophyHTML = (m.trophy ? `<div class="trophy-mark${m.score < 90 ? ' dusty' : shine}" title="גביע זהב">🏆</div>` : '') + (m.trophy2 ? `<div class="trophy-mark rainbow two${m.score < 160 ? ' dusty' : shine}" title="גביע הקשת">🏆</div>` : '');
+    const ticks = '<i style="inset-inline-start:33.333%"></i><i style="inset-inline-start:66.667%"></i>';
     const pctTxt = a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–';
     const body = statsView ? `
             <div class="stars stat-cap"><span class="keep">${starsIn}</span><span class="ov"><span class="cap">הצלחה לאחרונה</span><span class="pc">${pctTxt}</span></span></div>
@@ -1258,7 +1301,7 @@ function renderHome() {
             <div class="rankbadge">${rankIn}</div>
             ${trophyHTML}
           </div>
-          <div class="bar prog" style="position:relative;z-index:2">${m.score >= 70 ? (re => `<span class="gold-done" style="width:40%"></span>${re > 40 ? `<b class="dia${re >= 70 ? ' full' : ''}" style="width:${Math.min(re, 70) - 40}%"></b>` : ''}${re > 70 ? `<b class="rbw" style="width:${re - 70}%"></b>` : ''}`)(rainbowEnd(m.score)) : `<span style="width:${m.score}%"></span>`}${ticks}</div>
+          <div class="bar prog thirds" style="position:relative;z-index:2">${barThirds(m.score).map(([mt, f], k) => f > 0 ? `<b class="bseg m-${mt}${f >= 1 ? ' full' : ''}" style="inset-inline-start:${k * 33.333}%;width:${f * 33.333}%"></b>` : '').join('')}${ticks}</div>
           <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה אנושית' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
     return `
       <div class="slot">
@@ -1306,30 +1349,45 @@ function fitTitles() {
 window.addEventListener('resize', () => { if (currentView === 'home') fitTitles(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (currentView === 'home') fitTitles(); });
 
+/* animals can be bought again, each copy upgraded (like Roblox): the 2nd wears its accessory in silver, the 3rd gold,
+   4th diamond, 5th rainbow; copies 6-10 also get a glowing halo (bronze, silver, gold, diamond, rainbow). Price = base x copy number. */
+const PET_MAX = 10;
+const PET_ACC = [null, 'silver', 'gold', 'dia', 'rbw'], PET_HALO = ['bronze', 'silver', 'gold', 'dia', 'rbw'];
+const petHTML = (it, k) => { const t = (k - 1) % 5, acc = PET_ACC[t];
+  return `<span class="pet">${k > 5 ? `<i class="halo h-${PET_HALO[t]}"></i>` : ''}<span class="em">${it.icon}</span>${acc ? `<i class="acc acc-${it.acc || 'crown'} m-${acc}"></i>` : ''}</span>`; };
+// copies of one thing stand one behind the other, overlapping, the front one casting a shadow on the next
+const stackHTML = (parts, title, cls = '') => parts.length === 1
+  ? `<div class="owned-animal${cls}" title="${title}">${parts[0]}</div>`
+  : `<div class="owned-animal stk${cls}" title="${title} ×${parts.length}">${parts.slice(0, 3).map(x => `<span class="sk">${x}</span>`).join('')}${parts.length > 3 ? `<b class="stack-n">${parts.length}</b>` : ''}</div>`;
 function renderCamp() {
   const shop = ITEMS.map(it => {
-    const canAfford = S.coins >= it.price;
-    const owned = S.items[it.id] || 0;
+    const owned = Math.min(S.items[it.id] || 0, PET_MAX), next = owned + 1, price = it.price * next;
+    const full = owned >= PET_MAX, canAfford = !full && S.coins >= price;
     return `
       <div class="card">
-        <div class="ic">${it.icon}</div>
+        ${owned ? `<span class="in-col"><span class="w">באוסף</span>${owned > 1 ? ` <span class="n" dir="ltr">×${owned}</span>` : '<span class="ck">✓</span>'}</span>` : ''}
+        <div class="ic">${petHTML(it, full ? PET_MAX : next)}</div>
         <b class="big nm">${it.name}</b>
-        <div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${it.price} 🪙</div>
-        ${owned ? '<button type="button" class="ghost-btn" disabled>באוסף ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
-          ${canAfford ? 'לקנייה' : 'אין מטבעות'}
+        ${full ? '' : `<div class="chip" style="background:var(--paper);color:#b5532f;border:2px solid #e0e0e0">${price} 🪙</div>`}
+        ${full ? '<button type="button" class="ghost-btn" disabled>האוסף מלא ✅</button>' : `<button type="button" class="${canAfford ? 'action-btn' : 'ghost-btn'}" data-buy="${it.id}" ${canAfford ? '' : 'disabled'}>
+          ${!canAfford ? 'אין מטבעות' : owned ? (it.g === 'f' ? 'עוד אחת' : 'עוד אחד') : 'לקנייה'}
         </button>`}
       </div>`;
   }).join('');
 
-  const ownedItems = Object.entries(S.items).filter(([, n]) => n > 0);
-  const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => { const n = gearCount(S.gear[g.id]); return n > 1
-    ? `<div class="owned-animal stack" title="${g.name} (${RARITY[g.r]}) ×${n}">${Array.from({ length: Math.min(n, 3) }, () => `<span>${g.icon}</span>`).join('')}${n > 3 ? `<b class="stack-n">${n}</b>` : ''}</div>`
-    : `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`; }).join('');
-  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal${mast(c.id).score < 70 ? ' dusty' : ''}" title="${c.name}">🏆</div>`).join('') + CATS.filter(c => mast(c.id).trophy2).map(c => `<div class="owned-animal rainbow-trophy${mast(c.id).score < 161 ? ' dusty' : ''}" title="${c.name} – גביע הקשת">🏆</div>`).join('');
-  const collection = ownedItems.length || trophyShelf || gearShelf
-    ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
+  const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => stackHTML(Array(gearCount(S.gear[g.id])).fill(g.icon), `${g.name} (${RARITY[g.r]})`)).join('');
+  // trophies: all gold ones together, all rainbow ones together; dusty ones in a pile of their own
+  const tr = (f, lim) => CATS.filter(c => mast(c.id)[f]).reduce((a, c) => (a[mast(c.id).score >= lim ? 0 : 1].push(c.name), a), [[], []]);
+  const [g1, g0] = tr('trophy', 90), [r1, r0] = tr('trophy2', 160);
+  const trophyShelf = (g1.length ? stackHTML(g1.map(() => '🏆'), 'גביעי זהב: ' + g1.join(', ')) : '')
+    + (r1.length ? stackHTML(r1.map(() => '<span class="rbw-cup">🏆</span>'), 'גביעי קשת: ' + r1.join(', ')) : '')
+    + (g0.length ? stackHTML(g0.map(() => '🏆'), 'גביעי זהב מאובקים: ' + g0.join(', '), ' dusty') : '')
+    + (r0.length ? stackHTML(r0.map(() => '🏆'), 'גביעי קשת מאובקים: ' + r0.join(', '), ' dusty') : '');
+  const petShelf = ITEMS.filter(it => S.items[it.id] > 0).map(it => { const n = Math.min(S.items[it.id], PET_MAX); return stackHTML(Array.from({ length: n }, (_, k) => petHTML(it, n - k)), it.name); }).join('');
+  const collection = trophyShelf || gearShelf || petShelf
+    ? trophyShelf + gearShelf + petShelf
     : '<div class="rank" style="color:#fff">{{EMPTY_SHELF}}</div>';
-  const waved = collection.replace(/class="owned-animal"/g, (() => { let i = 0; return () => `class="owned-animal" style="--i:${i++}"`; })());
+  const waved = collection.replace(/class="owned-animal([^"]*)"/g, (() => { let i = 0; return (m0, c) => `class="owned-animal${c}" style="--i:${i++}"`; })());
 
   $('#view-camp').innerHTML = `
     <h2 class="camp-title">{{CAMP_ICON}} {{CAMP_TITLE}}</h2>
@@ -1361,11 +1419,12 @@ function renderSettings() {
 /* ---------- shop & settings actions ---------- */
 function buyItem(id) {
   const it = ITEMS.find(x => x.id === id);
-  if (!it || S.coins < it.price || S.items[it.id]) return;
-  S.coins -= it.price;
-  S.items[it.id] = 1;
+  const owned = (it && S.items[it.id]) || 0, price = it ? it.price * (owned + 1) : 0;
+  if (!it || owned >= PET_MAX || S.coins < price) return;
+  S.coins -= price;
+  S.items[it.id] = owned + 1;
   save(); updateWallet(); renderCamp(); SFX.play('buy');
-  toast(`${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף!`);
+  toast(owned ? `עוד ${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף – ${it.g === 'f' ? 'משודרגת' : 'משודרג'}!` : `${plain(it.name)} ${it.g === 'f' ? 'הצטרפה' : 'הצטרף'} לאוסף!`);
 }
 function handleReset() {
   const b = $('#resetBtn');
@@ -1813,7 +1872,7 @@ function record(ok) {
   if (ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
-    m.streak++; m.wrong = 0; m.score = Math.min(200, m.score + 5);
+    m.streak++; m.wrong = 0; m.score = Math.min(TOP, m.score + 5);
     // the question difficulty (tier) still rises quietly after 3 right answers in a row
     if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; }
   } else {
@@ -1822,9 +1881,9 @@ function record(ok) {
   }
   const nm = CATS.find(c => c.id === Q.cat).name, lvAfter = levelOf(m.score);
   if (lvAfter > lvBefore) { sfx = 'level'; toast(`${LEVEL_ICON[lvAfter]} דרגת ${rank(m.score)}! ${levelWord(lvAfter)} בנושא: ${plain(nm)}`); }
-  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); }
+  if (!m.medal && m.score >= 90) { m.medal = true; S.medals.push(Q.cat); }
   // gold trophy when the first stage is done (gold), a shiny rainbow trophy at the top level
-  if (!m.trophy && m.score >= 70) {
+  if (!m.trophy && m.score >= 90) {
     m.trophy = true;
     (session.trophies = session.trophies || []).push(nm);
     toast(`🏆 גביע זהב! ${G('אלוף', 'אלופה', 'אלופים')} בנושא: ${plain(nm)}`);
@@ -1833,7 +1892,7 @@ function record(ok) {
   // a dusty trophy shines again when the child gets back to its level
   if (had1 && lvBefore < 3 && lvAfter >= 3) { m.shine = true; sfx = 'trophy'; toast(`✨ גביע הזהב מבריק שוב! ${plain(nm)}`); }
   if (had2 && lvBefore < 5 && lvAfter >= 5) { m.shine = true; sfx = 'trophy'; toast(`✨🌈 גביע הקשת מבריק שוב! ${plain(nm)}`); }
-  if (!m.trophy2 && m.score >= 161) {
+  if (!m.trophy2 && m.score >= 160) {
     m.trophy2 = true;
     (session.trophies = session.trophies || []).push(nm + ' 🌈');
     toast(`🏆🌈 גביע הקשת! ${G('אדיר', 'אדירה', 'אדירים')} בנושא: ${plain(nm)}`);
@@ -1865,6 +1924,8 @@ function endSession() {
   updateAutoRec();
   if (!S.gear) S.gear = {};
   const acc = session.total ? session.correct / session.total : 0;
+  // the chest opens only for a practice with at least half right
+  const earned = acc >= 0.5;
   const rr = Math.random();
   const wantR = acc >= 0.875 ? (rr < 0.45 ? 2 : rr < 0.85 ? 1 : 0) : acc >= 0.6 ? (rr < 0.1 ? 2 : rr < 0.5 ? 1 : 0) : (rr < 0.03 ? 1 : 0);
   // new items first; once the collection is complete, items come again and stand together on the shelf
@@ -1872,7 +1933,7 @@ function endSession() {
   const from = left.length ? left : GEAR;
   const pool = from.filter(g => g.r === wantR);
   const gift = pick(pool.length ? pool : from), giftN = gearCount(S.gear[gift.id]) + 1;
-  S.gear[gift.id] = giftN;
+  if (earned) S.gear[gift.id] = giftN;
   if (session.kind === 'base') {
     const today = new Date().toDateString();
     if (S.today.day !== today) S.today = { day: today, count: 0 };
@@ -1881,19 +1942,18 @@ function endSession() {
   save(); updateWallet();
   Q = null;
   $('#qcard').classList.add('summary');
-  const canBonus = session.kind === 'base';
-  // end of practice: fanfare and applause (and confetti) for a good practice, a soft tune otherwise; then the chest opens
-  if (acc >= 0.5) SFX.play('finish'); else SFX.play('done');
-  if (acc >= 0.75) confetti();
-  SFX.play('gift', acc >= 0.5 ? 3.8 : 2.2);
+  const canBonus = session.kind === 'base' && earned;
+  // end of practice: fanfare, applause and confetti from 75%; a soft tune below that; the chest (and its sound) only from 50%
+  if (acc >= 0.75) { SFX.play('finish'); confetti(); } else SFX.play('done');
+  if (earned) SFX.play('gift', acc >= 0.75 ? 3.8 : 2.2);
   $('#qcard').innerHTML = `
-    <div class="sum-gift">🎁</div>
-    <div class="sum-title">${session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
+    <div class="sum-gift">${earned ? '🎁' : '💪'}</div>
+    <div class="sum-title">${!earned ? 'האימון הסתיים' : session.kind === 'bonus' ? 'משחק הבונוס הושלם!' : 'האימון הושלם בהצלחה!'}</div>
     <div class="sum-box">
       <p>${session.coins === 0 ? 'לא התקבלו מטבעות הפעם' : session.coins === 1 ? 'התקבל מטבע אחד 🪙' : 'התקבלו ' + session.coins + ' מטבעות 🪙'}</p>
       ${session.trophies && session.trophies.length ? `<p class="trophy-line">🏆 זכית בגביע בנושא: ${session.trophies.join(', ')}!</p>` : ''}
       ${session.correct >= Math.ceil(session.total * 0.75) ? `<p>${G('כל הכבוד אלוף! 🏆', 'כל הכבוד אלופה! 🏆', 'כל הכבוד! 🏆')}</p>` : ''}
-      <p>נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${giftN > 1 ? `– ${gift.g === 'f' ? 'עוד אחת' : gift.g === 'p' ? 'עוד זוג' : 'עוד אחד'} לאוסף! עכשיו יש ${giftN}.` : `${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!`}</p>
+      ${earned ? `<p>נפתחה תיבה: <span class="sum-item">${gift.icon}</span> ${gift.name} (${RARITY[gift.r]}) ${giftN > 1 ? `– ${gift.g === 'f' ? 'עוד אחת' : gift.g === 'p' ? 'עוד זוג' : 'עוד אחד'} לאוסף! עכשיו יש ${giftN}.` : `${gift.g === 'f' ? 'התווספה' : gift.g === 'p' ? 'התווספו' : 'התווסף'} לציוד שלך!`}</p>` : `<p>${G('כדאי לתרגל שוב – בפעם הבאה זה ילך לך טוב יותר!', 'כדאי לתרגל שוב – בפעם הבאה זה ילך טוב יותר! 💪', 'כדאי לתרגל שוב – בפעם הבאה זה ילך טוב יותר!')}</p><p class="muted-line">התיבה נפתחת כשלפחות חצי מהתשובות נכונות.</p>`}
     </div>
     <div class="sum-actions">
       ${canBonus ? `<button type="button" class="big-green-btn" id="bonusBtn" style="background:linear-gradient(90deg,#ff9800,#ff5722);border-color:#ffcc80;box-shadow:0 5px 0 #e65100">💎 אימון בונוס (מטבעות כפולים)</button>` : ''}

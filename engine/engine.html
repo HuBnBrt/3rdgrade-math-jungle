@@ -1247,7 +1247,7 @@ function renderHome() {
             ${trophyHTML}
           </div>
           <div class="bar prog" style="position:relative;z-index:2">${m.score >= 70 ? `<span style="width:40%"></span><b class="rbw" style="width:${rainbowEnd(m.score) - 40}%"></b>` : `<span style="width:${m.score}%"></span>`}${ticks}</div>
-          <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה של המורה' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
+          <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה אנושית' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>

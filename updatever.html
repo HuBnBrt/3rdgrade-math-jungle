@@ -790,7 +790,10 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   .home-top .hero-board{order:2;flex:1 1 0 !important;width:auto !important;min-width:0}
   .home-top .stat-toggle{order:3;gap:2px;padding:4px 8px;font-size:11px;line-height:1.1}
 }
-.modal .m-notes{text-align:right;margin:4px 0 0;padding-inline-start:1.2em;line-height:1.5}.modal .m-notes li{margin:2px 0}
+.modal .m-notes{text-align:right;margin:4px 0 0;padding-inline-start:1.2em;line-height:1.5}
+.modal .m-notes{font-size:var(--mf,17px)}
+/* landscape phones: a wide window with the notes in two columns */
+@media (orientation:landscape) and (max-height:560px){.modal{max-width:min(760px,94vw);padding:10px 16px}.modal .m-notes{column-count:2;column-gap:22px}.modal .m-notes li{break-inside:avoid}.modal h2{margin:2px 0}}.modal .m-notes li{margin:2px 0}
 .dev-chip{display:inline-block;margin-inline-start:8px;padding:1px 8px;border-radius:99px;background:#ffe082;color:#5c3a21;font-size:.55em;vertical-align:middle}
 /* short screens: when the question does not fit, drop the extra tips and tighten the spacing */
 #qcard.tight .ord-tip,#qcard.tight .ord-label{display:none}
@@ -907,7 +910,7 @@ const APP_VERSION = 'v110';
 const APP_LABEL = '4.2';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
-const RELEASE_NOTES = [];
+const RELEASE_NOTES = ['⭐ בְּהַצָּעַת אַדִּיר, הוֹסַפְנוּ שְׁתֵּי דְּרָגוֹת נוֹסָפוֹת אַחֲרֵי אָרָד, כֶּסֶף וְזָהָב – יַהֲלוֹם וְקֶשֶׁת!', '📊 הַכּוֹכָבִים וְהַפַּס מַרְאִים מָה יוֹדְעִים עַכְשָׁיו: תְּשׁוּבָה נְכוֹנָה מְקַדֶּמֶת, וְטָעוּת מַחֲזִירָה קְצָת אֲחוֹרָה.', '🏆 גְּבִיעַ זָהָב וּגְבִיעַ קֶשֶׁת בְּכָל נוֹשֵׂא. מִי שֶׁיּוֹרֵד בְּדַרְגָּה – הַגָּבִיעַ מִתְאַבֵּק, וּמַבְרִיק שׁוּב כְּשֶׁחוֹזְרִים אֵלֶיהָ.', '💡 עַל נוֹשְׂאִים שֶׁכְּדַאי לְחַזֵּק מוֹפִיעַ כַּפְתּוֹר צִבְעוֹנִי \"הַמְלָצָה לְתִרְגּוּל\".', '🎯 הַכַּפְתּוֹר הַגָּדוֹל \"אִימּוּן מִכָּל הַנּוֹשְׂאִים\": 8 שְׁאֵלוֹת מְעוֹרְבָּבוֹת, וְאֶפְשָׁר לְהַמְשִׁיךְ מֵאֵיפֹה שֶׁעָצְרוּ.', '🦁 בַּחֲנוּת אֶפְשָׁר לִקְנוֹת שׁוּב אֶת אוֹתָהּ חַיָּה, וְכָל פַּעַם הִיא מְקַבֶּלֶת אַבְזָר מְשׁוּדְרָג: כֶּסֶף, זָהָב, יַהֲלוֹם וַאֲפִילּוּ קֶשֶׁת.'];
 function plain(x) { return String(x).replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
 let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (currentView === 'settings') renderSettings(); setTimeout(maybePrompts, 1500); });
@@ -932,6 +935,10 @@ function showModal({ icon, title, text, ok, cancel, onOk, onNo }) {
   d.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="m-ic">${icon}</div><h2>${title}</h2><p>${text}</p><div class="m-act"><button type="button" class="big-green-btn" data-m="ok">${ok}</button>${cancel ? `<button type="button" class="ghost-btn" data-m="no">${cancel}</button>` : ''}</div></div>`;
   d.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.remove(); modalOpen = false; if (b.dataset.m === 'ok') { if (onOk) onOk(); } else if (onNo) onNo(); });
   document.body.appendChild(d);
+  // the window always fits the screen (no scrolling): first drop the picture, then shrink the text, never under 14px
+  const m = d.querySelector('.modal'), fits = () => m.offsetHeight <= innerHeight * 0.96;
+  if (!fits()) { const im = m.querySelector('.m-img'); if (im) im.style.display = 'none'; }
+  for (let f = 17; !fits() && f >= 14; f--) m.style.setProperty('--mf', f + 'px');
 }
 function maybePrompts() {
   if (modalOpen || currentView === 'play') return;

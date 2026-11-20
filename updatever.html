@@ -256,7 +256,9 @@ input.num.bad{border-color:#c62828;background:#ffebee}
 
 /* ===== no-scroll app shell ===== */
 html,body{height:100%;overflow:hidden}
-body{display:flex;flex-direction:column;height:100vh;height:100dvh}
+/* the app is exactly as tall as what is visible: --app-h is measured by the script (some phones, e.g. a Samsung right after
+   the app updated itself, report a 100dvh taller than the screen, which pushed the bottom bar under Android's buttons) */
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;height:var(--app-h,100dvh)}
 header{position:relative;flex:none;padding:8px 16px 14px}
 header h1{font-size:20px}
 .chip{padding:2px 12px;font-size:15px}
@@ -901,6 +903,19 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 <div id="toast" class="toast" role="status"></div>
 
 <script type="module">
+// measure the visible height and keep the app exactly that tall (on load, on every resize/rotation, when coming back,
+// and a few times right after start, because just after an in-app update some phones settle on the real height late)
+const setAppH = () => {
+  const h = Math.round(window.innerHeight || document.documentElement.clientHeight);
+  if (h > 200) document.documentElement.style.setProperty('--app-h', h + 'px');
+  // safety net: if the bottom bar still ends below the screen, shrink the app by the difference
+  const nav = document.querySelector('.nav');
+  if (nav) { const over = nav.getBoundingClientRect().bottom - window.innerHeight; if (over > 1) document.documentElement.style.setProperty('--app-h', (h - over) + 'px'); }
+};
+setAppH();
+addEventListener('resize', setAppH); addEventListener('orientationchange', () => setTimeout(setAppH, 300)); addEventListener('pageshow', setAppH);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(setAppH, 100); });
+[150, 600, 1500, 3000].forEach(t => setTimeout(() => { setAppH(); dispatchEvent(new Event('resize')); }, t));
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithCredential, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";

@@ -401,6 +401,7 @@ html[dir=rtl] .cats .card .bar.prog .rbw{border-radius:99px 0 0 99px}
 #startBtn.running::after{content:'';position:absolute;inset:-5px;border-radius:15px;pointer-events:none;animation:run-glow 1.8s ease-in-out infinite}
 /* topic buttons are quieter (white with a green outline) so the one big green button leads */
 .cats .card .practice-btn:not(.stat-n){background:#fff;color:#2e7d32;box-shadow:inset 0 0 0 2px #43a047,0 2px 0 #1d6b36}
+.cats .card .practice-btn.recbtn:not(.stat-n){color:#c0392b;box-shadow:inset 0 0 0 2px #c0392b,0 2px 0 #7a1f0e}
 .cats .card .practice-btn:not(.stat-n):active{box-shadow:inset 0 0 0 2px #43a047,0 1px 0 #1d6b36}
 /* second stage bar (after gold): starts gold, diamond and rainbow marks */
 /* the rainbow trophy: a shiny, colour-shifting cup */
@@ -537,8 +538,6 @@ header h1{font-size:calc(var(--s)*1.15)}
 .cats .card .practice-btn{display:block;height:max(18px,calc(var(--u)*13));font-size:max(9px,calc(var(--u)*5.8));padding:0 .6em;margin-top:max(3px,calc(var(--u)*3));max-width:100%}
 .cats .card .trophy-mark{font-size:max(20px,calc(var(--u)*14))}
 .cats .card .rec-badge{font-size:max(8px,calc(var(--u)*5.5))}
-/* with a rainbow trophy in its corner, the recommendation stamp moves a little toward the middle */
-.cats .card:has(.trophy-mark.two) .rec-badge{inset-inline-end:max(16px,calc(var(--u)*13))}
 .cats .card .card-leaf{font-size:max(14px,calc(var(--u)*8))}
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.1;margin-bottom:0;min-height:0}
 @container (max-height:118px){.cats .card .rankbadge{display:none}}
@@ -990,30 +989,39 @@ async function cloudSave() {
   catch (e) { console.warn(e); toast('השמירה בענן לא הצליחה'); return; }
   try {
     const topics = topicSummary();
-    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בדיקה' : '') }, { merge: true });
+    await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', nick: (S.profile && S.profile.nick) || '', gender: (S.profile && S.profile.gender) || '', email: user.email || '', lastSeen: serverTimestamp(), autoRec: autoShown(), autoRecs: autoShownList(), sessions: S.sessions || 0, coins: S.coins || 0, topics, version: APP_LABEL + (IS_DEV ? ' בדיקה' : '') }, { merge: true });
   } catch (e) { console.warn('profile', e); }
 }
 let teacherFocus = [];
 // the app recommends one weak topic by itself, only when the teacher has no active recommendation
 const recentAcc = st => { const r = String((st && st.h) || '').slice(-6); return r.length ? [...r].filter(x => x === '1').length / r.length : null; };
+// system recommendations (🌺): up to 2 topics, the weakest first. A topic comes in under 70% of its last 10 answers,
+// or when it is sliding (the last 5 answers have 2+ fewer right than the 5 before); it goes out at 80% and rests 3 days
+const last10 = st => String((st && st.h) || '').slice(-10);
+const accOf = h => h.length ? [...h].filter(x => x === '1').length / h.length : null;
+const sliding = h => h.length >= 10 && [...h.slice(5)].filter(x => x === '1').length <= [...h.slice(0, 5)].filter(x => x === '1').length - 2;
 function updateAutoRec() {
-  const now = Date.now(), DAY = 864e5, before = JSON.stringify(S.autoRec || null);
+  const now = Date.now(), DAY = 864e5;
   if (!S.recCool) S.recCool = {};
-  const a = S.autoRec;
-  if (a) { const r = recentAcc((S.stats || {})[a.topic]); if (r !== null && r > 0.75) { S.recCool[a.topic] = now; S.autoRec = null; } }
-  if (!S.autoRec && !teacherFocus.length) {
-    let best = null;
+  if (S.autoRec && !S.autoRecs) S.autoRecs = [S.autoRec];
+  delete S.autoRec;
+  const before = JSON.stringify(S.autoRecs || []);
+  S.autoRecs = (S.autoRecs || []).filter(a => { const r = accOf(last10((S.stats || {})[a.topic])); if (r !== null && r >= 0.8) { S.recCool[a.topic] = now; return false; } return true; });
+  if (!teacherFocus.length && S.autoRecs.length < 2) {
+    const have = S.autoRecs.map(a => a.topic);
+    const cands = [];
     CATS.forEach(c => {
       const st = (S.stats || {})[c.id];
-      if (!st || (st.ok || 0) + (st.bad || 0) < 6 || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)) return;
-      const r = recentAcc(st);
-      if (r !== null && r < 0.6 && (!best || r < best.r)) best = { id: c.id, r };
+      if (have.includes(c.id) || !st || (st.ok || 0) + (st.bad || 0) < 6 || (S.recCool[c.id] && now - S.recCool[c.id] < 3 * DAY)) return;
+      const h = last10(st), r = accOf(h);
+      if (r !== null && r < 0.8 && (r < 0.7 || sliding(h))) cands.push({ id: c.id, r });
     });
-    if (best) S.autoRec = { topic: best.id, at: now };
+    cands.sort((a, b) => a.r - b.r).slice(0, 2 - S.autoRecs.length).forEach(c => S.autoRecs.push({ topic: c.id, at: now }));
   }
-  return JSON.stringify(S.autoRec || null) !== before;
+  return JSON.stringify(S.autoRecs) !== before;
 }
-const autoShown = () => (!teacherFocus.length && S.autoRec) ? S.autoRec.topic : null;
+const autoShownList = () => teacherFocus.length ? [] : (S.autoRecs || []).map(a => a.topic);
+const autoShown = () => autoShownList()[0] || null;
 const focusList = f => f ? (Array.isArray(f.topics) ? f.topics : (f.topic ? [f.topic] : [])) : [];
 function focusBar() {
   const cs = teacherFocus.map(id => CATS.find(x => x.id === id)).filter(Boolean);
@@ -1204,13 +1212,13 @@ function refreshCurrentView() {
 const heat = a => a === null ? 'none' : a >= .85 ? 'g' : a >= .7 ? 'lg' : a >= .5 ? 'y' : 'r';
 function renderHome() {
   if (updateAutoRec()) save();
-  const statsView = !!S.settings.statsView, auto = autoShown();
+  const statsView = !!S.settings.statsView, auto = autoShownList();
   const today = new Date().toDateString();
   const doneToday = S.today.day === today ? S.today.count : 0;
   const rsB = S.resume && S.resume.base;
   const cards = CATS.map((c, i) => {
     const m = mast(c.id);
-    const recBy = teacherFocus.includes(c.id) ? 't' : auto === c.id ? 'a' : '';
+    const recBy = teacherFocus.includes(c.id) ? 't' : auto.includes(c.id) ? 'a' : '';
     // the child sees what they know now: the last 10 answers in the topic (old mistakes fade out); the dashboard keeps the full totals
     const recent = String(((S.stats || {})[c.id] || {}).h || '').slice(-10), n = recent.length, st = { ok: [...recent].filter(x => x === '1').length }, a = n >= 3 ? st.ok / n : null;
     // the numbers view reuses the very same elements (originals kept invisible underneath), so nothing on the card moves
@@ -1237,7 +1245,7 @@ function renderHome() {
             ${trophyHTML}
           </div>
           <div class="bar prog" style="position:relative;z-index:2">${m.score >= 70 ? `<span style="width:40%"></span><b class="rbw" style="width:${rainbowEnd(m.score) - 40}%"></b>` : `<span style="width:${m.score}%"></span>`}${ticks}</div>
-          <button type="button" class="practice-btn" data-practice="${c.id}">${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : 'תרגול נושא זה'}</button>`;
+          <button type="button" class="practice-btn${recBy ? ' recbtn' : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה של המורה' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
@@ -1245,7 +1253,6 @@ function renderHome() {
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
-          ${recBy ? `<div class="rec-badge">${recBy === 't' ? '🍎' : '🌺'} המלצה לתרגול</div>` : ''}
           <div class="topic-content" style="position:relative;z-index:2">
             <div class="big topic-title"><span>${c.name.split(' ').length === 2 ? c.name.replace(' ', '<i class="tbr"> </i>') : c.name}</span></div>${body}
         </div>
@@ -1839,7 +1846,7 @@ function clearFocus(done) {
 }
 function endSession() {
   stopTimer();
-  { const done = teacherFocus.filter(id => session.only === id || (session.tc && session.tc[id] >= 2)); if (done.length) clearFocus(done); }
+  { const done = teacherFocus.filter(id => (session.only === id || (session.tc && session.tc[id] >= 2)) && (accOf(last10((S.stats || {})[id])) || 0) >= 0.75); if (done.length) clearFocus(done); }
   if (S.resume) delete S.resume[resumeKey(session.kind, session.only)];
   updateAutoRec();
   if (!S.gear) S.gear = {};

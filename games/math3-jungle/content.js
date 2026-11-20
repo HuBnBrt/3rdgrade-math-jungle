@@ -76,9 +76,10 @@ function genNoCalc(t) {
 
 function genDecomp(t) {
   const len = t === 1 ? 3 : 4;
-  const n = len === 3 ? rnd(100, 999) : rnd(1000, 9999);
-  const comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i));
-  const m = rnd(0, len - 1);
+  // at least two non-zero digits, and the blank is never a 0 (no "300 = 300 + ___ + 0")
+  let n, comps;
+  do { n = len === 3 ? rnd(100, 999) : rnd(1000, 9999); comps = String(n).split('').map((x, i) => Number(x) * 10 ** (len - 1 - i)); } while (comps.filter(Boolean).length < 2);
+  const m = pick(comps.map((c, j) => c ? j : -1).filter(j => j >= 0));
   const shown = comps.map((c, j) => j === m ? '___' : fmt(c)).join(' + ');
   return {
     body: `<div class="prompt">יש להשלים את הפירוק:<br><span class="ltr">${fmt(n)} = ${shown}</span></div>`,
@@ -353,7 +354,8 @@ function numLineWrite(t) {
   const step = t === 1 ? 10 : pick([10, 100]);
   const span = step * 10;
   const start = step === 10 ? rnd(1, t === 1 ? 9 : 90) * 100 : rnd(1, 8) * 1000;
-  const idx = rnd(1, 9), val = start + idx * step;
+  // never the middle mark: it has its number written under it
+  const idx = pick([1, 2, 3, 4, 6, 7, 8, 9]), val = start + idx * step;
   const x0 = 30, x1 = 290, y = 80;
   let ticks = '';
   for (let i = 0; i <= 10; i++) {

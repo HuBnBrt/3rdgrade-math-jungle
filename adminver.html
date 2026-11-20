@@ -199,14 +199,16 @@ function kidCard(k) {
   const solid = judged.filter(x => x.ok + x.bad >= MIN);
   const weak3 = solid.filter(x => x.a < .85).slice(0, 3);
   const fl = focusList(k.focus), fs = fl.map(id => list.find(x => x.id === id)).filter(Boolean);
-  const au = k.autoRec && !fl.length ? list.find(x => x.id === k.autoRec) : null;
-  const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : au && au.id === id ? '<span title="המלצת המערכת">🌺</span> ' : '';
+  // system recommendations: up to 2 (autoRecs); older app versions send one (autoRec)
+  const auIds = fl.length ? [] : (Array.isArray(k.autoRecs) ? k.autoRecs : k.autoRec ? [k.autoRec] : []);
+  const aus = auIds.map(id => list.find(x => x.id === id)).filter(Boolean);
+  const mark = id => fl.includes(id) ? '<span title="המלצת מורה">🍎</span> ' : auIds.includes(id) ? '<span title="המלצת המערכת">🌺</span> ' : '';
   const line = x => `<tr><td style="text-align:right">${mark(x.id)}${esc(x.name)}</td><td class="${cls(x.a)}">${pct(x.a)}</td><td>${x.ok || 0} / ${x.bad || 0}</td><td>${trend(x) || '<span class="muted">–</span>'}</td><td>${'⭐'.repeat(x.tier || 1)} ${TIERS[x.tier || 1]}</td><td>${fl.includes(x.id) ? `<button class="sm" data-uid="${k.uid}" data-unfocus="${x.id}">ביטול המלצה</button>` : `<button class="sm" data-uid="${k.uid}" data-focus="${x.id}">המלץ לתרגל</button>`}</td></tr>`;
   return `<div class="box"><div class="row"><h2 style="margin:0;flex:1">${k.guest ? '👤 אורח: ' + esc(dec(k.nick || 'בלי כינוי')) + ' <span class="muted">(בלי חשבון, במכשיר אחד)</span>' : esc(k.nick || k.name || k.email) + ' <span class="muted">' + esc(k.email || '') + '</span>'}</h2><span class="muted" style="font-size:12px">עודכן ${loadedAt ? loadedAt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span><button id="refreshCard" class="sm">↻ רענון</button><button id="closeCard" class="sm">סגירה</button></div>
     <p class="muted">אימונים: ${k.sessions || 0} · כניסה אחרונה: ${when(k.lastSeen)} · אחוז הצלחה עכשיו: ${pct(kidAcc(k))}</p>
     <h2>מה כדאי לחזק</h2>
     <div class="weak">${weak3.length ? weak3.map(w => `<span class="pill">${esc(w.name)} · ${pct(w.a)}</span>`).join('') : '<span class="muted">אין נושא חלש כרגע (או שאין עדיין מספיק תשובות)</span>'}</div>
-    ${au ? `<div class="focus">המלצה פעילה לילד: 🌺 <b>${esc(au.name)}</b> <span class="muted">(המלצת המערכת – תתבטל לבד כשהנושא יתחזק)</span></div>` : ''}
+    ${aus.length ? `<div class="focus">${aus.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${aus.map(a => `🌺 <b>${esc(a.name)}</b>`).join(' · ')} <span class="muted">(המלצת המערכת – תתבטל לבד כשהנושא יתחזק)</span></div>` : ''}
     ${fs.length ? `<div class="focus">${fs.length > 1 ? 'המלצות פעילות' : 'המלצה פעילה'} לילד: ${fs.map(f => `🍎 <b>${esc(f.name)}</b> <span class="muted">(מורה)</span> <button class="sm" data-uid="${k.uid}" data-unfocus="${f.id}" title="ביטול">✕</button>`).join(' · ')}${fs.length > 1 ? ` <button class="sm" data-clear="${k.uid}">ביטול הכול</button>` : ''}</div>` : ''}
     <h2 style="margin-top:14px">כל הנושאים – מהחלש לחזק</h2>
     <div class="tablewrap"><table><thead><tr><th>נושא</th><th>הצלחה עכשיו</th><th>מצטבר: נכון / שגוי</th><th>מגמה</th><th>רמה</th><th></th></tr></thead><tbody>${judged.map(line).join('')}${none.map(line).join('')}</tbody></table></div></div>`;

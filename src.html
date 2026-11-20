@@ -419,7 +419,7 @@ header .chip{order:2;flex:none}
 html[dir=rtl] .cats .card .bar.prog .rbw{border-radius:99px 0 0 99px}
 .cats .card .bar.prog span{position:relative}
 /* the rainbow trophy floats beside the gold one, a little behind in its swing */
-.cats .card .trophy-mark.two{inset-inline-start:calc(-8px + .45em);top:-18px;z-index:5;font-size:max(18px,calc(var(--u)*11));animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
+.cats .card .trophy-mark.two{inset-inline-start:auto;inset-inline-end:-8px;animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
 .trophy-mark.dusty,.owned-animal.dusty{filter:grayscale(1) sepia(.35) brightness(.8)!important;animation:none!important;opacity:.85}
 .trophy-mark.dusty::after,.owned-animal.dusty::after{content:'🕸️';position:absolute;font-size:.5em;top:-.1em;inset-inline-end:-.2em;opacity:.85}
 .owned-animal.dusty{position:relative}
@@ -570,6 +570,8 @@ header h1{font-size:calc(var(--s)*1.15)}
 .cats .card .practice-btn{display:block;height:max(18px,calc(var(--u)*13));font-size:max(9px,calc(var(--u)*5.8));padding:0 .6em;margin-top:max(3px,calc(var(--u)*3));max-width:100%}
 .cats .card .trophy-mark{font-size:max(20px,calc(var(--u)*14))}
 .cats .card .rec-badge{font-size:max(8px,calc(var(--u)*5.5))}
+/* with a rainbow trophy in its corner, the recommendation stamp moves a little toward the middle */
+.cats .card:has(.trophy-mark.two) .rec-badge{inset-inline-end:max(16px,calc(var(--u)*13))}
 .cats .card .card-leaf{font-size:max(14px,calc(var(--u)*8))}
 .cats .card .topic-title,.cats .card .topic-title.wrap{line-height:1.1;margin-bottom:0;min-height:0}
 @container (max-height:118px){.cats .card .rankbadge{display:none}}

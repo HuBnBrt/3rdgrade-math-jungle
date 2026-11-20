@@ -375,6 +375,17 @@ header .chip{order:2;flex:none}
 .rk-silver .rankbadge{background:#eceff1;color:#455a64;border-color:#90a4ae}
 .rk-gold .rankbadge{background:#ffe082;color:#7a5200;border-color:#f9a825}
 .cats .card.rk-silver{border-color:#78909c;background:linear-gradient(180deg,#dcc9b4,#b8946e)}
+.rk-diamond .rankbadge{background:#d9f3ff;color:#0b5c7a;border-color:#4fc3f7}
+.rk-rainbow .rankbadge{background:linear-gradient(90deg,#ffd1d1,#fff3b0,#c8f7c5,#c5e3ff,#e3ccff);color:#4a2a6a;border-color:#b388ff}
+.cats .card.rk-diamond{border-color:#4fc3f7;background:linear-gradient(180deg,#d7eef7,#9cc9db);box-shadow:inset 0 0 16px rgba(200,240,255,.7),0 5px 0 #3a7f99,0 8px 10px rgba(0,0,0,.15)}
+.cats .card.rk-rainbow{border-color:#b388ff;background:linear-gradient(160deg,#ffe0e0,#fff6c9 25%,#dcf8d6 50%,#d6ecff 75%,#eadcff);box-shadow:inset 0 0 16px rgba(255,255,255,.7),0 5px 0 #7e57c2,0 8px 10px rgba(0,0,0,.15)}
+/* locked future stars (diamond, rainbow): grey and see-through until gold */
+.cats .card .stars .off.locked{filter:grayscale(1);opacity:.28}
+/* second stage bar (after gold): starts gold, diamond and rainbow marks */
+.cats .card .bar.stage2 span{background:linear-gradient(90deg,#f9a825,#4fc3f7 55%,#b388ff)}
+/* the rainbow trophy: a shiny, colour-shifting cup */
+@keyframes rainbow-cup{0%{filter:hue-rotate(0deg) saturate(1.6) drop-shadow(0 0 4px #fff)}50%{filter:hue-rotate(180deg) saturate(2) drop-shadow(0 0 7px #fff)}100%{filter:hue-rotate(360deg) saturate(1.6) drop-shadow(0 0 4px #fff)}}
+.trophy-mark.rainbow,.rainbow-trophy{animation:rainbow-cup 3s linear infinite}
 .cats .card.rk-gold{border-color:#d4a017;background:linear-gradient(180deg,#e9c97d,#c99a3c);box-shadow:inset 0 0 14px rgba(255,235,150,.5),0 5px 0 #8a6a12,0 8px 10px rgba(0,0,0,.15)}
 .bar.prog{position:relative}
 .bar.prog i{position:absolute;top:-2px;bottom:-2px;width:2px;background:rgba(255,255,255,.85)}
@@ -882,9 +893,16 @@ const parseNum = v => { const s = String(v ?? '').replace(/[,\s]/g, ''); return 
 const perms = a => a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
 const fmtTime = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const TIERS = [null, 'מתחילים', 'מתקדמים', 'אלופים'];
+// level words follow the child's chosen gender (plural when not chosen)
 const PLACE = { 1: 'היחידות', 10: 'העשרות', 100: 'המאות', 1000: 'האלפים' };
 const angleClass = d => d < 90 ? 'חדה' : d === 90 ? 'ישרה' : d < 180 ? 'קהה' : 'שטוחה';
-const rank = s => s >= 70 ? 'זהב' : s >= 40 ? 'כסף' : 'ארד';
+const rank = s => ['', 'ארד', 'כסף', 'זהב', 'יהלום', 'קשת'][levelOf(s)];
+/* five levels per topic (an idea of Adir's): bronze, silver, gold, then a second stage - diamond and rainbow.
+   score 0-200: stage 1 runs to gold (70); stage 2 starts at gold, with diamond and rainbow at the same 40% / 70% marks */
+const levelOf = s => s >= 161 ? 5 : s >= 122 ? 4 : s >= 70 ? 3 : s >= 40 ? 2 : 1;
+const LEVEL_ICON = ['', '🥉', '🥈', '🥇', '💎', '🌈'];
+const LEVEL_CLASS = ['', 'bronze', 'silver', 'gold', 'diamond', 'rainbow'];
+const stageBar = s => s >= 70 ? Math.min(100, (s - 70) / 130 * 100) : s;
 
 /*{{@THEME}}*/
 
@@ -994,7 +1012,7 @@ function mergeProgress(L, C) {
     const c = out.mastery[id];
     if (!c) { out.mastery[id] = m; return; }
     const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
-    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy); best.trophy2 = !!(m.trophy2 || c.trophy2);
     out.mastery[id] = best;
   });
   out.stats = { ...(C.stats || {}) };
@@ -1022,7 +1040,7 @@ function addProgress(G, C) {
     const c = out.mastery[id];
     if (!c) { out.mastery[id] = m; return; }
     const best = (m.tier || 0) * 1000 + (m.score || 0) > (c.tier || 0) * 1000 + (c.score || 0) ? { ...m } : { ...c };
-    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy);
+    best.medal = !!(m.medal || c.medal); best.trophy = !!(m.trophy || c.trophy); best.trophy2 = !!(m.trophy2 || c.trophy2);
     out.mastery[id] = best;
   });
   out.stats = { ...(C.stats || {}) };
@@ -1063,7 +1081,7 @@ function mast(id) { if (!S.mastery[id]) S.mastery[id] = { score: 20, tier: 1, st
 let Q = null, session = null, lastCat = null, currentView = 'home';
 let timerInt = null, toastTimer = null, resetArmed = false;
 
-function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).filter(m => m.trophy).length; }
+function updateWallet() { $('#coins').textContent = S.coins; $('#trophies').textContent = Object.values(S.mastery).reduce((n, m) => n + (m.trophy ? 1 : 0) + (m.trophy2 ? 1 : 0), 0); }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
@@ -1080,6 +1098,7 @@ const firstName = () => {
 };
 /*NIKUD-ON*/
 const G = (m, f, n) => S.profile && S.profile.gender === 'f' ? f : S.profile && S.profile.gender === 'm' ? m : (n ?? m);
+const levelWord = l => [null, G('מתחיל', 'מתחילה', 'מתחילים'), G('מתקדם', 'מתקדמת', 'מתקדמים'), G('אלוף', 'אלופה', 'אלופים'), G('מדהים', 'מדהימה', 'מדהימים'), G('אדיר', 'אדירה', 'אדירים')][l];
 let authError = '';
 function loginBlock() {
   if (user) return '';
@@ -1169,26 +1188,31 @@ function renderHome() {
     // the child sees what they know now: the last 10 answers in the topic (old mistakes fade out); the dashboard keeps the full totals
     const recent = String(((S.stats || {})[c.id] || {}).h || '').slice(-10), n = recent.length, st = { ok: [...recent].filter(x => x === '1').length }, a = n >= 3 ? st.ok / n : null;
     // the numbers view reuses the very same elements (originals kept invisible underneath), so nothing on the card moves
-    const starsIn = `${'⭐'.repeat(m.tier)}${'<span class="off">⭐</span>'.repeat(3 - m.tier)}<span class="lvl"> ${TIERS[m.tier]}</span>`;
-    const rankIn = `${m.score >= 70 ? '🥇' : m.score >= 40 ? '🥈' : '🥉'} ${rank(m.score)} ${m.medal ? '🏅' : ''}`;
+    const lv = levelOf(m.score);
+    // five stars: the last two stay grey and see-through until gold opens them
+    const starsIn = [1, 2, 3, 4, 5].map(i => i <= lv ? '⭐' : `<span class="off${i > 3 && lv < 3 ? ' locked' : ''}">⭐</span>`).join('');
+    // the badge shows the level icon and the child's level word (the five stars need the whole row)
+    const rankIn = `${LEVEL_ICON[lv]} ${levelWord(lv)}`;
+    const trophyHTML = m.trophy2 ? '<div class="trophy-mark rainbow" title="גביע הקשת">🏆</div>' : m.trophy ? '<div class="trophy-mark" title="גביע זהב">🏆</div>' : '';
+    const ticks = '<i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i>';
     const pctTxt = a !== null ? Math.round(a * 100) + '%' : n ? st.ok + '/' + n : '–';
     const body = statsView ? `
             <div class="stars stat-cap"><span class="keep">${starsIn}</span><span class="ov"><span class="cap">הצלחה לאחרונה</span><span class="pc">${pctTxt}</span></span></div>
             <div class="rankbadge stat-pct heat-${heat(a)}"><span class="keep">${rankIn}</span><span class="ov">${a !== null ? Math.round(a * 100) + '%' : '–'}</span></div>
-            ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
+            ${trophyHTML}
           </div>
           <div class="bar prog heat-${heat(a)}" style="position:relative;z-index:2"><span style="width:${a === null ? 0 : Math.round(a * 100)}%"></span></div>
           <button type="button" class="practice-btn stat-n" tabindex="-1" aria-hidden="true">${n ? st.ok + ' מתוך ' + n + ' אחרונות' : 'עוד לא תורגל'}</button>` : `
-            <div class="stars" title="רמה: ${TIERS[m.tier]}">${starsIn}</div>
+            <div class="stars" title="דרגת ${rank(m.score)}">${starsIn}</div>
             <div class="rankbadge">${rankIn}</div>
-            ${m.trophy ? '<div class="trophy-mark" title="גביע: אלופים בנושא">🏆</div>' : ''}
+            ${trophyHTML}
           </div>
-          <div class="bar prog" style="position:relative;z-index:2"><span style="width:${m.score}%"></span><i style="inset-inline-start:40%"></i><i style="inset-inline-start:70%"></i></div>
+          <div class="bar prog${m.score >= 70 ? ' stage2' : ''}" style="position:relative;z-index:2"><span style="width:${stageBar(m.score)}%"></span>${ticks}</div>
           <button type="button" class="practice-btn" data-practice="${c.id}">תרגול נושא זה</button>`;
     return `
       <div class="slot">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
-        <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${m.score >= 70 ? 'gold' : m.score >= 40 ? 'silver' : 'bronze'}">
+        <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${LEVEL_CLASS[levelOf(m.score)]}">
           <div class="card-leaf leaf-tl">🌿</div>
           <div class="card-leaf leaf-tr">🌿</div>
           <div class="card-leaf leaf-br">🌿</div>
@@ -1250,7 +1274,7 @@ function renderCamp() {
   const gearShelf = GEAR.filter(g => gearCount((S.gear || {})[g.id])).map(g => { const n = gearCount(S.gear[g.id]); return n > 1
     ? `<div class="owned-animal stack" title="${g.name} (${RARITY[g.r]}) ×${n}">${Array.from({ length: Math.min(n, 3) }, () => `<span>${g.icon}</span>`).join('')}${n > 3 ? `<b class="stack-n">${n}</b>` : ''}</div>`
     : `<div class="owned-animal" title="${g.name} (${RARITY[g.r]})">${g.icon}</div>`; }).join('');
-  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('');
+  const trophyShelf = CATS.filter(c => mast(c.id).trophy).map(c => `<div class="owned-animal" title="${c.name}">🏆</div>`).join('') + CATS.filter(c => mast(c.id).trophy2).map(c => `<div class="owned-animal rainbow-trophy" title="${c.name} – גביע הקשת">🏆</div>`).join('');
   const collection = ownedItems.length || trophyShelf || gearShelf
     ? trophyShelf + gearShelf + ownedItems.map(([id]) => { const it = ITEMS.find(x => x.id === id); return it ? `<div class="owned-animal">${it.icon}</div>` : ''; }).join('')
     : '<div class="rank" style="color:#fff">{{EMPTY_SHELF}}</div>';
@@ -1725,6 +1749,7 @@ function setupDraw(svg, p) {
 function record(ok) {
   const m = mast(Q.cat);
   let sfx = ok ? 'correct' : 'wrong';
+  const lvBefore = levelOf(m.score);
   session.done++;
   session.tc = session.tc || {}; session.tc[Q.cat] = (session.tc[Q.cat] || 0) + 1;
   if (!S.stats) S.stats = {};
@@ -1737,18 +1762,27 @@ function record(ok) {
   if (ok) {
     const earn = session.kind === 'bonus' ? 2 : 1;
     Q.earned = earn; session.correct++; session.coins += earn; S.coins += earn;
-    m.streak++; m.wrong = 0; m.score = Math.min(100, m.score + 5);
-    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; sfx = 'level'; toast(`עלית לרמת ${TIERS[m.tier]} בנושא: ${plain(CATS.find(c => c.id === Q.cat).name)}`); }
+    m.streak++; m.wrong = 0; m.score = Math.min(200, m.score + 5);
+    // the question difficulty (tier) still rises quietly after 3 right answers in a row
+    if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; }
   } else {
-    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
+    m.streak = 0; m.wrong++; m.score = Math.max(m.medal ? 70 : 0, m.score - 3);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
-  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); sfx = 'medal'; toast('מדליית זהב הושגה!'); }
-  if (!m.trophy && m.score >= 70 && m.tier >= 3) {
+  const nm = CATS.find(c => c.id === Q.cat).name, lvAfter = levelOf(m.score);
+  if (lvAfter > lvBefore) { sfx = 'level'; toast(`${LEVEL_ICON[lvAfter]} דרגת ${rank(m.score)}! ${levelWord(lvAfter)} בנושא: ${plain(nm)}`); }
+  if (!m.medal && m.score >= 70) { m.medal = true; S.medals.push(Q.cat); }
+  // gold trophy when the first stage is done (gold), a shiny rainbow trophy at the top level
+  if (!m.trophy && m.score >= 70) {
     m.trophy = true;
-    const nm = CATS.find(c => c.id === Q.cat).name;
     (session.trophies = session.trophies || []).push(nm);
-    toast(`🏆 גביע! אלופים בנושא: ${plain(nm)}`);
+    toast(`🏆 גביע זהב! ${G('אלוף', 'אלופה', 'אלופים')} בנושא: ${plain(nm)}`);
+    sfx = 'trophy';
+  }
+  if (!m.trophy2 && m.score >= 161) {
+    m.trophy2 = true;
+    (session.trophies = session.trophies || []).push(nm + ' 🌈');
+    toast(`🏆🌈 גביע הקשת! ${G('אדיר', 'אדירה', 'אדירים')} בנושא: ${plain(nm)}`);
     sfx = 'trophy';
   }
   SFX.play(sfx);

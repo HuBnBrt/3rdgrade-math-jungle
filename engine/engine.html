@@ -382,8 +382,13 @@ header .chip{order:2;flex:none}
 /* locked future stars (diamond, rainbow): grey and see-through until gold */
 .cats .card .stars .off{filter:grayscale(1) brightness(.95);opacity:1}
 .cats .card .stars .lockstar{width:1.25em;height:1.2em;vertical-align:-.2em;color:#7a5a3a;opacity:.75}
-.cats .card .bar.prog .rbw{position:absolute;top:0;bottom:0;inset-inline-start:40%;background:linear-gradient(270deg,#ff6b6b,#ffd93d,#6bcB77,#4d96ff,#b388ff);border-radius:0 99px 99px 0}
-html[dir=rtl] .cats .card .bar.prog .rbw{border-radius:99px 0 0 99px}
+/* after gold: green ends square at the first mark; the way to diamond is pale glassy blue with a slow shimmer; the way to rainbow is colourful */
+.cats .card .bar.prog span.gold-done{border-radius:0;border-start-start-radius:99px;border-end-start-radius:99px}
+.cats .card .bar.prog .dia,.cats .card .bar.prog .rbw{position:absolute;top:0;bottom:0;border-radius:0;border-start-end-radius:99px;border-end-end-radius:99px}
+.cats .card .bar.prog .dia{inset-inline-start:40%;background:linear-gradient(90deg,#b3e5fc 0%,#e1f5fe 20%,#ffffff 30%,#e1f5fe 40%,#b3e5fc 60%,#81d4fa 100%);background-size:250% 100%;animation:glass 4s ease-in-out infinite}
+.cats .card .bar.prog .dia.full{border-radius:0}
+.cats .card .bar.prog .rbw{inset-inline-start:70%;background:linear-gradient(270deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#b388ff)}
+@keyframes glass{0%,100%{background-position:100% 0}50%{background-position:0 0}}
 .cats .card .bar.prog span{position:relative}
 /* the rainbow trophy floats beside the gold one, a little behind in its swing */
 .cats .card .trophy-mark.two{inset-inline-start:auto;inset-inline-end:-8px;animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
@@ -1250,7 +1255,7 @@ function renderHome() {
             <div class="rankbadge">${rankIn}</div>
             ${trophyHTML}
           </div>
-          <div class="bar prog" style="position:relative;z-index:2">${m.score >= 70 ? `<span style="width:40%"></span><b class="rbw" style="width:${rainbowEnd(m.score) - 40}%"></b>` : `<span style="width:${m.score}%"></span>`}${ticks}</div>
+          <div class="bar prog" style="position:relative;z-index:2">${m.score >= 70 ? (re => `<span class="gold-done" style="width:40%"></span>${re > 40 ? `<b class="dia${re >= 70 ? ' full' : ''}" style="width:${Math.min(re, 70) - 40}%"></b>` : ''}${re > 70 ? `<b class="rbw" style="width:${re - 70}%"></b>` : ''}`)(rainbowEnd(m.score)) : `<span style="width:${m.score}%"></span>`}${ticks}</div>
           <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה אנושית' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
     return `
       <div class="slot">
@@ -1809,7 +1814,7 @@ function record(ok) {
     // the question difficulty (tier) still rises quietly after 3 right answers in a row
     if (m.streak >= 3 && m.tier < 3) { m.tier++; m.streak = 0; }
   } else {
-    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 3);
+    m.streak = 0; m.wrong++; m.score = Math.max(0, m.score - 4);
     if (m.wrong >= 2 && m.tier > 1) { m.tier--; m.wrong = 0; }
   }
   const nm = CATS.find(c => c.id === Q.cat).name, lvAfter = levelOf(m.score);

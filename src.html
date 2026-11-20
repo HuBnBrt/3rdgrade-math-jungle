@@ -421,7 +421,8 @@ header .chip{order:2;flex:none}
 .cats .card .stars .st-lock{position:relative}
 .cats .card .stars .st-lock span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95em;line-height:1}
 /* metals: a moving diagonal shine, shared by the stars and the bar */
-.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{background-size:300% 300%!important;animation:metal 3.2s linear infinite}
+/* the shine sweeps back and forth (no jump at the end); every card has its own pace (--ar, --ad) */
+.m-bronze,.m-silver,.m-gold,.m-dia,.m-rbw{background-size:300% 300%!important;animation:metal var(--ar,3.2s) ease-in-out var(--ad,0s) infinite alternate}
 .m-bronze{background:linear-gradient(135deg,#7a3f15 0%,#c47a3d 35%,#ffd2a6 50%,#c47a3d 65%,#7a3f15 100%)}
 .m-silver{background:linear-gradient(135deg,#8f9aa1 0%,#d5dce0 35%,#ffffff 50%,#d5dce0 65%,#8f9aa1 100%)}
 .m-gold{background:linear-gradient(135deg,#b77d00 0%,#ffc61a 35%,#fff6b0 50%,#ffc61a 65%,#b77d00 100%)}
@@ -803,7 +804,7 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 .pet .acc-crown{width:.55em;height:.42em;top:-.2em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M3 27 L5 8 L13 17 L20 3 L27 17 L35 8 L37 27 Z'/%3E%3C/svg%3E") center/contain no-repeat}
 .pet .acc-neck{width:.55em;height:.42em;top:.62em;left:.24em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='36.2' cy='4.7' r='2.4'/%3E%3Ccircle cx='33.8' cy='8.1' r='2.4'/%3E%3Ccircle cx='30.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='25.3' cy='12.4' r='2.4'/%3E%3Ccircle cx='20.0' cy='13.0' r='2.4'/%3E%3Ccircle cx='14.7' cy='12.4' r='2.4'/%3E%3Ccircle cx='10.0' cy='10.7' r='2.4'/%3E%3Ccircle cx='6.2' cy='8.1' r='2.4'/%3E%3Ccircle cx='3.8' cy='4.7' r='2.4'/%3E%3Cpath d='M20 14 l6 7 -6 8 -6 -8 z'/%3E%3C/svg%3E") center/contain no-repeat}
 .pet .acc-bow{width:.42em;height:.3em;top:.72em;left:.3em;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M20 15 L3 5 L3 25 Z M20 15 L37 5 L37 25 Z'/%3E%3Crect x='15' y='10' width='10' height='10' rx='2'/%3E%3C/svg%3E") center/contain no-repeat}
-.pet .halo{position:absolute;inset:-.22em;border-radius:50%;z-index:1;animation:halo 2.4s ease-in-out infinite alternate}
+.pet .halo{position:absolute;inset:-.22em;border-radius:50%;z-index:1;animation:halo var(--ar,2.4s) ease-in-out var(--ad,0s) infinite alternate}
 .pet .h-bronze{background:radial-gradient(circle,#e08b3e 0%,rgba(224,139,62,.55) 40%,transparent 70%)}
 .pet .h-silver{background:radial-gradient(circle,#ffffff 0%,rgba(220,230,235,.7) 40%,transparent 70%)}
 .pet .h-gold{background:radial-gradient(circle,#ffe066 0%,rgba(255,200,40,.65) 40%,transparent 70%)}
@@ -2089,7 +2090,7 @@ function renderHome() {
           <div class="bar prog thirds" style="position:relative;z-index:2">${barThirds(m.score).map(([mt, f], k) => f > 0 ? `<b class="bseg m-${mt}${f >= 1 ? ' full' : ''}" style="inset-inline-start:${k * 33.333}%;width:${f * 33.333}%"></b>` : '').join('')}${ticks}</div>
           <button type="button" class="practice-btn${recBy ? ' recbtn rec-' + recBy : ''}" data-practice="${c.id}"${recBy ? ` title="${recBy === 't' ? 'המלצה אנושית' : 'המלצה של המערכת'}"` : ''}>${rsT ? `המשך (${rsT.done + 1}/${rsT.total})` : recBy ? 'המלצה לתרגול' : 'תרגול נושא זה'}</button>`;
     return `
-      <div class="slot">
+      <div class="slot" style="--ar:${(2.8 + (i * 0.37) % 1.3).toFixed(2)}s;--ad:-${((i * 0.83) % 3).toFixed(2)}s">
         <div class="peek-animal p${i % 3}">${c.animal}</div>
         <div${statsView ? ` data-practice="${c.id}" role="button" tabindex="0"` : ''} class="card cat-${c.id}${recBy ? ' rec' : ''}${statsView ? ' statcard' : ''} rk-${LEVEL_CLASS[levelOf(m.score)]}">
           <div class="card-leaf leaf-tl">🌿</div>
@@ -2145,11 +2146,11 @@ const stackHTML = (parts, title, cls = '') => parts.length === 1
   ? `<div class="owned-animal${cls}" title="${title}">${parts[0]}</div>`
   : `<div class="owned-animal stk${cls}" title="${title} ×${parts.length}">${parts.slice(0, 3).map(x => `<span class="sk">${x}</span>`).join('')}${parts.length > 3 ? `<b class="stack-n">${parts.length}</b>` : ''}</div>`;
 function renderCamp() {
-  const shop = ITEMS.map(it => {
+  const shop = ITEMS.map((it, ix) => {
     const owned = Math.min(S.items[it.id] || 0, PET_MAX), next = owned + 1, price = it.price * next;
     const full = owned >= PET_MAX, canAfford = !full && S.coins >= price;
     return `
-      <div class="card">
+      <div class="card" style="--ar:${(2.8 + (ix * 0.41) % 1.3).toFixed(2)}s;--ad:-${((ix * 0.77) % 3).toFixed(2)}s">
         ${owned ? `<span class="in-col"><span class="w">באוסף</span>${owned > 1 ? ` <span class="n" dir="ltr">×${owned}</span>` : '<span class="ck">✓</span>'}</span>` : ''}
         <div class="ic">${petHTML(it, full ? PET_MAX : next)}</div>
         <b class="big nm">${it.name}</b>

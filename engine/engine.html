@@ -387,9 +387,13 @@ html[dir=rtl] .cats .card .bar.prog .rbw{border-radius:99px 0 0 99px}
 .cats .card .bar.prog span{position:relative}
 /* the rainbow trophy floats beside the gold one, a little behind in its swing */
 .cats .card .trophy-mark.two{inset-inline-start:auto;inset-inline-end:-8px;animation:float 3s ease-in-out .8s infinite alternate,rainbow-cup 3s linear infinite}
-.trophy-mark.dusty,.owned-animal.dusty{filter:grayscale(1) sepia(.35) brightness(.8)!important;animation:none!important;opacity:.85}
-.trophy-mark.dusty::after,.owned-animal.dusty::after{content:'🕸️';position:absolute;font-size:.5em;top:-.1em;inset-inline-end:-.2em;opacity:.85}
+.trophy-mark.dusty,.owned-animal.dusty{filter:grayscale(1) sepia(.3) brightness(.7) contrast(1.15)!important;animation:none!important}
+/* dusty trophy: grey, cracked, with a big cobweb on its inner side (toward the middle of the card, away from the corner leaves) */
+.trophy-mark.dusty::after,.owned-animal.dusty::after{content:'🕸️';position:absolute;font-size:.75em;top:.15em;inset-inline-end:-.45em;opacity:.95}
+.cats .card .trophy-mark.two.dusty::after{inset-inline-end:auto;inset-inline-start:-.45em}
+.trophy-mark.dusty::before,.owned-animal.dusty::before{content:'';position:absolute;top:8%;bottom:42%;left:28%;right:28%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M17 3 L21 11 L15 17 L22 24 L18 31' fill='none' stroke='%23231208' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3Cpath d='M21 11 L27 14 M15 17 L10 19 M22 24 L27 27' fill='none' stroke='%23231208' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;pointer-events:none}
 .owned-animal.dusty{position:relative}
+.cats .card .trophy-mark.dusty{z-index:13}
 @keyframes cup-shine{0%,100%{filter:drop-shadow(0 0 0 #fff)}50%{filter:drop-shadow(0 0 10px #fff59d) brightness(1.4)}}
 .cats .card .trophy-mark.shine:not(.rainbow){animation:float 3s ease-in-out infinite alternate,cup-shine .7s ease-in-out 4}
 /* big button: two fixed lines; an orange glow while a practice is waiting to be finished */

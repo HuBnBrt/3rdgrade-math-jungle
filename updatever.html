@@ -492,7 +492,7 @@ header .chip{order:2;flex:none}
   #qcard .opts .opt,#qcard .opts.ord .opt{font-size:17px;padding:3px 2px}
   #qcard .seq{min-height:0;padding:3px}#qcard .seq span{font-size:17px;padding:3px 2px}
   #qcard [style*="font-size:28px"],#qcard [style*="font-size:32px"],#qcard [style*="font-size:36px"]{font-size:20px !important}
-  #qcard .parts svg[data-draw]{height:min(34vh,150px)}
+  #qcard .parts .drawwrap svg[data-draw]{max-height:min(46vh,190px);min-height:80px}
   .draw-help{font-size:12px;margin-top:2px}.draw-help b:first-child{display:none}
   .sum-gift{display:none}.sum-title{font-size:20px}.sum-box{padding:3px 8px}.sum-box p{font-size:14px;margin:1px 0}
   .sum-actions{flex-direction:row}.sum-actions>*{flex:1;font-size:14px !important;padding:5px 6px !important}
@@ -585,7 +585,9 @@ header h1{font-size:calc(var(--s)*1.15)}
 #qcard .ordwrap .opts.ord .opt.used{visibility:hidden;pointer-events:none}
 #qcard .parts:has(.drawwrap){display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 #qcard .drawwrap{flex:1 1 auto;min-height:0}
-#qcard .parts .drawwrap svg[data-draw]{flex:0 1 auto;min-height:70px;max-height:none;height:min(44vh,60vw,calc(var(--q)*18))}
+#qcard .drawwrap{display:flex;flex-direction:column;align-items:center}
+/* the drawing board takes the free room of the card (it was a small fixed size on tablets) */
+#qcard .parts .drawwrap svg[data-draw]{flex:none;min-height:110px;height:110px;max-height:min(62vh,480px);width:auto;max-width:100%;aspect-ratio:320/220}
 #qcard .drawwrap .draw-help{flex:none}
 #qcard .question-board:has(.prompt.compact){min-height:0;flex:none;padding:calc(var(--q)*.45) 14px}
 #qcard .question-board:has(.prompt.compact) .prompt{margin:0}
@@ -758,8 +760,18 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
 #qcard .kp-key{border:0;border-radius:12px;background:linear-gradient(#fffaf0,#f1e2c9);box-shadow:0 3px 0 #a87c4f;font:900 clamp(18px,3.4vh,26px) 'Noto Sans Hebrew',sans-serif;color:#3e2410;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:29px}
 #qcard .kp-key:active{transform:translateY(2px);box-shadow:0 1px 0 #a87c4f}
 #qcard .kp-key.kp-back{grid-row:span 2;grid-column:6;background:linear-gradient(#ffe9e0,#f5c9b8);box-shadow:0 3px 0 #b5694b}
-#qcard .fbslot.kp .hintbox{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#fffbe6;border-radius:12px;padding:4px 10px;text-align:center}
-#qcard .fbslot.kp .hintbox:empty{display:none}
+/* hint next to the keypad: on a wide (landscape) screen the keypad sits on the right and the hint on the left;
+   upright, the hint covers the keypad as a card with a close mark (tap anywhere on it to close) */
+#qcard .fbslot.kp .hintbox{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:#fffbe6;color:#3e2410;text-shadow:none;border:2px solid #f4b942;border-radius:12px;padding:4px 10px 4px 34px;text-align:center;line-height:1.35;overflow:hidden}
+#qcard .fbslot.kp .hintbox:not(:empty)::after{content:"✕";position:absolute;top:4px;left:8px;font-size:18px;font-weight:900;color:#8b5a2b}
+@media (orientation:landscape){
+  #qcard .fbslot.kp{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:12px;align-items:stretch}
+  #qcard .fbslot.kp .keypad{margin:0}
+  #qcard .fbslot.kp .hintbox{position:static;padding:4px 10px}
+  #qcard .fbslot.kp .hintbox:empty{display:block;visibility:hidden}
+  #qcard .fbslot.kp .hintbox:not(:empty)::after{display:none}
+}
+@media (orientation:portrait){#qcard .fbslot.kp .hintbox:empty{display:none}}
 #qcard input.kp-on{outline:3px solid #f4b942;outline-offset:2px}
 @media (max-height:660px){#qcard .fbslot.kp{min-height:60px}#qcard .kp-key{min-height:26px;font-size:18px}}
 /* landscape phones: one wide row of keys */
@@ -802,8 +814,8 @@ import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.
 
 // APP_VERSION is the build number that installed copies compare (keep the 'vNN' form: older installs look for it);
 // APP_LABEL is the version people see. tools/release.py updates both.
-const APP_VERSION = 'v108';
-const APP_LABEL = '4.0';
+const APP_VERSION = 'v109';
+const APP_LABEL = '4.1';
 const IS_DEV = /updatever\.html$/.test(location.pathname);
 // what's new in this version, shown once after updating (filled when a version is published to everyone)
 const RELEASE_NOTES = [];
@@ -2252,7 +2264,7 @@ function partHTML(p, i) {
     return `<div class="ordwrap"><div class="ord-label">הַסֵּדֶר שֶׁבָּחַרְתָּ, מֵהַקָּטָן לַגָּדוֹל:</div><div class="seq">${slots}</div><div class="ord-label">הַמִּסְפָּרִים לִבְחִירָה:</div><div class="opts ord">${bank}</div><button type="button" class="ghost-btn" style="margin-top:10px" data-p="${i}" data-reset="1">לְהַתְחִיל מֵחָדָשׁ</button><div class="ord-tip">אֶפְשָׁר לִגְרוֹר מִסְפָּר לְכָל מִשְׁבֶּצֶת, וּלְהָזִיז מִסְפָּר מִמִּשְׁבֶּצֶת לְמִשְׁבֶּצֶת.</div></div>`;
   }
   if (p.type === 'draw') {
-    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><path id="sq" d="M184 170 V146 H160" fill="none" stroke="#163b2a" stroke-width="3" style="display:none"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg><div class="draw-help"${Q.result === undefined ? '' : ' style="visibility:hidden"'}><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</div></div>`;
+    return `<div class="drawwrap"><svg class="angle" data-draw="${i}" viewBox="0 0 320 220" role="img"><line x1="160" y1="170" x2="270" y2="170" stroke="#163b2a" stroke-width="8" stroke-linecap="round"/><line id="arm" x1="160" y1="170" x2="270" y2="170" stroke="#4caf7a" stroke-width="8" stroke-linecap="round"/><path id="sq" d="M184 170 V146 H160" fill="none" stroke="#163b2a" stroke-width="3" style="display:none"/><circle id="knob" cx="270" cy="170" r="14" fill="#f0a430" stroke="#163b2a" stroke-width="3"/><circle cx="160" cy="170" r="8" fill="#163b2a"/></svg></div>`;
   }
   return '';
 }
@@ -2365,6 +2377,8 @@ function confetti() {
 
 // phones and tablets: the device keyboard never opens (it pushed the screen up); a small keypad of the game sits in
 // the space kept for the feedback, so nothing moves. Computers keep the normal keyboard.
+// how to draw: shown in the space kept for the feedback (until the answer is checked), so the drawing board gets the room
+const DRAW_HELP = '<span class="draw-help"><b>אֵיךְ מְשַׂרְטְטִים?</b> גּוֹרְרִים בְּאֶצְבַּע (אוֹ בְּעַכְבָּר) אֶת <b>הָעִיגּוּל הַכָּתוֹם</b>. הַקַּו הַיָּרוֹק מִסְתּוֹבֵב, וְהַזָּווִית נִפְתַּחַת אוֹ נִסְגֶּרֶת. כְּשֶׁהַזָּווִית מוּכָנָה לוֹחֲצִים עַל "בְּדִיקָה".</span>';
 const TOUCH_KEYPAD = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
 let kpTarget = null;
 function keypadHTML() {
@@ -2413,7 +2427,7 @@ function renderPlay() {
       <div class="feedback ${Q.result ? 'ok' : 'no'}">
         <span class="mascot">${Q.result ? '🐒' : '🦥'}</span>
         <span class="fb-text"><span class="fb-head">${fbText.trim()}</span><span class="fb-body">${wordsNote}${String(typeof Q.explain === 'function' ? Q.explain(Q) : Q.explain).replace(/\. /g, '.<br>')}</span></span>
-      </div>` : `${useKeypad ? keypadHTML() : ''}<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : ''}</div>`}</div>
+      </div>` : `${useKeypad ? keypadHTML() : ''}<div id="hintBox" class="hintbox">${Q.note ? esc(Q.note) : Q.parts.some(p => p.type === 'draw') ? DRAW_HELP : ''}</div>`}</div>
     <div class="row qactions">
       ${locked ? '' : `<button type="button" class="ghost-btn" id="hintBtn">רֶמֶז 💡</button>`}
       ${locked
@@ -2425,7 +2439,14 @@ function renderPlay() {
   if (TOUCH_KEYPAD && Q.result === undefined) { const first = kpInputs()[0]; if (first) kpMark(first); }
   if (focusAnswer) { focusAnswer = false; const inp = document.querySelector('#qcard input:not([disabled])'); if (inp) inp.focus(); }
   const sv = document.querySelector('#qcard svg[data-draw]');
-  if (sv) setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  if (sv) {
+    // the drawing board grows into the free room under the card (up to a comfortable size), so it is big on tablets
+    const card = $('#qcard'), host = card.parentElement;
+    const cs = getComputedStyle(host), free = host.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - card.offsetHeight - 16;
+    const h = sv.getBoundingClientRect().height, cap = Math.min(innerHeight * 0.62, 480);
+    if (free > 4 && h < cap) sv.style.height = Math.min(cap, h + free) + 'px';
+    setupDraw(sv, Q.parts[+sv.dataset.draw]);
+  }
   tick();
 }
 

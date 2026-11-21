@@ -835,6 +835,34 @@ header{padding-bottom:max(6px,calc(var(--s)*.45)) !important;padding-top:max(6px
   #qcard .fbslot.kp .hintbox:not(:empty)::after{display:none}
 }
 @media (orientation:portrait){#qcard .fbslot.kp .hintbox:empty{display:none}}
+/* split layout (tablet / computer held wide, with the game keypad): question right, keypad + hint + buttons left */
+#qcard.split{display:grid;column-gap:22px;row-gap:10px;height:100%;max-height:100%;width:100%;max-width:min(1400px,96vw);
+  grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:auto auto minmax(0,1fr) auto auto;
+  grid-template-areas:'head head' 'bar bar' 'board fb' 'ans fb' 'ans act'}
+#qcard.split .qhead{grid-area:head}#qcard.split .bar{grid-area:bar}
+#qcard.split .question-board{grid-area:board;min-height:0;height:auto;max-height:none}
+#qcard.split .parts{grid-area:ans;align-self:start}
+#qcard.split .fbslot{grid-area:fb;height:auto!important;min-height:0}
+#qcard.split .qactions{grid-area:act;justify-content:center;gap:18px;flex-wrap:nowrap}
+#qcard.split .fbslot.kp{display:flex;flex-direction:column;gap:10px}
+#qcard.split .fbslot.kp .keypad{flex:1 1 auto;min-height:0;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);max-width:none;gap:10px}
+#qcard.split .kp-key{font-size:clamp(24px,4.4vh,36px);min-height:0}
+#qcard.split .kp-key.kp-back{grid-row:auto;grid-column:auto;order:10}
+#qcard.split .kp-key[data-k="0"]{order:11}
+#qcard.split .fbslot.kp .hintbox{position:static;flex:0 0 auto;min-height:74px;display:flex;padding:8px 12px;font-size:clamp(15px,2.3vh,18px)}
+#qcard.split .fbslot.kp .hintbox:empty{visibility:hidden;display:flex}
+#qcard.split .fbslot.kp .hintbox::after{display:none}
+#qcard.split input.num,#qcard.split input.text{font-size:clamp(26px,5vh,40px);padding:10px 14px}
+#qcard.split .feedback{font-size:clamp(16px,2.6vh,20px)}
+/* wide questions: the question across the whole width, then the answer (right) and keypad + hint (left) under it */
+#qcard.split.wideq{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) clamp(190px,32vh,280px);
+  grid-template-areas:'head head' 'bar bar' 'board board' 'ans fb'}
+#qcard.split.wideq .qactions{grid-area:ans;align-self:end}
+#qcard.split .question-board svg.numline{flex:1 1 0;min-height:90px;width:100%;height:auto!important;max-height:none;max-width:none}
+#qcard.split.wideq .fbslot{height:100%!important}
+#qcard.split.wideq .fbslot.kp{flex-direction:row}
+#qcard.split.wideq .fbslot.kp .hintbox{flex:1 1 0;min-height:0}
+#qcard.split.wideq .fbslot.kp .keypad{flex:1.4 1 0}
 #qcard input.kp-on{outline:3px solid #f4b942;outline-offset:2px}
 @media (max-height:660px){#qcard .fbslot.kp{min-height:60px}#qcard .kp-key{min-height:26px;font-size:18px}}
 /* landscape phones: one wide row of keys */
@@ -1668,6 +1696,22 @@ function partHTML(p, i) {
 function fitBoard() {
   const bd = document.querySelector('#qcard .question-board');
   if (!bd) return;
+  if (bd.closest('#qcard.split')) {
+    // the biggest text size at which the whole question still fits its window (never below its usual size x0.7);
+    // a drawing (number line) is not scaled: it stretches into the room the text leaves
+    const els = [bd, ...bd.querySelectorAll('*')].filter(e => !e.closest('svg'));
+    els.forEach(e => { if (!e.dataset.fs) e.dataset.fs = parseFloat(getComputedStyle(e).fontSize); });
+    const set = k => els.forEach(e => { e.style.fontSize = (e.dataset.fs * k).toFixed(1) + 'px'; });
+    const box = bd.getBoundingClientRect(), lines = els.filter(e => e !== bd), pic = bd.querySelector('svg');
+    // a left-to-right line (sequence, exercise) can overflow to the left inside a right-to-left board, where scrollWidth does not see it: check every piece
+    const over = () => bd.scrollHeight > bd.clientHeight + 1 || bd.scrollWidth > bd.clientWidth + 1
+      || lines.some(e => { const r = e.getBoundingClientRect(); return r.left < box.left + 8 || r.right > box.right - 8; })
+      || (pic && pic.getBoundingClientRect().height < Math.min(220, bd.clientHeight * 0.55));
+    let lo = 0.7, hi = 3.2;
+    for (let i = 0; i < 12; i++) { const m = (lo + hi) / 2; set(m); if (over()) hi = m; else lo = m; }
+    set(lo * 0.96);
+    return;
+  }
   bd.querySelectorAll('.ltr').forEach(el => {
     let size = parseFloat(getComputedStyle(el).fontSize);
     const max = bd.clientWidth - 28;
@@ -1701,6 +1745,14 @@ function fitBoard() {
 function fitFeedback() {
   const f = document.querySelector('#qcard .feedback');
   if (!f) return;
+  if (f.closest('#qcard.split')) {
+    // in the split layout the feedback has a big box: the text grows to fill it (16px - 34px)
+    let lo = 16, hi = 34;
+    for (let i = 0; i < 8; i++) { const m = (lo + hi) / 2; f.style.fontSize = m + 'px'; if (f.scrollHeight > f.clientHeight + 1 || f.scrollWidth > f.clientWidth + 1) hi = m; else lo = m; }
+    f.style.fontSize = Math.floor(lo) + 'px';
+    const mc = f.querySelector('.mascot'); if (mc) mc.style.fontSize = Math.round(lo * 2) + 'px';
+    return;
+  }
   let size = parseFloat(getComputedStyle(f).fontSize);
   while (f.scrollHeight > f.clientHeight + 1 && size > 11) { size -= 1; f.style.fontSize = size + 'px'; }
 }
@@ -1794,6 +1846,17 @@ function kpPress(key) {
 
 // after moving on with Enter, the cursor waits in the new answer box
 let focusAnswer = false;
+/* tablets and computers held wide, with the game keypad: the question on the right (big), the keypad, hint and buttons on the left.
+   questions that run wide (sequences) take the whole width on top, with the answer and keypad under them */
+const SPLIT_MQ = matchMedia('(orientation:landscape) and (min-width:900px) and (min-height:560px)');
+const WIDE_Q = ['seq']; // the number line is bigger in the tall right-hand window
+function setSplit() {
+  const c = $('#qcard'); if (!c || !Q) return false;
+  const on = SPLIT_MQ.matches && TOUCH_KEYPAD && Q.parts.some(p => p.type === 'num' || p.type === 'text');
+  c.classList.toggle('split', on); c.classList.toggle('wideq', on && WIDE_Q.includes(Q.cat));
+  return on;
+}
+SPLIT_MQ.addEventListener && SPLIT_MQ.addEventListener('change', () => { if (currentView === 'play' && Q && !$('#qcard').classList.contains('summary')) { setSplit(); fitBoard(); } });
 function renderPlay() {
   const locked = Q.result !== undefined;
   const useKeypad = TOUCH_KEYPAD && !locked && Q.parts.some(p => p.type === 'num' || p.type === 'text');
@@ -1803,6 +1866,7 @@ function renderPlay() {
   const showTimer = !locked && S.settings.timer === 'gentle';
 
   $('#qcard').classList.remove('summary', 'tight');
+  setSplit();
   const nk = (S.profile && S.profile.nick) ? ' ' + esc(S.profile.nick) : '';
   const praise = pick([`נכון מאוד${nk}!`, `כל הכבוד${nk}!`, `יפה מאוד${nk}!`, G('אלוף', 'אלופה', 'מצוין') + nk + '!']);
   const oops = pick(['לא בדיוק', 'כמעט', 'לא נורא']) + nk + '. ';
